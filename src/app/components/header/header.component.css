@@ -1,0 +1,18 @@
+.cart{
+    font-size: 20px;
+    position: relative;
+}
+
+.quantity{
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 50%;
+    color: firebrick;
+    border: 1px #ff000063 solid;
+    background-color: white;
+}
