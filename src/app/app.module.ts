@@ -12,10 +12,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ShopComponent } from './components/shop/shop.component';
+import { AboutComponent } from './components/about/about.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'shop', component: ShopComponent },
+  { path: 'about', component: AboutComponent },
 ];
 
 @NgModule({
@@ -26,6 +28,7 @@ const routes: Routes = [
     FooterComponent,
     HomeComponent,
     ShopComponent,
+    AboutComponent,
   ],
   imports: [
     RouterModule.forRoot(routes),
