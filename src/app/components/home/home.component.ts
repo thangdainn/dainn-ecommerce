@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OwlOptions } from 'ngx-owl-carousel-o';
+import { Product } from 'src/app/common/product';
+import { ProductService } from 'src/app/services/product.service';
 
 @Component({
   selector: 'app-home',
@@ -7,7 +9,9 @@ import { OwlOptions } from 'ngx-owl-carousel-o';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  products: Product[] = [];
+
+  constructor(private productService: ProductService) {}
 
   bannerOptions: OwlOptions = {
     loop: true,
@@ -60,7 +64,16 @@ export class HomeComponent implements OnInit {
     },
   };
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getTop10LeastProducts();
+  }
+
+  getTop10LeastProducts() {
+    this.productService.getTop10LeastProducts().subscribe((data) => {
+      this.products = data.data;
+    });
+  }
+  
 
   banners = [
 	'assets/images/bg_1.png',

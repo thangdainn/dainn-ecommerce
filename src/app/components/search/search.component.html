@@ -1,0 +1,5 @@
+<input #keySearch type="text" id="search" name="keyword" autocomplete="off" placeholder=" Search..."
+       (keyup.enter)="doSearch(keySearch.value)">
+<li>
+  <button (click)="doSearch(keySearch.value)" id="btn_search"><i class="fa fa-search" aria-hidden="true"></i></button>
+</li>

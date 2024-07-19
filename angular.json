@@ -31,7 +31,8 @@
               "src/assets/css/jquery.timepicker.css",
               "src/assets/css/flaticon.css",
               "src/assets/css/icomoon.css",
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": [
               "src/assets/js/jquery.min.js",
