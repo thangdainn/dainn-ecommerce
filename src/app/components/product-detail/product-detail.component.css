@@ -46,6 +46,9 @@
     border: solid 1px #e5e5e5;
     margin-left: 29px;
 }
+.product_size ul li.active {
+    border: solid 1px #fe4c50 ;
+}
 
 .total_item {
     margin-left: 20px;

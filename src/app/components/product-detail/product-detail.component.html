@@ -1,18 +1,25 @@
 <section class="ftco-section">
     <div class="container">
         <div class="breadcrumbs d-flex flex-row align-items-center">
-          <ul>
-            <li><a routerLink="">Home</a></li>
-            <li class="active"><a routerLink="/product/{{product.code}}"><i class="fa fa-angle-right" aria-hidden="true"></i>{{ product.name }}</a></li>
-          </ul>
+            <ul>
+                <li><a routerLink="">Home</a></li>
+                <li class="active"><a routerLink="/product/{{product.code}}"><i class="fa fa-angle-right"
+                            aria-hidden="true"></i>{{ product.name }}</a></li>
+            </ul>
         </div>
-      </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-lg-6 mb-5 ftco-animate">
-                <a href="{{ product.imgUrl }}" class="image-popup prod-img-bg">
-                    <img src="{{ product.imgUrl }}" class="img-fluid" alt="Colorlib Template">
-                </a>
+                <div class="thumbnail-img">
+                    <owl-carousel-o [options]="customOptions">
+                        <ng-template carouselSlide *ngFor="let image of images">
+                            <div>
+                                <img [src]="image" alt="Main Product Image" />
+                            </div>
+                        </ng-template>
+                    </owl-carousel-o>
+                </div>
             </div>
             <div class="col-lg-6 product-details pl-md-5 ftco-animate">
                 <h3>{{ product.name }}</h3>
@@ -32,48 +39,53 @@
                         <a href="#" class="mr-2" style="color: #000;">500 <span style="color: #bbb;">Sold</span></a>
                     </p>
                 </div>
-                <p class="price"><span>{{product.price | currency: 'VND'}}</span></p>
+                <p class="price"><span>{{ product.price | currency: 'VND'}}</span></p>
                 <p>A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a
                     paradisematic country, in which roasted parts of sentences fly into your mouth.</p>
-                
+
                 <div class="row mt-4">
 
                     <!-- <div class="col-md-6"> -->
-                        <div class="product_size">
-                            <span>Size:</span>
+                    <div class="product_size">
+                        <span>Size:</span>
 
-                            <ul>
-                                <li class="empty" data-value="0" value="1">
-                                    S </li>
-                                <li data-value="101" value="2">
-                                    M </li>
-                                <li class="empty" data-value="0" value="4">
-                                    XL </li>
-                                <li data-value="6" value="5">
-                                    2XL </li>
+                        <ul>
+                            <li *ngFor="let size of productSizes" 
+                                (click)="selectSize(size)"
+                                [attr.data-value]="size.quantity" 
+                                [attr.value]="size.sizeId"
+                                [ngClass]="{'empty' : size.quantity == 0, 'active': selectedSize == size.sizeId}">
+                                {{size.sizeName}} 
+                            </li>
+                            
 
-                            </ul>
-                            <div id="exclamation">
-                                <i class="fa fa-exclamation-circle"></i>
-                            </div>
-
+                        </ul>
+                        <div id="exclamation">
+                            <i class="fa fa-exclamation-circle"></i>
                         </div>
+
+                    </div>
                 </div>
                 <div class="row ">
 
                     <div class="quantity d-flex flex-sm-row align-items-center">
                         <span>Quantity:</span>
                         <div class="quantity_selector">
-                            <span class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                            <input type="text" id="quantity_value" value="1" min="1" max="107">
-                            <span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                            <span (click)="decQuantity()" class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
+                            <input #quantity_value type="text" id="quantity_value" 
+                                    [(ngModel)]="quantity" min="1"
+                                    (ngModelChange)="updateQuantity($event)"
+                                    [attr.max]="totalQuantity">
+                            <span (click)="incQuantity()" class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
                         </div>
-                        <div class="total_item" data-value="107">107 pieces available</div>
-    
+                        <div class="total_item" data-value="107">{{ totalQuantity }} pieces available</div>
+
                     </div>
                 </div>
-                <p class="mt-5"><a href="cart.html" class="btn btn-black py-3 px-5 mr-2">Add to Cart</a><a href="cart.html"
-                        class="btn btn-primary py-3 px-5">Buy now</a></p>
+                <p class="mt-5">
+                    <a (click)="addToCart()" class="btn btn-black py-3 px-5 mr-2">Add to Cart</a>
+                    <a (click)="buyNow()" class="btn btn-primary py-3 px-5">Buy now</a>
+                </p>
             </div>
         </div>
 
@@ -101,13 +113,8 @@
 
                     <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="day-1-tab">
                         <div class="p-4">
-                            <h3 class="mb-4">Nike Free RN 2019 iD</h3>
-                            <p>On her way she met a copy. The copy warned the Little Blind Text, that where it came from
-                                it would have been rewritten a thousand times and everything that was left from its
-                                origin would be the word "and" and the Little Blind Text should turn around and return
-                                to its own, safe country. But nothing the copy said could convince her and so it didn’t
-                                take long until a few insidious Copy Writers ambushed her, made her drunk with Longe and
-                                Parole and dragged her into their agency, where they abused her for their.</p>
+                            <h5 class="mb-4">{{ product.name }}</h5>
+                            <p>{{product.description }}</p>
                         </div>
                     </div>
 

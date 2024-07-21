@@ -42,8 +42,8 @@ export class HomeComponent implements OnInit {
   feedBackOptions: OwlOptions = {
     center: true,
     loop: true,
-    items: 1,
-	dots: true,
+    // items: 1,
+	  dots: true,
     margin: 30,
     stagePadding: 0,
     nav: false,
