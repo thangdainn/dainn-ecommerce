@@ -74,7 +74,7 @@
                             <span (click)="decQuantity()" class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
                             <input #quantity_value type="text" id="quantity_value" 
                                     [(ngModel)]="quantity" min="1"
-                                    (ngModelChange)="updateQuantity($event)"
+                                    (change)="updateQuantity(+quantity_value.value)"
                                     [attr.max]="totalQuantity">
                             <span (click)="incQuantity()" class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
                         </div>

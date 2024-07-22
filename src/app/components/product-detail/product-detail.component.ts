@@ -55,9 +55,7 @@ export class ProductDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(() => {
       this.handleProductDetails();
-    });
   }
 
   async handleProductDetails() {
@@ -85,6 +83,7 @@ export class ProductDetailComponent implements OnInit {
     if (size.quantity > 0) {
         this.selectedSize = size.sizeId;
         this.totalQuantity = size.quantity;
+        this.quantity = 1;
     }
   }
 
@@ -101,20 +100,34 @@ export class ProductDetailComponent implements OnInit {
   }
   
   updateQuantity(newQuantity: number): void {
-    const quantity = Number(newQuantity);
-    if (quantity > 0 && quantity <= this.totalQuantity) {
-      this.quantity = quantity;
-    }else if (quantity > this.totalQuantity) {
-      this.quantity = this.totalQuantity;
+    // const quantity = Number(newQuantity);
+    if (typeof newQuantity === 'number') {
+      if (newQuantity > 0 && newQuantity <= this.totalQuantity) {
+        this.quantity = newQuantity;
+      }else if (newQuantity > this.totalQuantity) {
+        this.quantity = this.totalQuantity;
+      } else {
+        this.quantity = 1;
+      }
+    } else {
+      this.quantity = 1;
     }
+    
   }
 
   addToCart(): void {
     if (this.selectedSize > 0) {
       console.log('Add to cart:', this.product.id, this.selectedSize, this.quantity);
       if (this.userId !== 0) {
-        this.sizeName = this.productSizes.find(size => size.sizeId === this.selectedSize)?.sizeName ?? '';
-        this.cartService.addToCart(new CartItem(0, this.product, this.quantity, new Size(this.selectedSize, this.sizeName)));
+        let maxQuantity = 0;
+        this.productSizes.forEach(size => {
+          if (size.sizeId === this.selectedSize) {
+            this.sizeName = size.sizeName;
+            maxQuantity = size.quantity;
+          }
+        }
+        );
+        this.cartService.addToCart(new CartItem(0, this.product, this.quantity, maxQuantity, new Size(this.selectedSize, this.sizeName)));
       } else {
         console.log("save to session storage");
         

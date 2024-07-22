@@ -23,13 +23,20 @@ import {FormsModule} from "@angular/forms";
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ContactComponent } from './components/contact/contact.component';
+import { SizeService } from './services/size.service';
+import { Cart } from './common/cart';
+import { CartService } from './services/cart.service';
+import { CartComponent } from './components/cart/cart.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
   { path: 'shop', component: ShopComponent },
+  { path: 'search', component: ShopComponent },
+  { path: 'product/:code', component: ProductDetailComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'about', component: AboutComponent },
-  { path: 'product/:code', component: ProductDetailComponent },
+  { path: 'cart', component: CartComponent },
+  { path: 'checkout', component: CartComponent },
+  { path: '', component: HomeComponent },
   { path: '', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
@@ -46,6 +53,7 @@ const routes: Routes = [
     SearchComponent,
     ProductListComponent,
     ContactComponent,
+    CartComponent,
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -57,7 +65,7 @@ const routes: Routes = [
     FormsModule,
     NgxSliderModule,
   ],
-  providers: [ProductService, CategoryService, BrandService],
+  providers: [ProductService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

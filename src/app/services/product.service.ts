@@ -61,10 +61,9 @@ export class ProductService {
     return this.httpClient.get<Product>(productUrl);
   }
 
-  getTop10LeastProducts() {
+  getTop10LeastProducts(): Observable<GetResponseProduct>{
     const searchUrl = `${this.baseUrl}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
     return this.httpClient.get<GetResponseProduct>(searchUrl);
-  
   }
 }
 

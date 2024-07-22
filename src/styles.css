@@ -12114,7 +12114,7 @@ h5,
 .table tbody tr td {
   text-align: center;
   vertical-align: middle;
-  padding: 40px 10px;
+  padding: 32px 10px;
   border: 1px solid transparent !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.15) !important;
   text-align: -webkit-center;
@@ -12123,13 +12123,14 @@ h5,
   background: #dbcc8f;
   padding: 4px 10px;
   color: #000000;
+  cursor: pointer;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   -ms-border-radius: 2px;
   border-radius: 2px;
 }
 .table tbody tr td.product-remove a:hover {
-  border: 1px solid #dbcc8f;
+  /* border: 1px solid #dbcc8f; */
   background: #dbcc8f;
 }
 .table tbody tr td.product-remove a:hover span {
@@ -12141,23 +12142,25 @@ h5,
 .table tbody tr td .img {
   display: block;
   width: 33%;
-  height: 71px;
+  min-height: 101px;
   margin: 0px 8px 0 20px;
 }
 /* .table tbody tr td.product-name {
   width: 30%;
 } */
-.table tbody tr td .product-name {
+.table tbody tr td .product-name a {
   text-align: left;
-  /* font-size: 12px; */
-  /* text-transform: uppercase; */
-  /* letter-spacing: 1px; */
+  color: #000000;
   font-weight: 600;
 }
 .table tbody tr td.total,
 .table tbody tr td.price,
 .table tbody tr td.size  {
   color: #000000;
+}
+
+.table tbody tr td.total{
+  width: 160px;
 }
 
 .cart-wrap .btn-primary {
@@ -13934,7 +13937,7 @@ span.ngx-slider-span.ngx-slider-bubble.ngx-slider-model-high {
   width: 100%;
   height: 33px;
   border-bottom: solid 1px #ebebeb;
-  margin-bottom: 58px;
+  margin: 20px 0 58px;
   font-size: 13px;
 }
 .breadcrumbs ul {
