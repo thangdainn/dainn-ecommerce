@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Brand } from 'src/app/common/brand';
 import { Category } from 'src/app/common/category';
 import { Product } from 'src/app/common/product';
@@ -52,7 +52,8 @@ export class ShopComponent implements OnInit{
     private productService: ProductService,
     private categoryService: CategoryService,
     private brandService: BrandService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -147,8 +148,10 @@ export class ShopComponent implements OnInit{
       this.brandIds = this.brandIds.filter((id) => id !== e.target.value);
     }
     this.handleProductsPaginate();
-
   }
+
+  
+
 
   submitPriceRange() {
     this.isSubmitPrice = true;

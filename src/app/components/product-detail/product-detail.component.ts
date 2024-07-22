@@ -10,6 +10,7 @@ import { ProductSize } from 'src/app/common/product-size';
 import { CategoryService } from 'src/app/services/category.service';
 import { CartService } from 'src/app/services/cart.service';
 import { Cart } from 'src/app/common/cart';
+import { CartItem } from 'src/app/common/cart-item';
 
 @Component({
   selector: 'app-product-detail',
@@ -27,6 +28,7 @@ export class ProductDetailComponent implements OnInit {
   quantity: number = 1;
 
   selectedSize: number = 0;
+  sizeName: string = '';
 
   customOptions: OwlOptions = {
     // animateOut: 'fadeOut',
@@ -111,16 +113,8 @@ export class ProductDetailComponent implements OnInit {
     if (this.selectedSize > 0) {
       console.log('Add to cart:', this.product.id, this.selectedSize, this.quantity);
       if (this.userId !== 0) {
-        this.cartService.insertProductToCart(new Cart(0, this.product.id, this.selectedSize, this.quantity, this.userId))
-            .subscribe({
-              next: data => {
-                console.log(data);
-              },
-              error: error => {
-                console.error('There was an error!', error);
-              }
-            }
-        );
+        this.sizeName = this.productSizes.find(size => size.sizeId === this.selectedSize)?.sizeName ?? '';
+        this.cartService.addToCart(new CartItem(0, this.product, this.quantity, new Size(this.selectedSize, this.sizeName)));
       } else {
         console.log("save to session storage");
         

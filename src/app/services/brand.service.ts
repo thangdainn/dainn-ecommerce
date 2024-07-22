@@ -12,8 +12,6 @@ export class BrandService {
   constructor(private httpClient: HttpClient) { }
 
   getBrands(): Observable<Brand[]>{
-    return this.httpClient.get<Brand[]>(this.baseUrl).pipe(
-      map(response => response)
-      )
+    return this.httpClient.get<Brand[]>(this.baseUrl);
   }
 }

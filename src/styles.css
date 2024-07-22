@@ -12053,7 +12053,7 @@ h5,
   border: 1px solid rgba(0, 0, 0, 0.05) !important;
   color: #000000 !important;
   padding: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .ftco-cart .form-group {
@@ -12091,7 +12091,7 @@ h5,
 }
 
 .cart-list {
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
 }
 
 .table {
@@ -12107,15 +12107,17 @@ h5,
 }
 .table .thead-primary tr th {
   padding: 20px 10px;
-  color: #fff !important;
+  color: #333 !important;
+  font-weight: 600;
   border: 1px solid transparent !important;
 }
 .table tbody tr td {
-  text-align: center !important;
+  text-align: center;
   vertical-align: middle;
   padding: 40px 10px;
   border: 1px solid transparent !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15) !important;
+  text-align: -webkit-center;
 }
 .table tbody tr td.product-remove a {
   background: #dbcc8f;
@@ -12136,23 +12138,25 @@ h5,
 .table tbody tr td.quantity {
   width: 20%;
 }
-.table tbody tr td.image-prod .img {
+.table tbody tr td .img {
   display: block;
-  width: 100px;
-  height: 150px;
-  margin: 0 auto;
+  width: 33%;
+  height: 71px;
+  margin: 0px 8px 0 20px;
 }
-.table tbody tr td.product-name {
+/* .table tbody tr td.product-name {
   width: 30%;
-}
-.table tbody tr td.product-name h3 {
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 700;
+} */
+.table tbody tr td .product-name {
+  text-align: left;
+  /* font-size: 12px; */
+  /* text-transform: uppercase; */
+  /* letter-spacing: 1px; */
+  font-weight: 600;
 }
 .table tbody tr td.total,
-.table tbody tr td.price {
+.table tbody tr td.price,
+.table tbody tr td.size  {
   color: #000000;
 }
 
@@ -12166,6 +12170,7 @@ h5,
   display: block;
   border: 1px solid rgba(0, 0, 0, 0.05);
   padding: 20px;
+  background: whitesmoke;
 }
 .cart-total h3 {
   font-size: 18px;
@@ -12182,13 +12187,18 @@ h5,
   display: block;
   width: 50%;
 }
-.cart-total p.total-price span {
-  text-transform: uppercase;
+.cart-total p span:last-child {
+  text-align: right;
 }
-.cart-total p.total-price span:last-child {
+.cart-total p.total-price span {
   color: #000000;
+
   font-weight: 600;
 }
+/* .cart-total p.total-price span {
+  color: #000000;
+  font-weight: 600;
+} */
 .cart-total hr {
   background: rgba(255, 255, 255, 0.1);
 }

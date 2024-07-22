@@ -14,14 +14,9 @@ export class ProductService {
   constructor(private httpClient: HttpClient) { }
 
   getAllProduct(): Observable<Product[]> {
-    return this.getProducts(this.baseUrl);
+    return this.httpClient.get<Product[]>(this.baseUrl);
   }
 
-  private getProducts(searchUrl: String): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.baseUrl).pipe(
-      map(response => response)
-    )
-  }
 
   getProductsPaginate(page: number, size: number, sortBy: string, sortDir: string,
                       keyword: string, categoryIds: number[], brandIds: number[],
@@ -57,6 +52,7 @@ export class ProductService {
       searchUrl += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
     }
     console.log(searchUrl);
+    
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
 

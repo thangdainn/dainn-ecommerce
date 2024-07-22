@@ -10,7 +10,7 @@ export class Product {
     public imgUrl: string = '',
     public categoryId: number = 0,
     public brandId: number = 0,
-    public status: number = 0,
+    public status: number = 1,
     public createdDate: Date = new Date(),
     public modifiedDate: Date = new Date(),
     public imageUrls: string[] = []
