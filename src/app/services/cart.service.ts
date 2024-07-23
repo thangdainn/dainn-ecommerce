@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { Cart } from '../common/cart';
 import { CartItem } from '../common/cart-item';
 
@@ -69,7 +69,8 @@ export class CartService {
   }
 
   removeItem(cartItem: CartItem) {
-    const itemIndex = this.cartItems.findIndex(tempCartItem => tempCartItem.product.id === cartItem.product.id && tempCartItem.size.id === cartItem.size.id);
+    const itemIndex = this.cartItems.findIndex(tempCartItem => tempCartItem.product.id === cartItem.product.id 
+                                                && tempCartItem.size.id === cartItem.size.id);
     if (itemIndex > -1) {
       this.cartItems.splice(itemIndex, 1);
       this.computeCartTotals();

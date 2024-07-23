@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { Category } from '../common/category';
 import { Size } from '../common/size';
 import { ProductSize } from '../common/product-size';
 
@@ -29,7 +28,7 @@ export class SizeService {
     return this.getSizes(this.baseUrl);
   }
 
-  private getSizes(searchUrl: String): Observable<Size[]> {
-    return this.httpClient.get<Size[]>(this.baseUrl);
+  private getSizes(searchUrl: string): Observable<Size[]> {
+    return this.httpClient.get<Size[]>(searchUrl);
   }
 }

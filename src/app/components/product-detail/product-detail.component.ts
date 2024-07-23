@@ -118,7 +118,6 @@ export class ProductDetailComponent implements OnInit {
   addToCart(): void {
     if (this.selectedSize > 0) {
       console.log('Add to cart:', this.product.id, this.selectedSize, this.quantity);
-      if (this.userId !== 0) {
         let maxQuantity = 0;
         this.productSizes.forEach(size => {
           if (size.sizeId === this.selectedSize) {
@@ -128,15 +127,9 @@ export class ProductDetailComponent implements OnInit {
         }
         );
         this.cartService.addToCart(new CartItem(0, this.product, this.quantity, maxQuantity, new Size(this.selectedSize, this.sizeName)));
-      } else {
-        console.log("save to session storage");
-        
-        // save to session storage
-      }
       
     } else {
       alert('Please select size');
-      // console.log('Please select size');
     }
   }
 

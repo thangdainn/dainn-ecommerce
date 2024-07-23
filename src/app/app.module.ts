@@ -24,7 +24,6 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { SizeService } from './services/size.service';
-import { Cart } from './common/cart';
 import { CartService } from './services/cart.service';
 import { CartComponent } from './components/cart/cart.component';
 
@@ -65,7 +64,7 @@ const routes: Routes = [
     FormsModule,
     NgxSliderModule,
   ],
-  providers: [ProductService],
+  providers: [ProductService, CategoryService, BrandService, SizeService, CartService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Product } from '../common/product';
 
 @Injectable({
@@ -8,7 +8,6 @@ import { Product } from '../common/product';
 })
 export class ProductService {
   
-
   private baseUrl = 'http://localhost:8090/api/products';
 
   constructor(private httpClient: HttpClient) { }
@@ -16,7 +15,6 @@ export class ProductService {
   getAllProduct(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.baseUrl);
   }
-
 
   getProductsPaginate(page: number, size: number, sortBy: string, sortDir: string,
                       keyword: string, categoryIds: number[], brandIds: number[],

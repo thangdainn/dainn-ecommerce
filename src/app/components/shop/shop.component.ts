@@ -53,7 +53,6 @@ export class ShopComponent implements OnInit{
     private categoryService: CategoryService,
     private brandService: BrandService,
     private route: ActivatedRoute,
-    private router: Router
   ) {}
 
   ngOnInit(): void {
