@@ -65,11 +65,7 @@ export class CartService {
 
   decQuantity(cartItem: CartItem) {
     cartItem.quantity--;
-    if (cartItem.quantity === 0) {
-      this.removeItem(cartItem);
-    } else {
-      this.computeCartTotals();
-    }
+    this.computeCartTotals();
   }
 
   removeItem(cartItem: CartItem) {

@@ -164,5 +164,13 @@
   color: #FFFFFF;
 }
 
-
-
+.shopee-search-empty-result-section {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 6.25rem 0 7.5rem;
+}
+.shopee-search-empty-result-section__icon {
+  width: 8.375rem;
+}

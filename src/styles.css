@@ -13900,7 +13900,7 @@ width: 8px;
   float: left;
   /* background-color: #ffffffad !important; */
 }
-.search input:focus-visible,
+input:focus-visible,
 #btn_search:focus,
 .ngx-slider .ngx-slider-pointer {
   outline: none;

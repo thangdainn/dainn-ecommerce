@@ -35,5 +35,10 @@
 }
 
 .cart_none {
-    min-height: 25rem;
+    min-height: 20rem;
+    margin-top: 7rem;
+}
+.cart_none img{
+    max-width: 20%;
+    height: auto;
 }

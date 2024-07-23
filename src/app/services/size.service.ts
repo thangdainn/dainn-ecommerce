@@ -10,20 +10,14 @@ import { ProductSize } from '../common/product-size';
 })
 export class SizeService {
   private baseUrl = 'http://localhost:8090/api/sizes';
-  private psUrl = 'http://localhost:8090/api/product-sizes';
 
   constructor(private httpClient: HttpClient) {}
 
   getProductSizeByCode(code: string): Observable<ProductSize[]> {
-    const psUrl = `${this.psUrl}/product-code?code=${code}`;
+    const psUrl = `${this.baseUrl}/product-code?code=${code}`;
     return this.httpClient.get<ProductSize[]>(psUrl).pipe(
       map(size => size.sort((a, b) => a.sizeName.localeCompare(b.sizeName)))
       );
-  }
-
-  getByProductIdAndSizeId(productId: number, sizeId: number): Observable<ProductSize> {
-    const psUrl = `${this.psUrl}/product-size?productId=${productId}&sizeId=${sizeId}`;
-    return this.httpClient.get<ProductSize>(psUrl);
   }
 
   getSizeById(id: number): Observable<Size> {

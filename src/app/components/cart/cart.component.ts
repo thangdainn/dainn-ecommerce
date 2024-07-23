@@ -41,7 +41,9 @@ export class CartComponent implements OnInit {
   }
 
   decQuantity(cartItem: CartItem) {
-    this.cartService.decQuantity(cartItem);
+    if (cartItem.quantity - 1 > 0) {
+      this.cartService.decQuantity(cartItem);
+    }
   }
 
   remove(cartItem: CartItem) {
