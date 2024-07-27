@@ -1,0 +1,189 @@
+<section class="ftco-section">
+    <div class="container">
+        <div class="breadcrumbs d-flex flex-row align-items-center">
+            <ul>
+                <li><a routerLink="">Home</a></li>
+                <li class="active"><a routerLink="/checkout"><i class="fa fa-angle-right"
+                            aria-hidden="true"></i>Checkout</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 ftco-animate">
+                <form [formGroup]="checkoutFormGroup" (ngSubmit)="onSubmit()">
+                    <div class="billing-form">
+                        <h3 class="mb-4 billing-heading">Billing Details</h3>
+
+                        <div class="row align-items-end justify-content-center">
+                            <div formGroupName="customer" class="row w-100">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="firstname">Full Name</label>
+                                        <input formControlName="name" type="text" class="form-control" placeholder="">
+                                        <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
+                                            <small class="text-danger" *ngIf="name?.errors?.['required'] || name?.errors?.['notOnlyWhitespace']">
+                                                Name is required.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="firstname">Phone</label>
+                                        <input formControlName="phone" type="text" class="form-control" placeholder="">
+                                        <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
+                                            <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
+                                                number is required.</small>
+                                            <small class="text-danger" *ngIf="phone?.errors?.['pattern']">Phone
+                                                number must start with 0 and be 10 digits long.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-100"></div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="emailaddress">Email</label>
+                                        <input formControlName="email" type="email" class="form-control" placeholder="">
+                                        <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
+                                            <small class="text-danger" *ngIf="email?.errors?.['required']">Email
+                                                is required.</small>
+                                            <small class="text-danger" *ngIf="email?.errors?.['pattern']">Invalid
+                                                email format.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="emailaddress">Note</label>
+                                        <input formControlName="note" type="text" class="form-control" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div formGroupName="shippingAddress" class="row w-100">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="country">Province</label>
+                                        <div class="select-wrap">
+                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                            <select formControlName="province" (change)="onProvinceChange($event)"
+                                                class="form-control">
+                                                <option *ngFor="let province of provinces" [value]="province.id">{{
+                                                    province.name }}</option>
+                                            </select>
+                                            <div *ngIf="province?.invalid && (province?.touched || province?.dirty)">
+                                                <small class="text-danger"
+                                                    *ngIf="province?.errors?.['required']">Province is required.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="country">District</label>
+                                        <div class="select-wrap">
+                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                            <select formControlName="district" (change)="onDistrictChange($event)"
+                                                class="form-control">
+                                                <option *ngFor="let district of districts" [value]="district.id">{{
+                                                    district.name }}</option>
+                                            </select>
+                                            <div *ngIf="district?.invalid && (district?.touched || district?.dirty)">
+                                                <small class="text-danger"
+                                                    *ngIf="district?.errors?.['required']">District is required.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="w-100"></div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="country">Ward</label>
+                                        <div class="select-wrap">
+                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                            <select formControlName="ward" (change)="onWardChange($event)"
+                                                class="form-control">
+                                                <option *ngFor="let ward of wards" [value]="ward.id">{{ ward.name }}
+                                                </option>
+                                            </select>
+                                            <div *ngIf="ward?.invalid && (ward?.touched || ward?.dirty)">
+                                                <small class="text-danger" *ngIf="ward?.errors?.['required']">Ward is
+                                                    required.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="towncity">Address</label>
+                                        <input formControlName="address" type="text" class="form-control"
+                                            placeholder="">
+                                        <div *ngIf="address?.invalid && (address?.touched || ward?.dirty)">
+                                            <small class="text-danger" *ngIf="address?.errors?.['required']">Address is
+                                                required.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div><!-- END -->
+
+
+
+                    <div class="row mt-4 pt-3 d-flex">
+                        <div class="col-md-6 d-flex">
+                            <div class="cart-detail cart-total bg-light p-3 p-md-4">
+                                <h3 class="billing-heading mb-4">Cart Total</h3>
+                                <p class="d-flex">
+                                    <span>Subtotal</span>
+                                    <span>{{ totalPrice | currency: "VND"}}</span>
+                                </p>
+                                <p class="d-flex">
+                                    <span>Delivery</span>
+                                    <span>{{ deliveryFee | currency: "VND"}}</span>
+                                </p>
+                                <p class="d-flex">
+                                    <span>Discount</span>
+                                    <span>{{ discount | currency: "VND"}}</span>
+                                </p>
+                                <hr>
+                                <p class="d-flex total-price">
+                                    <span>Total</span>
+                                    <span>{{ totalPrice | currency: "VND"}}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cart-detail bg-light p-3 p-md-4">
+                                <h3 class="billing-heading mb-4">Payment Method</h3>
+                                <div class="form-group" *ngFor="let payment of paymentMethods">
+                                    <div class="col-md-12">
+                                        <div class="radio">
+                                            <label><input formControlName="paymentMethod" type="radio" [value]="payment"
+                                                    class="mr-2"> {{payment}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    *ngIf="paymentMethod?.invalid && (paymentMethod?.touched || paymentMethod?.dirty)">
+                                    <small class="text-danger"
+                                        *ngIf="paymentMethod?.errors?.['required']">Payment
+                                        method is required.</small>
+                                </div>
+
+                                <p><button type="submit"
+                                        class="btn btn-primary py-3 px-4">Place an order</button></p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div> <!-- .col-md-8 -->
+        </div>
+    </div>
+</section> <!-- .section -->

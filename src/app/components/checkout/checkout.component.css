@@ -1,0 +1,6 @@
+.cart-detail button:disabled{
+    cursor: not-allowed;
+    background-color: #ccc;
+    border: 1px solid #ccc;
+    color: #333;
+}
