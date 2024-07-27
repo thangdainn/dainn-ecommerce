@@ -1,0 +1,43 @@
+._failed{ border-bottom: solid 4px red !important; }
+._failed i{  color:red !important;  }
+
+._success {
+    box-shadow: 0 15px 25px #00000019;
+    padding: 45px 45px 16px;
+    width: 100%;
+    text-align: center;
+    margin: 40px auto;
+    border-bottom: solid 4px #28a745;
+}
+
+._success i {
+    font-size: 55px;
+    color: #28a745;
+}
+
+._success h2 {
+    margin-bottom: 12px;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 10px;
+}
+
+._success p {
+    margin-bottom: 0px;
+    font-size: 18px;
+    color: #495057;
+    font-weight: 500;
+}
+
+._button button{
+    width: inherit;
+    background-color: #80808033;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+._button button a{
+    color: #333333;
+}
