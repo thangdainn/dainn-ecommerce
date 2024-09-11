@@ -1,0 +1,67 @@
+<div class="" *ngIf="!isAuthenticated else isAuthen">
+    <a routerLink="/login">Login</a>
+    <div class="navbar__link-separator"></div>
+    <a routerLink="/register">Register</a>
+</div>
+<!-- <div class="">
+    <a routerLink="/login">Login</a>
+    <div class="navbar__link-separator"></div>
+    <a routerLink="/register">Register</a>
+</div> -->
+<!-- <div class="account">
+    <a href="#">
+        My Account
+        <i class="fa fa-angle-down"></i>
+    </a>
+    <ul class="account_selection">
+        <li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Sign In</a>
+        </li>
+        <li><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i>Register</a></li>
+    </ul>
+</div> -->
+<ng-template #isAuthen>
+    <div class="account" style="min-width: 162px">
+        <a href="" class="prevent-default d-flex justify-content-center align-items-center">
+            <div class="avatar d-flex justify-content-center align-items-center">
+                <img src="assets/images/person_4.jpg" alt="">
+            </div>
+            <div class="full-name">{{ userName }}</div>
+
+        </a>
+        <ul class="account_selection">
+            <li><a href=""><i class=" fa fa-user" aria-hidden="true"></i>
+                    Information</a>
+            </li>
+            <li><a href=""><i class=" fa fa-user" aria-hidden="true"></i>
+                    Purchase order</a>
+            </li>
+
+            <li><a (click)="logout()"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    Logout</a>
+            </li>
+        </ul>
+
+    </div>
+    <!-- 
+<div class="account" style="min-width: 162px">
+    <a href="" class="prevent-default d-flex justify-content-center align-items-center">
+        <div class="avatar d-flex justify-content-center align-items-center">
+            <img src="" alt="">
+        </div>
+        <div class="full-name">Administrators</div>
+
+    </a>
+    <ul class="account_selection">
+        <li><a href=""><i class=" fa fa-user" aria-hidden="true"></i>
+                Information</a>
+        </li>
+        <li><a href=""><i class=" fa fa-user" aria-hidden="true"></i>
+                Purchase order</a>
+        </li>
+
+        <li><a routerLink="/logout"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+                Logout</a>
+        </li>
+    </ul>
+
+</div> -->

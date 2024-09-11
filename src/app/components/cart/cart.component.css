@@ -42,3 +42,17 @@
     max-width: 17%;
     height: auto;
 }
+
+.table .thead-primary tr th {
+    padding: 8px 10px;
+}
+
+.table tbody tr td{
+    padding: 14px 10px;
+}
+
+.table tbody tr td .img {
+    width: 23%;
+    min-height: 72px;
+    margin: 0px 8px 0 20px;
+}

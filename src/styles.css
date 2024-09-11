@@ -10685,7 +10685,7 @@ h5,
   font-size: 11px;
   width: 100%;
   display: block;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   letter-spacing: 1px;
 }
 @media (max-width: 767.98px) {
@@ -11439,7 +11439,7 @@ h5,
 }
 .btn.btn-primary:hover {
   border: 1px solid #dbcc8f;
-  background: transparent;
+  background: #dbcc8fab;
   color: #dbcc8f;
 }
 .btn.btn-primary.btn-outline-primary {
@@ -12172,7 +12172,7 @@ h5,
   width: 100%;
   display: block;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 20px;
+  padding: 20px 20px 0 20px;
   background: whitesmoke;
 }
 .cart-total h3 {
