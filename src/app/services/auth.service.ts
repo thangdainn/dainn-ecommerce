@@ -6,12 +6,12 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = 'http://localhost:8090/auth';
+  private authUrl = 'http://localhost:8090/api/auth';
 
   private readonly JWT_TOKEN = 'JWT_TOKEN';
-  // private loggedUser?: string;
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   loggedUserSubject = new BehaviorSubject<string>('');
+  userIdSubject = new BehaviorSubject<number>(0);
 
   constructor(private httpClient: HttpClient) {}
 
@@ -21,13 +21,16 @@ export class AuthService {
     deviceInfo: string;
   }): Observable<GetResponseLogin> {
     return this.httpClient
-      .post<GetResponseLogin>(this.authUrl + '/login', user)
-      .pipe(tap((token) => this.doLoginUser(user.email, token)));
+      .post<GetResponseLogin>(this.authUrl + '/login', user, {
+        withCredentials: true,
+      })
+      .pipe(tap((token) => this.doLoginUser(token)));
   }
 
-  private doLoginUser(email: string, token: any) {
+  private doLoginUser(token: any) {
     this.setToken(token.access_token);
     this.loggedUserSubject.next(this.decodeJwt(token.access_token).name);
+    this.userIdSubject.next(this.decodeJwt(token.access_token).id);
     this.isAuthenticatedSubject.next(true);
   }
 
@@ -39,7 +42,7 @@ export class AuthService {
     return localStorage.getItem(this.JWT_TOKEN)!;
   }
 
-  private isTokenExpired(token: string): boolean {
+  isTokenExpired(token: string): boolean {
     try {
       const decode = this.decodeJwt(token);
       const currentTime = Math.floor(Date.now() / 1000);
@@ -65,6 +68,11 @@ export class AuthService {
   logout() {
     localStorage.removeItem(this.JWT_TOKEN);
     this.isAuthenticatedSubject.next(false);
+    this.httpClient
+      .post('http://localhost:8090/logout', null, {
+        withCredentials: true,
+      })
+      .subscribe();
   }
 
   isAuthenticated(): any {
@@ -72,14 +80,15 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    // this.isAuthenticatedSubject.next(true);
     const token = this.getToken();
     return !!token && !this.isTokenExpired(token);
   }
 
-  // getUserFullName() {
-  //   return this.loggedUser;
-  // }
+  refreshToken() {
+    return this.httpClient
+      .post(this.authUrl + '/refresh-token', { withCredentials: true })
+      .pipe(tap((token) => this.doLoginUser(token)));
+  }
 }
 
 interface GetResponseLogin {
@@ -87,5 +96,6 @@ interface GetResponseLogin {
   access_token: any;
 }
 interface GetResponseInfo {
+  id: number;
   name: string;
 }

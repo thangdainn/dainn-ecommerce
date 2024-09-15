@@ -33,6 +33,9 @@ export class LoginStatusComponent implements OnInit {
         next: (response) => {
           this.authService.isAuthenticatedSubject.next(true);
           this.authService.loggedUserSubject.next(response.name);
+          this.authService.userIdSubject.next(response.id);
+          console.log(response.id);
+          
         },
       });
     }

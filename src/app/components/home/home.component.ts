@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
     center: true,
     loop: true,
     // items: 1,
-	  dots: true,
+    dots: true,
     margin: 30,
     stagePadding: 0,
     nav: false,
@@ -73,12 +73,6 @@ export class HomeComponent implements OnInit {
       this.products = data.data;
     });
   }
-  
 
-  banners = [
-	'assets/images/bg_1.png',
-	'assets/images/bg_2.png'
-	];
-
-
+  banners = ['assets/images/bg_1.png', 'assets/images/bg_2.png'];
 }

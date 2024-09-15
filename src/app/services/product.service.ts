@@ -7,7 +7,7 @@ import { Product } from '../common/product';
   providedIn: 'root'
 })
 export class ProductService {
-  
+
   private baseUrl = 'http://localhost:8090/api/products';
 
   constructor(private httpClient: HttpClient) { }
@@ -50,7 +50,7 @@ export class ProductService {
       searchUrl += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
     }
     console.log(searchUrl);
-    
+
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
 

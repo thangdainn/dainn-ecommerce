@@ -3,30 +3,73 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  catchError,
+  Observable,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import { AuthService } from './services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const jwtToken = this.getToken();
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
+    request = request.clone({
+      withCredentials: true,
+    });
+    const jwtToken = this.authService.getToken();
+
     if (jwtToken) {
-      const cloned = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${jwtToken}`
+      request = this.addToken(request, jwtToken);
+    }
+    return next.handle(request).pipe(
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return this.handle401Error(request, next);
+        } else {
+          return throwError(() => error);
         }
-      });
+      })
+    );
+  }
 
-      return next.handle(cloned);
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+
+      return this.authService.refreshToken().pipe(
+        switchMap((res: any) => {
+          this.isRefreshing = false;
+
+          const newToken = res.access_token;
+          this.authService.setToken(newToken);
+
+          return next.handle(this.addToken(request, newToken));
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          return throwError(() => err);
+        })
+      );
     }
     return next.handle(request);
   }
 
-  getToken() {
-    return localStorage.getItem('JWT_TOKEN');
+  private addToken(request: HttpRequest<any>, token: string) {
+    return request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 }

@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Order } from 'src/app/common/order';
 import { OrderDetail } from 'src/app/common/order-detail';
+import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { CheckoutService } from 'src/app/services/checkout.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -32,21 +38,39 @@ export class CheckoutComponent implements OnInit {
   deliveryFee: number = 0;
   discount: number = 0;
 
-  constructor(private formBuilder: FormBuilder, 
-              private locationService: LocationService,
-              private cartService: CartService,
-              private checkoutService: CheckoutService,
-              private paymentService: PaymentService,
-              private router: Router) {}
+  userId: number = 0;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private locationService: LocationService,
+    private cartService: CartService,
+    private checkoutService: CheckoutService,
+    private authService: AuthService,
+    private paymentService: PaymentService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.reviewCartDetails();
 
+    this.authService.userIdSubject.subscribe((data) => {
+      this.userId = data;
+    });
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
-        name: new FormControl('', [Validators.required, ShopValidators.notOnlyWhitespace]),
-        phone: new FormControl('', [Validators.required, Validators.pattern(/^0\d{9}$/)]),
-        email: new FormControl('', [Validators.required, Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)]),
+        name: new FormControl('', [
+          Validators.required,
+          ShopValidators.notOnlyWhitespace,
+        ]),
+        phone: new FormControl('', [
+          Validators.required,
+          Validators.pattern(/^0\d{9}$/),
+        ]),
+        email: new FormControl('', [
+          Validators.required,
+          Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
+        ]),
         note: new FormControl(''),
       }),
       shippingAddress: this.formBuilder.group({
@@ -91,21 +115,26 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  onProvinceChange(provinceEvent: any): void{
+  onProvinceChange(provinceEvent: any): void {
     const provinceId = provinceEvent.target.value;
     this.loadDistricts(provinceId);
-    const province = provinceEvent.target.options[provinceEvent.target.options.selectedIndex].text;
+    const province =
+      provinceEvent.target.options[provinceEvent.target.options.selectedIndex]
+        .text;
     this.provincesData = province;
   }
 
-  onDistrictChange(districtEvent: any): void{
+  onDistrictChange(districtEvent: any): void {
     const districtId = districtEvent.target.value;
     this.loadWards(districtId);
-    const district = districtEvent.target.options[districtEvent.target.options.selectedIndex].text;
+    const district =
+      districtEvent.target.options[districtEvent.target.options.selectedIndex]
+        .text;
     this.districtsData = district;
   }
-  onWardChange(wardEvent: any): void{
-    const ward = wardEvent.target.options[wardEvent.target.options.selectedIndex].text;
+  onWardChange(wardEvent: any): void {
+    const ward =
+      wardEvent.target.options[wardEvent.target.options.selectedIndex].text;
     this.wardsData = ward;
   }
 
@@ -138,13 +167,10 @@ export class CheckoutComponent implements OnInit {
   }
 
   get paymentMethod() {
-    return this.checkoutFormGroup.get('paymentMethod')
+    return this.checkoutFormGroup.get('paymentMethod');
   }
 
-
-
   onSubmit() {
-
     if (this.checkoutFormGroup.invalid) {
       this.checkoutFormGroup.markAllAsTouched();
       return;
@@ -153,9 +179,16 @@ export class CheckoutComponent implements OnInit {
     // this.checkoutFormGroup.get('shippingAddress')!.value.district = this.districtsData;
     // this.checkoutFormGroup.get('shippingAddress')!.value.ward = this.wardsData;
 
-    const addressDetail = this.address?.value + ', ' + this.wardsData + ', ' + this.districtsData + ', ' + this.provincesData;
+    const addressDetail =
+      this.address?.value +
+      ', ' +
+      this.wardsData +
+      ', ' +
+      this.districtsData +
+      ', ' +
+      this.provincesData;
     let order = new Order();
-    order.userId = 2;
+    order.userId = this.userId;
     order.customerName = this.name?.value;
     order.customerPhone = this.phone?.value;
     order.shippingAddress = addressDetail;
@@ -164,38 +197,37 @@ export class CheckoutComponent implements OnInit {
     // order.deliveryFee = this.deliveryFee;
     // order.discount = this.discount;
 
-
-
     const cartItems = this.cartService.cartItems;
-    let orderDetails: OrderDetail[] = cartItems.map(cartItem => new OrderDetail(cartItem));
+    let orderDetails: OrderDetail[] = cartItems.map(
+      (cartItem) => new OrderDetail(cartItem)
+    );
     order.details = orderDetails;
-
-
+    console.log(order);
+    
     this.checkoutService.placeOrder(order).subscribe({
-      next: response => {
+      next: (response) => {
         order = response;
-        
+
         if (this.paymentMethod?.value === 'VNPay') {
           this.paymentService.initVNPay(order).subscribe({
-            next: response => {
+            next: (response) => {
               window.location.href = response.paymentUrl;
             },
-            error: err => {
+            error: (err) => {
               alert(`There was an error: ${err.message}`);
-            }
+            },
           });
           this.resetCart();
         } else {
           this.resetCart();
           this.router.navigate(['order-status'], {
-            queryParams: {vnp_TxnRef: order.id}
+            queryParams: { vnp_TxnRef: order.id },
           });
         }
-        
       },
-      error: err => {
+      error: (err) => {
         alert(`There was an error: ${err.message}`);
-      }
+      },
     });
   }
 
@@ -206,6 +238,4 @@ export class CheckoutComponent implements OnInit {
     this.checkoutFormGroup.reset();
     // this.router.navigateByUrl('/shop');
   }
-
-
 }
