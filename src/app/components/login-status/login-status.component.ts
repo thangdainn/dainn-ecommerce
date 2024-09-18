@@ -16,29 +16,10 @@ export class LoginStatusComponent implements OnInit {
   ngOnInit(): void {
     this.authService.isAuthenticatedSubject.subscribe((data) => {
       this.isAuthenticated = data;
-      if (this.isAuthenticated) {
-        this.authService.loggedUserSubject.subscribe((data) => {
-          this.userName = data;
-        });
-      } else {
-        this.handleToken();
-      }
     });
-  }
-
-  private handleToken() {
-    if (this.authService.isLoggedIn()) {
-      const token = this.authService.getToken();
-      this.authService.me(this.authService.decodeJwt(token).id).subscribe({
-        next: (response) => {
-          this.authService.isAuthenticatedSubject.next(true);
-          this.authService.loggedUserSubject.next(response.name);
-          this.authService.userIdSubject.next(response.id);
-          console.log(response.id);
-          
-        },
-      });
-    }
+    this.authService.loggedUserSubject.subscribe((data) => {
+      this.userName = data;
+    });
   }
 
   logout() {

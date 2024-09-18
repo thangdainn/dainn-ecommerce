@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import {
-  HTTP_INTERCEPTORS,
-  HttpClientModule,
-} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ProductService } from './services/product.service';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -38,6 +35,7 @@ import { authGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { guestGuard } from './guards/guest.guard';
 import { AuthInterceptor } from './auth.interceptor';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 const routes: Routes = [
   { path: 'shop', component: ShopComponent },

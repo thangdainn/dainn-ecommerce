@@ -6,12 +6,7 @@ import {
   HttpInterceptor,
   HttpErrorResponse,
 } from '@angular/common/http';
-import {
-  catchError,
-  Observable,
-  switchMap,
-  throwError,
-} from 'rxjs';
+import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
 @Injectable()
@@ -30,6 +25,12 @@ export class AuthInterceptor implements HttpInterceptor {
     const jwtToken = this.authService.getToken();
 
     if (jwtToken) {
+      if (
+        !this.authService.isTokenExpired(jwtToken) &&
+        !this.authService.isAuthenticatedSubject.value
+      ) {
+        this.authService.setAuthenticationStatus(jwtToken);
+      }
       request = this.addToken(request, jwtToken);
     }
     return next.handle(request).pipe(
@@ -48,11 +49,11 @@ export class AuthInterceptor implements HttpInterceptor {
       this.isRefreshing = true;
 
       return this.authService.refreshToken().pipe(
-        switchMap((res: any) => {
+        switchMap((jwt: any) => {
           this.isRefreshing = false;
 
-          const newToken = res.access_token;
-          this.authService.setToken(newToken);
+          const newToken = jwt.access_token;
+          this.authService.setAuthenticationStatus(newToken);
 
           return next.handle(this.addToken(request, newToken));
         }),
