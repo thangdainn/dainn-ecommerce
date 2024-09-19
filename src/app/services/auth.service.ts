@@ -97,11 +97,15 @@ export class AuthService {
   }
 
   loginWithGoogle(response: any): Observable<GetResponseLogin> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${response.credential}`,
+    });
     return this.httpClient
       .post<GetResponseLogin>(
-        this.authUrl + '/google',
-        { token: response.credential, deviceInfo: this.getDeviceInfo() },
+        this.authUrl + '/login/oauth2/google',
+        { deviceInfo: this.getDeviceInfo() },
         {
+          headers,
           withCredentials: true,
         }
       )
