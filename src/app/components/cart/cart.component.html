@@ -8,7 +8,7 @@
             </ul>
         </div>
     </div>
-    <div class="container" style="font-size: 13px;" *ngIf="cartItems.length != 0; else emptyCart">
+    <div class="container" style="font-size: 13px;" *ngIf="carts.length != 0; else emptyCart">
         <div class="row">
             <div class="col-md-12 ftco-animate">
                 <div class="cart-list">
@@ -26,7 +26,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="text-center" *ngFor="let cart of cartItems">
+                            <tr class="text-center" *ngFor="let cart of carts">
 
                                 <td class="d-flex align-items-center">
                                     <div class="img" [ngStyle]="{'background-image': 'url(' + cart.product.imgUrl + ')'}"></div>

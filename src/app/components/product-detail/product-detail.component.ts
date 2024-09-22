@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Product } from 'src/app/common/product';
-import { ProductService } from 'src/app/services/product.service';
-import { firstValueFrom } from 'rxjs';
-import { OwlOptions } from 'ngx-owl-carousel-o';
-import { Size } from 'src/app/common/size';
-import { SizeService } from 'src/app/services/size.service';
-import { ProductSize } from 'src/app/common/product-size';
-import { CategoryService } from 'src/app/services/category.service';
-import { CartService } from 'src/app/services/cart.service';
-import { Cart } from 'src/app/common/cart';
-import { CartItem } from 'src/app/common/cart-item';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Product} from 'src/app/common/product';
+import {ProductService} from 'src/app/services/product.service';
+import {firstValueFrom} from 'rxjs';
+import {OwlOptions} from 'ngx-owl-carousel-o';
+import {Size} from 'src/app/common/size';
+import {SizeService} from 'src/app/services/size.service';
+import {ProductSize} from 'src/app/common/product-size';
+import {CartService} from 'src/app/services/cart.service';
+import {Cart} from 'src/app/common/cart';
+import {ToastrService} from 'ngx-toastr';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,7 +18,6 @@ import { CartItem } from 'src/app/common/cart-item';
   styleUrls: ['./product-detail.component.css'],
 })
 export class ProductDetailComponent implements OnInit {
-  userId: number = 2;
   product: Product = new Product();
   images: string[] = [];
 
@@ -51,11 +50,14 @@ export class ProductDetailComponent implements OnInit {
     private productService: ProductService,
     private sizeService: SizeService,
     private cartService: CartService,
-    private route: ActivatedRoute
-  ) {}
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private toastService: ToastrService
+  ) {
+  }
 
   ngOnInit(): void {
-      this.handleProductDetails();
+    this.handleProductDetails().then(r => r);
   }
 
   async handleProductDetails() {
@@ -81,67 +83,91 @@ export class ProductDetailComponent implements OnInit {
 
   selectSize(size: any): void {
     if (size.quantity > 0) {
-        this.selectedSize = size.sizeId;
-        this.totalQuantity = size.quantity;
-        this.quantity = 1;
+      this.selectedSize = size.sizeId;
+      this.totalQuantity = size.quantity;
+      this.quantity = 1;
     }
   }
 
   incQuantity(): void {
-    if (this.quantity < this.totalQuantity){
+    if (this.quantity < this.totalQuantity) {
       this.quantity++;
     }
   }
 
   decQuantity(): void {
-    if (this.quantity > 1){
+    if (this.quantity > 1) {
       this.quantity--;
     }
   }
-  
+
   updateQuantity(newQuantity: number): void {
     // const quantity = Number(newQuantity);
-    if (typeof newQuantity === 'number') {
-      if (newQuantity > 0 && newQuantity <= this.totalQuantity) {
-        this.quantity = newQuantity;
-      }else if (newQuantity > this.totalQuantity) {
-        this.quantity = this.totalQuantity;
-      } else {
-        this.quantity = 1;
-      }
+    if (newQuantity > 0 && newQuantity <= this.totalQuantity) {
+      this.quantity = newQuantity;
+    } else if (newQuantity > this.totalQuantity) {
+      this.quantity = this.totalQuantity;
     } else {
       this.quantity = 1;
     }
-    
+
   }
 
-  addToCart(): void {
+  async addToCart(): Promise<void> {
     if (this.selectedSize > 0) {
-      console.log('Add to cart:', this.product.id, this.selectedSize, this.quantity);
+      try {
         let maxQuantity = 0;
-        this.productSizes.forEach(size => {
-          if (size.sizeId === this.selectedSize) {
-            this.sizeName = size.sizeName;
-            maxQuantity = size.quantity;
+        this.productSizes.forEach(ps => {
+          if (ps.sizeId === this.selectedSize) {
+            this.sizeName = ps.sizeName;
+            maxQuantity = ps.quantity;
           }
-        }
+        });
+        const cartItem = new Cart(
+          null,
+          this.product.id,
+          this.selectedSize,
+          this.quantity,
+          this.authService.userIdSubject.value,
+          maxQuantity,
+          this.product,
+          new Size(this.selectedSize, this.sizeName)
         );
-        this.cartService.addToCart(new CartItem(0, this.product, this.quantity, maxQuantity, new Size(this.selectedSize, this.sizeName)));
-      
+        await firstValueFrom(this.cartService.addToCart(cartItem));
+        this.toastService.success('Added to cart', 'Success', {
+          timeOut: 3000,
+          progressBar: true,
+          progressAnimation: 'increasing',
+          positionClass: 'toast-top-right',
+        });
+        this.cartService.computeCartTotals();
+      } catch (error) {
+        this.toastService.error('Error Adding to cart', 'Error', {
+          timeOut: 3000,
+          progressBar: true,
+          progressAnimation: 'increasing',
+          positionClass: 'toast-top-right',
+        });
+      }
     } else {
-      alert('Please select size');
+      this.toastService.error('Please select size', 'Error', {
+        timeOut: 3000,
+        progressBar: true,
+        progressAnimation: 'increasing',
+        positionClass: 'toast-top-right',
+      });
     }
   }
 
   buyNow(): void {
-    if (this.selectedSize > 0) {
-      console.log('Buy now:', this.product.id, this.selectedSize, this.quantity);
-      this.cartService.getCartByUserId(this.userId).subscribe(data => {
-        console.log(data);
-      }
-      );
-    } else {
-      console.log('Please select size');
-    }
+    // if (this.selectedSize > 0) {
+    //   console.log('Buy now:', this.product.id, this.selectedSize, this.quantity);
+    //   this.cartService.getCartByUserId(this.userId).subscribe(data => {
+    //     console.log(data);
+    //   }
+    //   );
+    // } else {
+    //   console.log('Please select size');
+    // }
   }
 }

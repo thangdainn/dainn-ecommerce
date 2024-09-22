@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class LocationService {
 
-  private baseUrl = 'https://esgoo.net/api-tinhthanh';
+  private baseUrl = '/api-tinhthanh';
 
   constructor(private httpClient: HttpClient) { }
 

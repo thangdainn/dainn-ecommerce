@@ -13,10 +13,15 @@ export class SizeService {
   constructor(private httpClient: HttpClient) {}
 
   getProductSizeByCode(code: string): Observable<ProductSize[]> {
-    const psUrl = `${this.baseUrl}/product-code?code=${code}`;
+    const psUrl = `${this.baseUrl}/quantity-code?code=${code}`;
     return this.httpClient.get<ProductSize[]>(psUrl).pipe(
       map(size => size.sort((a, b) => a.sizeName.localeCompare(b.sizeName)))
       );
+  }
+
+  getQuantityByProductAndSize(productId: number, sizeId: number): Observable<ProductSize> {
+    const psUrl = `${this.baseUrl}/quantity?productId=${productId}&sizeId=${sizeId}`;
+    return this.httpClient.get<ProductSize>(psUrl);
   }
 
   getSizeById(id: number): Observable<Size> {

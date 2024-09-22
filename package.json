@@ -23,6 +23,7 @@
     "@ng-bootstrap/ng-bootstrap": "^15.0.0",
     "ngx-device-detector": "^6.0.2",
     "ngx-owl-carousel-o": "^16.0.0",
+    "ngx-toastr": "^15.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"

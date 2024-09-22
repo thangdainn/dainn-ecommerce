@@ -1,6 +1,10 @@
 import {Component, OnInit} from '@angular/core';
+import { Cart } from 'src/app/common/cart';
 import {CartItem} from 'src/app/common/cart-item';
+import { Product } from 'src/app/common/product';
 import {CartService} from 'src/app/services/cart.service';
+import { ProductService } from 'src/app/services/product.service';
+import { SizeService } from 'src/app/services/size.service';
 
 @Component({
   selector: 'app-cart',
@@ -8,19 +12,22 @@ import {CartService} from 'src/app/services/cart.service';
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
-  cartItems: CartItem[] = [];
   totalPrice: number = 0;
   totalQuantity: number = 1;
   userId: number = 0;
+  carts: Cart[] = [];
 
-  constructor(private cartService: CartService) { }
+  constructor(
+    private cartService: CartService,
+    private sizeService: SizeService,
+  ) { }
 
   ngOnInit(): void {
     this.listCartDetails();
   }
 
   listCartDetails() {
-    this.cartItems = this.cartService.cartItems;
+    this.carts = this.cartService.carts;
     this.cartService.totalQuantity.subscribe(
       data => {
         this.totalQuantity = data;
@@ -32,25 +39,34 @@ export class CartComponent implements OnInit {
         this.totalPrice = data;
       }
     );
+
+    for (let item of this.carts){
+      this.sizeService.getQuantityByProductAndSize(item.productId, item.sizeId).subscribe(
+        (data) => {
+          item.maxQuantity = data.quantity;
+        }
+      );
+    }
   }
 
-  incQuantity(cartItem: CartItem) {
+  incQuantity(cartItem: Cart) {
+    // debugger;
     if (cartItem.quantity + 1 <= cartItem.maxQuantity) {
       this.cartService.incQuantity(cartItem);
     }
   }
 
-  decQuantity(cartItem: CartItem) {
+  decQuantity(cartItem: Cart) {
     if (cartItem.quantity - 1 > 0) {
       this.cartService.decQuantity(cartItem);
     }
   }
 
-  remove(cartItem: CartItem) {
+  remove(cartItem: Cart) {
     this.cartService.removeItem(cartItem);
   }
 
-  updateCartItemQuantity(cartItem: CartItem, newQuantity: number) {
+  updateCartItemQuantity(cartItem: Cart, newQuantity: number) {
     if (typeof newQuantity !== 'number') {
       newQuantity = 1;
     }

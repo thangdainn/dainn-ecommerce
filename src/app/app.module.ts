@@ -35,7 +35,7 @@ import { authGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { guestGuard } from './guards/guest.guard';
 import { AuthInterceptor } from './auth.interceptor';
-import { DeviceDetectorService } from 'ngx-device-detector';
+import { ToastrModule } from 'ngx-toastr';
 
 const routes: Routes = [
   { path: 'shop', component: ShopComponent },
@@ -80,6 +80,8 @@ const routes: Routes = [
     FormsModule,
     NgxSliderModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

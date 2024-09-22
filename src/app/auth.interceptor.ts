@@ -8,12 +8,13 @@ import {
 } from '@angular/common/http';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
+import { CartService } from './services/cart.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private cartService: CartService) {}
 
   intercept(
     request: HttpRequest<unknown>,
@@ -51,7 +52,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return this.authService.refreshToken().pipe(
         switchMap((jwt: any) => {
           this.isRefreshing = false;
-
+          
           const newToken = jwt.access_token;
           this.authService.setAuthenticationStatus(newToken);
 
@@ -59,6 +60,7 @@ export class AuthInterceptor implements HttpInterceptor {
         }),
         catchError((err) => {
           this.isRefreshing = false;
+          this.cartService.clearCart();
           return throwError(() => err);
         })
       );

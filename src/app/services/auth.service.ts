@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { CartService } from './cart.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class AuthService {
 
   constructor(
     private httpClient: HttpClient,
-    private deviceService: DeviceDetectorService
+    private deviceService: DeviceDetectorService,
+    private cartService: CartService
   ) {}
 
   login(user: {
@@ -27,10 +29,33 @@ export class AuthService {
   }): Observable<GetResponseLogin> {
     user.deviceInfo = this.getDeviceInfo();
     return this.httpClient
-      .post<GetResponseLogin>(this.authUrl + '/login', user, {
-        withCredentials: true,
-      })
-      .pipe(tap((jwt) => this.setAuthenticationStatus(jwt.access_token)));
+      .post<GetResponseLogin>(this.authUrl + '/login', user)
+      .pipe(
+        tap((jwt) => {
+          this.setAuthenticationStatus(jwt.access_token);
+          this.cartService.getCarts(this.userIdSubject.value).subscribe();
+        })
+      );
+  }
+
+  loginWithGoogle(response: any): Observable<GetResponseLogin> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${response.credential}`,
+    });
+    return this.httpClient
+      .post<GetResponseLogin>(
+        this.authUrl + '/login/oauth2/google',
+        { deviceInfo: this.getDeviceInfo() },
+        {
+          headers,
+        }
+      )
+      .pipe(
+        tap((jwt) => {
+          this.setAuthenticationStatus(jwt.access_token);
+          this.cartService.getCarts(this.userIdSubject.value).subscribe();
+        })
+      );
   }
 
   setAuthenticationStatus(access_token: any) {
@@ -75,11 +100,9 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.JWT_TOKEN);
     this.isAuthenticatedSubject.next(false);
-    this.httpClient
-      .post(this.logOutUrl, null, {
-        withCredentials: true,
-      })
-      .subscribe();
+    this.userIdSubject.next(0);
+    // this.cartService.clearCart();
+    this.httpClient.post(this.logOutUrl, {}).subscribe();
   }
 
   isLoggedIn(): boolean {
@@ -90,26 +113,8 @@ export class AuthService {
   refreshToken(): Observable<GetResponseLogin> {
     return this.httpClient.post<GetResponseLogin>(
       this.authUrl + '/refresh-token',
-      {
-        withCredentials: true,
-      }
+      {}
     );
-  }
-
-  loginWithGoogle(response: any): Observable<GetResponseLogin> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${response.credential}`,
-    });
-    return this.httpClient
-      .post<GetResponseLogin>(
-        this.authUrl + '/login/oauth2/google',
-        { deviceInfo: this.getDeviceInfo() },
-        {
-          headers,
-          withCredentials: true,
-        }
-      )
-      .pipe(tap((token) => this.setAuthenticationStatus(token.access_token)));
   }
 
   private getDeviceInfo() {

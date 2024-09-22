@@ -56,7 +56,12 @@ export class CheckoutComponent implements OnInit {
     this.authService.userIdSubject.subscribe((data) => {
       this.userId = data;
     });
+    this.initFormGroups();
+    
+    this.loadProvinces();
+  }
 
+  initFormGroups() {
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         name: new FormControl('', [
@@ -81,8 +86,8 @@ export class CheckoutComponent implements OnInit {
       }),
       paymentMethod: new FormControl('', [Validators.required]),
     });
-    this.loadProvinces();
   }
+
 
   reviewCartDetails() {
     this.cartService.totalQuantity.subscribe((data) => {
@@ -170,45 +175,61 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutFormGroup.get('paymentMethod');
   }
 
-  onSubmit() {
-    if (this.checkoutFormGroup.invalid) {
-      this.checkoutFormGroup.markAllAsTouched();
-      return;
-    }
-    // this.checkoutFormGroup.get('shippingAddress')!.value.province = this.provincesData;
-    // this.checkoutFormGroup.get('shippingAddress')!.value.district = this.districtsData;
-    // this.checkoutFormGroup.get('shippingAddress')!.value.ward = this.wardsData;
-
-    const addressDetail =
+  private getAddressDetail(): string {
+    return (
       this.address?.value +
       ', ' +
       this.wardsData +
       ', ' +
       this.districtsData +
       ', ' +
-      this.provincesData;
+      this.provincesData
+    );
+  }
+
+  private createOrder(): Order {
     let order = new Order();
     order.userId = this.userId;
     order.customerName = this.name?.value;
     order.customerPhone = this.phone?.value;
-    order.shippingAddress = addressDetail;
+    order.shippingAddress = this.getAddressDetail();
     order.paymentMethod = this.paymentMethod?.value;
     order.totalAmount = this.totalPrice;
     // order.deliveryFee = this.deliveryFee;
     // order.discount = this.discount;
+    return order;
+  }
 
-    const cartItems = this.cartService.cartItems;
+  private createOrderDetail(): OrderDetail[] {
+    const cartItems = this.cartService.carts;
     let orderDetails: OrderDetail[] = cartItems.map(
       (cartItem) => new OrderDetail(cartItem)
     );
-    order.details = orderDetails;
-    console.log(order);
+    return orderDetails;
+  }
+
+  resetCart() {
+    this.cartService.clearCart();
+    this.checkoutFormGroup.reset();
+  }
+
+  onSubmit() {
+    if (this.checkoutFormGroup.invalid) {
+      this.checkoutFormGroup.markAllAsTouched();
+      return;
+    }
+
+    let order = this.createOrder();
+    order.details = this.createOrderDetail();
     
+    console.log(order);
+
     this.checkoutService.placeOrder(order).subscribe({
       next: (response) => {
         order = response;
 
         if (this.paymentMethod?.value === 'VNPay') {
+          this.resetCart();
           this.paymentService.initVNPay(order).subscribe({
             next: (response) => {
               window.location.href = response.paymentUrl;
@@ -217,7 +238,6 @@ export class CheckoutComponent implements OnInit {
               alert(`There was an error: ${err.message}`);
             },
           });
-          this.resetCart();
         } else {
           this.resetCart();
           this.router.navigate(['order-status'], {
@@ -231,11 +251,5 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  resetCart() {
-    this.cartService.cartItems = [];
-    this.cartService.totalPrice.next(0);
-    this.cartService.totalQuantity.next(0);
-    this.checkoutFormGroup.reset();
-    // this.router.navigateByUrl('/shop');
-  }
+  
 }

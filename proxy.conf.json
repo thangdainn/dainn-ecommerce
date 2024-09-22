@@ -1,0 +1,8 @@
+{
+  "/api-tinhthanh": {
+    "target": "https://esgoo.net",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
