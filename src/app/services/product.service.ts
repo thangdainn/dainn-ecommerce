@@ -9,18 +9,18 @@ import { environment } from 'src/environments/environment.development';
 })
 export class ProductService {
 
-  private url = environment.apiUrl + '/products';
+  private baseUrl = environment.apiUrl + '/api/products'
 
   constructor(private httpClient: HttpClient) { }
 
   getAllProduct(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.url);
+    return this.httpClient.get<Product[]>(this.baseUrl);
   }
 
   getProductsPaginate(page: number, size: number, sortBy: string, sortDir: string,
                       keyword: string, categoryIds: number[], brandIds: number[],
                       minPrice: number, maxPrice: number, isSubmitPrice: boolean): Observable<GetResponseProduct> {
-    let searchUrl = `${this.url}?page=${page}&size=${size}`;
+    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}`;
     switch (sortBy) {
       case 'Latest':
         sortBy = "createdDate";
@@ -56,12 +56,12 @@ export class ProductService {
   }
 
   getProductByCode(productCode: string): Observable<Product> {
-    const productUrl = `${this.url}/${productCode}`;
+    const productUrl = `${this.baseUrl}/${productCode}`;
     return this.httpClient.get<Product>(productUrl);
   }
 
   getTop10LeastProducts(): Observable<GetResponseProduct>{
-    const searchUrl = `${this.url}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
+    const searchUrl = `${this.baseUrl}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
 }

@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment.development';
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = environment.apiUrl + '/aip/auth';
+  private authUrl = environment.apiUrl + '/api/auth';
   private logOutUrl = environment.apiUrl + '/logout';
 
   private readonly JWT_TOKEN = 'JWT_TOKEN';
