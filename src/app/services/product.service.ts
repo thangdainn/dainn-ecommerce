@@ -2,24 +2,25 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from '../common/product';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
 
-  private baseUrl = 'http://localhost:8090/api/products';
+  private url = environment.apiUrl + '/products';
 
   constructor(private httpClient: HttpClient) { }
 
   getAllProduct(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(this.baseUrl);
+    return this.httpClient.get<Product[]>(this.url);
   }
 
   getProductsPaginate(page: number, size: number, sortBy: string, sortDir: string,
                       keyword: string, categoryIds: number[], brandIds: number[],
                       minPrice: number, maxPrice: number, isSubmitPrice: boolean): Observable<GetResponseProduct> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}`;
+    let searchUrl = `${this.url}?page=${page}&size=${size}`;
     switch (sortBy) {
       case 'Latest':
         sortBy = "createdDate";
@@ -55,12 +56,12 @@ export class ProductService {
   }
 
   getProductByCode(productCode: string): Observable<Product> {
-    const productUrl = `${this.baseUrl}/${productCode}`;
+    const productUrl = `${this.url}/${productCode}`;
     return this.httpClient.get<Product>(productUrl);
   }
 
   getTop10LeastProducts(): Observable<GetResponseProduct>{
-    const searchUrl = `${this.baseUrl}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
+    const searchUrl = `${this.url}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
 }

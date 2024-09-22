@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { CartService } from './cart.service';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = 'http://localhost:8090/api/auth';
-  private logOutUrl = 'http://localhost:8090/logout';
+  private authUrl = environment.apiUrl + '/aip/auth';
+  private logOutUrl = environment.apiUrl + '/logout';
 
   private readonly JWT_TOKEN = 'JWT_TOKEN';
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);

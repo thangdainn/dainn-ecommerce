@@ -10,12 +10,13 @@ import {
   tap,
 } from 'rxjs';
 import { Cart } from '../common/cart';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
-  private baseUrl = 'http://localhost:8090/api/carts';
+  private baseUrl = environment.apiUrl + '/api/carts';
   storage: Storage = localStorage;
   carts: Cart[] = [];
   totalQuantity: BehaviorSubject<number> = new BehaviorSubject<number>(0);
