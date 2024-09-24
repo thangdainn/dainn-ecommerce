@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-payment-status',
@@ -12,20 +13,32 @@ export class PaymentStatusComponent implements OnInit {
   message: string = '';
   subMessage: string = 'Thank you for your order !';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       this.transactionCode = params['vnp_ResponseCode'];
       this.orderId = params['vnp_TxnRef'];
     });
-    if (this.transactionCode == undefined) {
-      this.message = 'Order successfully';
-    } else if (this.transactionCode == '00') {
-      this.message = 'Payment successful';
+    this.restoreAuthState();
+    this.message = this.setStatusMessage(this.transactionCode);
+  }
+
+  setStatusMessage(transactionCode: string): string {
+    if (transactionCode == undefined) {
+      return 'Order successfully';
+    } else if (transactionCode == '00') {
+      return 'Payment successful';
     } else {
-      this.message = 'Payment failed';
       this.subMessage = 'Try again later.';
+      return 'Payment failed';
+    }
+  }
+
+  restoreAuthState(){
+    const token = this.authService.getToken();
+    if (token) {
+      this.authService.setAuthenticationStatus(token);
     }
   }
 }

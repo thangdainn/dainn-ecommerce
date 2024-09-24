@@ -61,6 +61,7 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError((err) => {
           this.isRefreshing = false;
           this.cartService.clearCart();
+          this.authService.logout();
           return throwError(() => err);
         })
       );
