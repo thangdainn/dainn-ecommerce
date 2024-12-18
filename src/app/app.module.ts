@@ -28,7 +28,6 @@ import { CartService } from './services/cart.service';
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { PaymentStatusComponent } from './components/payment-status/payment-status.component';
-import { CheckoutService } from './services/checkout.service';
 import { LoginComponent } from './components/login/login.component';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
 import { authGuard } from './guards/auth.guard';
@@ -36,6 +35,8 @@ import { AuthService } from './services/auth.service';
 import { guestGuard } from './guards/guest.guard';
 import { AuthInterceptor } from './auth.interceptor';
 import { ToastrModule } from 'ngx-toastr';
+import { PurchaseOrderComponent } from './components/purchase-order/purchase-order.component';
+import { OrderService } from './services/order.service';
 
 const routes: Routes = [
   { path: 'shop', component: ShopComponent },
@@ -47,6 +48,7 @@ const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
   { path: 'order-status', component: PaymentStatusComponent },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
+  { path: 'purchase', component: PurchaseOrderComponent, canActivate: [authGuard] },
   { path: '', component: HomeComponent },
   { path: '', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' },
@@ -69,6 +71,7 @@ const routes: Routes = [
     PaymentStatusComponent,
     LoginComponent,
     LoginStatusComponent,
+    PurchaseOrderComponent,
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -80,7 +83,6 @@ const routes: Routes = [
     FormsModule,
     NgxSliderModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
     ToastrModule.forRoot(),
   ],
   providers: [
@@ -90,7 +92,7 @@ const routes: Routes = [
     BrandService,
     SizeService,
     CartService,
-    CheckoutService,
+    OrderService,
     AuthService,
   ],
   bootstrap: [AppComponent],

@@ -1,0 +1,249 @@
+<div class="container pt-5 mt-5 py-5 d-flex">
+    <div class="epUsgf">
+        <div class="WDmP96">
+            <div class="stardust-dropdown">
+                <div class="stardust-dropdown__item-header"><a class="jHbobZ" href="/user/account/profile">
+                        <div class="U7dHrp"><img
+                                src="https://down-vn.img.susercontent.com/file/ba61750a46794d8847c3f463c5e71cc4"></div>
+                        <div class="mY8KSl"><span class="fnmbfn">My Account</span></div>
+                    </a></div>
+                <div class="stardust-dropdown__item-body" style="opacity: 0;">
+                    <div class="hGOWVP"><a class="HVZpoT" href="/user/account/profile"><span
+                                class="PcLlJr">Profile</span></a><a class="HVZpoT" href="/user/account/payment"><span
+                                class="PcLlJr">Banks &amp; Cards</span></a><a class="HVZpoT"
+                            href="/user/account/address"><span class="PcLlJr">Addresses</span></a><a class="HVZpoT"
+                            href="/user/account/password"><span class="PcLlJr">Change Password</span></a><a
+                            class="HVZpoT" href="/user/setting/notification/"><span class="PcLlJr">Notification
+                                Settings</span></a><a class="HVZpoT" href="/user/setting/privacy"><span
+                                class="PcLlJr">Privacy Settings</span></a></div>
+                </div>
+            </div>
+            <div class="stardust-dropdown stardust-dropdown--open">
+                <div class="stardust-dropdown__item-header"><a class="jHbobZ Fqwx5_" href="/user/purchase">
+                        <div class="U7dHrp"><img
+                                src="https://down-vn.img.susercontent.com/file/f0049e9df4e536bc3e7f140d071e9078"></div>
+                        <div class="mY8KSl"><span class="fnmbfn">My Purchase</span></div>
+                    </a></div>
+                <div class="stardust-dropdown__item-body stardust-dropdown__item-body--open" style="opacity: 1;">
+                    <div class="hGOWVP"></div>
+                </div>
+            </div>
+            <div class="stardust-dropdown">
+                <div class="stardust-dropdown__item-header"><a class="jHbobZ" href="/user/notifications/order">
+                        <div class="U7dHrp"><img
+                                src="https://down-vn.img.susercontent.com/file/e10a43b53ec8605f4829da5618e0717c"></div>
+                        <div class="mY8KSl"><span class="fnmbfn">Notifications</span></div>
+                    </a></div>
+                <div class="stardust-dropdown__item-body">
+                    <div class="hGOWVP"><a class="HVZpoT" href="/user/notifications/order"><span class="PcLlJr">Order
+                                updates</span></a><a class="HVZpoT" href="/user/notifications/promotion"><span
+                                class="PcLlJr">Promotions</span></a><a class="HVZpoT"
+                            href="/user/notifications/wallet"><span class="PcLlJr">Wallet Updates</span></a><a
+                            class="HVZpoT" href="/user/notifications/shopee"><span class="PcLlJr">Shopee
+                                Updates</span></a></div>
+                </div>
+            </div>
+            <div class="stardust-dropdown">
+                <div class="stardust-dropdown__item-header"><a class="jHbobZ" href="/user/voucher-wallet">
+                        <div class="U7dHrp"><img
+                                src="https://down-vn.img.susercontent.com/file/84feaa363ce325071c0a66d3c9a88748"></div>
+                        <div class="mY8KSl"><span class="fnmbfn">My Vouchers</span></div>
+                    </a></div>
+                <div class="stardust-dropdown__item-body">
+                    <div class="hGOWVP"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="w-100">
+        <section class="QmO3Bu" aria-role="tablist">
+            <a *ngFor="let status of orderStatus" [class.mRVNLm]="selectedStatus === status.value" class="KI5har"
+                title="{{status.display}}" [attr.aria-selected]="selectedStatus === status.value"
+                (click)="handleStatusChange(status.value)">
+                <span class="NoH9rC">{{status.display}}</span>
+            </a>
+        </section>
+
+        <div>
+            <section *ngIf="selectedStatus === ''">
+                <h2 class="a11y-hidden">Search Bar Section</h2>
+                <div class="Gv8cvd">
+                    <svg width="19px" height="19px" viewBox="0 0 19 19">
+                        <g id="Search-New" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g id="my-purchase-copy-27" transform="translate(-399.000000, -221.000000)"
+                                stroke-width="2">
+                                <g id="Group-32" transform="translate(400.000000, 222.000000)">
+                                    <circle id="Oval-27" cx="7" cy="7" r="7"></circle>
+                                    <path d="M12,12 L16.9799555,16.919354" id="Path-184" stroke-linecap="round"
+                                        stroke-linejoin="round"></path>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                    <input 
+                        aria-label="Input to search" 
+                        role="search" 
+                        autocomplete="off"
+                        placeholder="You can search by Order ID or Product name"
+                        #keySearch
+                        (keyup.enter)="doSearch(keySearch.value)">
+                    </div>
+            </section>
+
+
+            <div *ngIf="orders.length != 0; else emptyOrder">
+                <div class="YL_VlX" *ngFor="let order of orders">
+                    <div>
+                        <div class="J632se">
+                            <section>
+                                <h3 class="a11y-hidden">Order Shop Section</h3>
+                                <div class="P2JMvg">
+                                    <div class="RBPP9y">
+
+                                    </div>
+                                    <div class="jgIyoX">
+                                        <div class="LY5oll"><a class="lXbYsi"
+                                                href="/user/purchase/order/184123531245297?type=6"><span
+                                                    class="O2yAdQ"><svg enable-background="new 0 0 15 15"
+                                                        viewBox="0 0 15 15" x="0" y="0"
+                                                        class="shopee-svg-icon icon-free-shipping-line">
+                                                        <g>
+                                                            <line fill="none" stroke-linejoin="round"
+                                                                stroke-miterlimit="10" x1="8.6" x2="4.2" y1="9.8"
+                                                                y2="9.8"></line>
+                                                            <circle cx="3" cy="11.2" fill="none" r="2"
+                                                                stroke-miterlimit="10">
+                                                            </circle>
+                                                            <circle cx="10" cy="11.2" fill="none" r="2"
+                                                                stroke-miterlimit="10">
+                                                            </circle>
+                                                            <line fill="none" stroke-miterlimit="10" x1="10.5" x2="14.4"
+                                                                y1="7.3" y2="7.3"></line>
+                                                            <polyline fill="none"
+                                                                points="1.5 9.8 .5 9.8 .5 1.8 10 1.8 10 9.1"
+                                                                stroke-linejoin="round" stroke-miterlimit="10">
+                                                            </polyline>
+                                                            <polyline fill="none"
+                                                                points="9.9 3.8 14 3.8 14.5 10.2 11.9 10.2"
+                                                                stroke-linejoin="round" stroke-miterlimit="10">
+                                                            </polyline>
+                                                        </g>
+                                                    </svg>Delivery successful</span></a>
+                                            <div class="shopee-drawer" id="pc-drawer-id-0" tabindex="0"><svg
+                                                    enable-background="new 0 0 15 15" viewBox="0 0 15 15" x="0" y="0"
+                                                    class="shopee-svg-icon icon-help">
+                                                    <g>
+                                                        <circle cx="7.5" cy="7.5" fill="none" r="6.5"
+                                                            stroke-miterlimit="10">
+                                                        </circle>
+                                                        <path
+                                                            d="m5.3 5.3c.1-.3.3-.6.5-.8s.4-.4.7-.5.6-.2 1-.2c.3 0 .6 0 .9.1s.5.2.7.4.4.4.5.7.2.6.2.9c0 .2 0 .4-.1.6s-.1.3-.2.5c-.1.1-.2.2-.3.3-.1.2-.2.3-.4.4-.1.1-.2.2-.3.3s-.2.2-.3.4c-.1.1-.1.2-.2.4s-.1.3-.1.5v.4h-.9v-.5c0-.3.1-.6.2-.8s.2-.4.3-.5c.2-.2.3-.3.5-.5.1-.1.3-.3.4-.4.1-.2.2-.3.3-.5s.1-.4.1-.7c0-.4-.2-.7-.4-.9s-.5-.3-.9-.3c-.3 0-.5 0-.7.1-.1.1-.3.2-.4.4-.1.1-.2.3-.3.5 0 .2-.1.5-.1.7h-.9c0-.3.1-.7.2-1zm2.8 5.1v1.2h-1.2v-1.2z"
+                                                            stroke="none"></path>
+                                                    </g>
+                                                </svg></div>
+                                        </div>
+                                        <div class="bv3eJE" tabindex="0">{{ order.status }}</div>
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="kG_yF0"></div>
+                            <section *ngFor="let detail of order.details">
+                                <h3 class="a11y-hidden">Order Item List Section</h3><a aria-label="Go to PDP"
+                                    routerLink="/product/{{detail.productCode}}"><span class="a11y-hidden">Go to
+                                        PDP</span>
+                                    <div>
+                                        <div class="bdAfgU">
+                                            <div class="FNHV0p">
+                                                <div>
+                                                    <section>
+                                                        <div class="mZ1OWk">
+                                                            <div class="dJaa92">
+                                                                <img src="{{detail.productImage}}" class="gQuHsZ"
+                                                                    alt="Product Image" tabindex="0">
+                                                                <div class="nmdHRf">
+                                                                    <div>
+                                                                        <div class="zWrp4w"><span class="DWVWOJ"
+                                                                                tabindex="0">{{ detail.productName
+                                                                                }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="rsautk" tabindex="0">Variation: {{detail.sizeName }}</div>
+                                                                        <div class="j3I_Nh" tabindex="0">x{{ detail.quantity }}</div> 
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="ylYzwa" tabindex="0">
+                                                                <div class="YRp1mm">
+                                                                    <span class="q6Gzj5"></span>
+                                                                    <span class="nW_6Oi PNlXhK">{{ detail.price | currency : "VND" }}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </div>
+                                                <div class="PB3XKx"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </section>
+                            <!-- <div class="Ze0Icc"></div> -->
+                        </div>
+                    </div>
+                    <div class="PwTjsu">
+                        <div class="jThQdh d3c_3g"> </div>
+                        <div class="jThQdh G5W3v8"> </div>
+                    </div>
+                    <div class="LwXnUQ">
+                        <div class="NWUSQP">
+                            <div class="">
+                                <span class="IHpphz">15 Days Return</span>
+                                <span class="IHpphz RMUq23" tabindex="0">Free Return</span>
+                            </div>
+                            <div class="d-flex align-items-end">
+                                <label class="juCcT0">Order Total:</label>
+                                <div class="t7TQaf" tabindex="0" aria-label="Order Total: ₫66.000">
+                                    {{ order.totalAmount | currency : "VND" }}
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="yyqgYp">
+                        <div class="iwUeSD">
+                            <div><span class="CDsaN0"
+                                    aria-label="Confirm receipt after you've checked the received items"
+                                    tabindex="0">Confirm receipt after you've checked the received items</span></div>
+                        </div>
+                        <section class="po9nwN">
+                            <h3 class="a11y-hidden">Action Buttons Section</h3>
+                            <div class="aAXjeK">
+                                <div><button class="stardust-button stardust-button--primary QY7kZh">Rate</button>
+                                </div>
+                            </div>
+                            <div class="hbQXWm">
+                                <div><button class="stardust-button stardust-button--secondary QY7kZh">Buy Again</button></div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <ng-template #emptyOrder>
+            <section>
+                <div class="toZ7En">
+                    <div class="VJ0a8O">
+                        <div class="E_bH9K"></div>
+                        <h2 class="JDtdsv">No orders yet</h2>
+                    </div>
+                </div>
+            </section>
+        </ng-template>
+    </div>
+</div>
