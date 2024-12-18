@@ -9,7 +9,8 @@
     "paths": { "@angular/*": [ "./node_modules/@angular/*" ] }
   },
   "files": [
-    "src/main.ts"
+    "src/main.ts",
+    "src/window-global-fix.ts"
   ],
   "include": [
     "src/**/*.d.ts"

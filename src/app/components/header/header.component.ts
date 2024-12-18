@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CartService } from 'src/app/services/cart.service';
+import * as SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,11 +11,35 @@ import { CartService } from 'src/app/services/cart.service';
 })
 export class HeaderComponent implements OnInit {
   totalQuantity: number = 0;
+  socketClient: any = null;
 
-  constructor(private cartService: CartService) {}
+  private notificationSubscription: any;
+
+  constructor(private cartService: CartService,
+    private authService: AuthService,
+  ) {}
 
   ngOnInit(): void {
     this.updateCartStatus();
+
+    let ws = new SockJS('http://localhost:8090/api/ws');
+    this.socketClient = Stomp.over(ws);
+
+    this.socketClient.connect(
+      { Authorization: 'Bearer ' + localStorage.getItem("JWT_TOKEN") },
+      () => {
+        console.log('Connected to the server');
+        this.notificationSubscription = this.socketClient.subscribe(
+          `/user/${this.authService.userIdSubject.value}/notifications`,
+          (message: any) => {
+            console.log('Received message: ' + message);
+          }
+        );
+      },
+      (error: any) => {
+        console.log('Cannot connect to the server: ' + error);
+      }
+    );
   }
 
   updateCartStatus() {
