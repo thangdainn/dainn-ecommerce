@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import { Cart } from 'src/app/common/cart';
-import {CartItem} from 'src/app/common/cart-item';
-import { Product } from 'src/app/common/product';
+import { Router } from '@angular/router';
+import {Cart} from 'src/app/common/cart';
 import {CartService} from 'src/app/services/cart.service';
-import { ProductService } from 'src/app/services/product.service';
-import { SizeService } from 'src/app/services/size.service';
+import {SizeService} from 'src/app/services/size.service';
 
 @Component({
   selector: 'app-cart',
@@ -13,13 +11,14 @@ import { SizeService } from 'src/app/services/size.service';
 })
 export class CartComponent implements OnInit {
   totalPrice: number = 0;
-  totalQuantity: number = 1;
   userId: number = 0;
   carts: Cart[] = [];
+  selectedItems: Cart[] = [];
 
   constructor(
     private cartService: CartService,
     private sizeService: SizeService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -28,17 +27,17 @@ export class CartComponent implements OnInit {
 
   listCartDetails() {
     this.carts = this.cartService.carts;
-    this.cartService.totalQuantity.subscribe(
-      data => {
-        this.totalQuantity = data;
-      }
-    );
+    // this.cartService.totalQuantity.subscribe(
+    //   data => {
+    //     this.totalQuantity = data;
+    //   }
+    // );
 
-    this.cartService.totalPrice.subscribe(
-      data => {
-        this.totalPrice = data;
-      }
-    );
+    // this.cartService.totalPrice.subscribe(
+    //   data => {
+    //     this.totalPrice = data;
+    //   }
+    // );
 
     for (let item of this.carts){
       this.sizeService.getQuantityByProductAndSize(item.productId, item.sizeId).subscribe(
@@ -62,8 +61,8 @@ export class CartComponent implements OnInit {
     }
   }
 
-  remove(cartItem: Cart) {
-    this.cartService.removeItem(cartItem);
+  removeItem(cartItem: Cart) {
+    this.cartService.removeItems([cartItem]);
   }
 
   updateCartItemQuantity(cartItem: Cart, newQuantity: number) {
@@ -71,5 +70,26 @@ export class CartComponent implements OnInit {
       newQuantity = 1;
     }
     this.cartService.updateCartItemQuantity(cartItem, newQuantity);
+  }
+
+  proceedToCheckout() {
+    console.log(this.selectedItems);
+    if (this.selectedItems.length === 0) {
+      alert('Please select at least one item to proceed to checkout');
+      return;
+    }
+    this.router.navigate(['/checkout'], { state: { items : this.selectedItems } });
+  }
+
+  computeTotals() {
+    this.totalPrice = this.selectedItems.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
+  }
+
+  selectItem() {
+    this.computeTotals();
+  }
+
+  selectAll() {
+    this.computeTotals();
   }
 }

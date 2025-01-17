@@ -37,6 +37,9 @@ import { AuthInterceptor } from './auth.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { PurchaseOrderComponent } from './components/purchase-order/purchase-order.component';
 import { OrderService } from './services/order.service';
+import { TableModule } from 'primeng/table';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
 
 const routes: Routes = [
   { path: 'shop', component: ShopComponent },
@@ -84,6 +87,9 @@ const routes: Routes = [
     NgxSliderModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
+    TableModule,
+    CheckboxModule,
+    ButtonModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

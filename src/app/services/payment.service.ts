@@ -9,11 +9,15 @@ import { environment } from 'src/environments/environment.development';
 })
 export class PaymentService {
 
-  private paymentUrl = environment.apiUrl +  '/api/payment';
+  private paymentUrl = environment.apiUrl +  '/api/payments';
 
   constructor(private httpClient: HttpClient) { }
 
   initVNPay(order: Order): Observable<any> {
     return this.httpClient.get<any>(`${this.paymentUrl}/vnp?amount=${order.totalAmount}&orderId=${order.id}`);
+  }
+
+  initMomo(order: Order): Observable<any> {
+    return this.httpClient.get<any>(`${this.paymentUrl}/momo?orderId=${order.id}`);
   }
 }

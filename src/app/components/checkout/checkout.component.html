@@ -19,8 +19,8 @@
                             <div formGroupName="customer" class="row w-100">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="firstname">Full Name</label>
-                                        <input formControlName="name" type="text" class="form-control" placeholder="">
+                                        <label for="fullName">Full Name</label>
+                                        <input id="fullName" formControlName="name" type="text" class="form-control" placeholder="">
                                         <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
                                             <small class="text-danger" *ngIf="name?.errors?.['required'] || name?.errors?.['notOnlyWhitespace']">
                                                 Name is required.</small>

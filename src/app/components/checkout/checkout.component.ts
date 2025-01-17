@@ -6,12 +6,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Cart } from 'src/app/common/cart';
 import { Order } from 'src/app/common/order';
 import { OrderDetail } from 'src/app/common/order-detail';
 import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
-import { CheckoutService } from 'src/app/services/checkout.service';
 import { LocationService } from 'src/app/services/location.service';
+import { OrderService } from 'src/app/services/order.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
@@ -21,13 +22,15 @@ import { ShopValidators } from 'src/app/validators/shop-validators';
   styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
+  items: Cart[] = [];
+
   checkoutFormGroup!: FormGroup;
 
   provinces: any[] = [];
   districts: any[] = [];
   wards: any[] = [];
 
-  paymentMethods = ['Cash', 'VNPay'];
+  paymentMethods = ['Cash', 'VNPay', 'Momo'];
 
   provincesData: string = '';
   districtsData: string = '';
@@ -43,21 +46,26 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private locationService: LocationService,
+    private orderService: OrderService,
     private cartService: CartService,
-    private checkoutService: CheckoutService,
     private authService: AuthService,
     private paymentService: PaymentService,
     private router: Router
-  ) {}
+  ) {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation?.extras?.state) {
+      this.items = navigation.extras.state['items'];
+    }
+  }
 
   ngOnInit(): void {
-    this.reviewCartDetails();
+    this.computeFee();
 
     this.authService.userIdSubject.subscribe((data) => {
       this.userId = data;
     });
     this.initFormGroups();
-    
+
     this.loadProvinces();
   }
 
@@ -88,15 +96,14 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-
-  reviewCartDetails() {
-    this.cartService.totalQuantity.subscribe((data) => {
-      this.totalQuantity = data;
-    });
-    this.cartService.totalPrice.subscribe((data) => {
-      this.totalPrice = data;
-    });
+  computeFee() {
+    console.log(this.items);
+    for (let item of this.items) {
+      this.totalQuantity += item.quantity;
+      this.totalPrice += item.quantity * item.product.price;
+    }
   }
+
 
   loadProvinces() {
     this.locationService.getProvinces().subscribe((data) => {
@@ -195,21 +202,21 @@ export class CheckoutComponent implements OnInit {
     order.shippingAddress = this.getAddressDetail();
     order.paymentMethod = this.paymentMethod?.value;
     order.totalAmount = this.totalPrice;
+    order.status = 'PROCESSING';
     // order.deliveryFee = this.deliveryFee;
     // order.discount = this.discount;
     return order;
   }
 
   private createOrderDetail(): OrderDetail[] {
-    const cartItems = this.cartService.carts;
-    let orderDetails: OrderDetail[] = cartItems.map(
+    let orderDetails: OrderDetail[] = this.items.map(
       (cartItem) => new OrderDetail(cartItem)
     );
     return orderDetails;
   }
 
   resetCart() {
-    this.cartService.clearCart();
+    this.cartService.removeItems(this.items);
     this.checkoutFormGroup.reset();
   }
 
@@ -221,10 +228,8 @@ export class CheckoutComponent implements OnInit {
 
     let order = this.createOrder();
     order.details = this.createOrderDetail();
-    
-    console.log(order);
 
-    this.checkoutService.placeOrder(order).subscribe({
+    this.orderService.placeOrder(order).subscribe({
       next: (response) => {
         order = response;
 
@@ -238,10 +243,22 @@ export class CheckoutComponent implements OnInit {
               alert(`There was an error: ${err.message}`);
             },
           });
+
+        } else if (this.paymentMethod?.value === 'Momo') {
+          this.resetCart();
+          this.paymentService.initMomo(order).subscribe({
+            next: (response) => {
+              window.location.href = response.payUrl;
+            },
+            error: (err) => {
+              alert(`There was an error: ${err.message}`);
+            },
+          });
+
         } else {
           this.resetCart();
           this.router.navigate(['order-status'], {
-            queryParams: { vnp_TxnRef: order.id },
+            queryParams: { orderId: order.id },
           });
         }
       },
@@ -250,6 +267,4 @@ export class CheckoutComponent implements OnInit {
       },
     });
   }
-
-  
 }

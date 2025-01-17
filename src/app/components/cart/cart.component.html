@@ -1,92 +1,150 @@
-<section class="ftco-section ftco-cart">
+<section class="ftco-section ftco-cart" *ngIf="carts.length != 0; else emptyCart">
     <div class="container">
         <div class="breadcrumbs d-flex flex-row align-items-center">
             <ul>
                 <li><a routerLink="">Home</a></li>
-                <li class="active"><a ><i class="fa fa-angle-right"
-                            aria-hidden="true"></i>Cart</a></li>
+                <li class="active"><a><i class="fa fa-angle-right" aria-hidden="true"></i>Cart</a></li>
             </ul>
         </div>
     </div>
-    <div class="container" style="font-size: 13px;" *ngIf="carts.length != 0; else emptyCart">
-        <div class="row">
-            <div class="col-md-12 ftco-animate">
-                <div class="cart-list">
-                    <table class="table">
-                        <thead class="thead-primary">
-                            <tr class="text-center">
-                                <!-- <th>&nbsp;</th> -->
-                                <th>Product</th>
-                                <th>Size</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                                <!-- <th>Action</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-center" *ngFor="let cart of carts">
 
-                                <td class="d-flex align-items-center">
-                                    <div class="img" [ngStyle]="{'background-image': 'url(' + cart.product.imgUrl + ')'}"></div>
-                                    <div class="product-name"><a routerLink="/product/{{ cart.product.code }}">{{ cart.product.name }}</a></div>
-                                </td>
 
-                                <td class="size">{{ cart.size.name }}</td>
-                                <td class="price">{{ cart.product.price | currency: "VND"}}</td>
 
-                                <td >
-                                    <div class="quantity_selector">
-                                        <span (click)="decQuantity(cart)" class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
-                                        <input #quantity_value type="text" class="quantity_value"
-                                                [(ngModel)]="cart.quantity"
-                                                (change)="updateCartItemQuantity(cart, +quantity_value.value)"
-                                                 min="1">
-                                        <span (click)="incQuantity(cart)" class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                                    </div>
-                                </td>
 
-                                <td class="total">{{ cart.quantity * cart.product.price | currency: "VND" }}</td>
-                                <td  class="product-remove"><a (click)="remove(cart)"><span class="ion-ios-close"></span></a></td>
-                            </tr><!-- END TR-->
+    <div class="container cart" style="font-size: 13px;">
+        <p-table [value]="carts" [(selection)]="selectedItems" dataKey="id" [paginator]="false"
+            [responsiveLayout]="'scroll'" [lazy]="true" (onRowSelect)="selectItem()" (onRowUnselect)="selectItem()"
+            (onHeaderCheckboxToggle)="selectAll()">
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-end">
-            <div class="col col-lg-4 col-md-6 mt-5 cart-wrap ftco-animate">
-                <div class="cart-total mb-3">
+            <!-- Header -->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>
+                        <p-tableHeaderCheckbox class="custom-checkbox"></p-tableHeaderCheckbox>
+                    </th>
+                    <th colspan="2">Product</th>
+                    <th class="text-center">Unit Price</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-center">Total Price</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-item>
+                <br>
+                <tr class="">
+                    <td>
+                        <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                    </td>
+                    <td>
+                        <div>
+                            <div class="d-flex">
+                                <a title="{{ item.product.name }}" routerLink="/product/{{ item.product.code }}">
+                                    <picture class="">
+                                        <source type="image/webp" class="">
+                                        <img width="80" loading="lazy" class="" src="{{ item.product.imgUrl }}"
+                                            height="80" alt="product image">
+                                    </picture>
+                                </a>
+                                <div class="Ou_0WX">
+                                    <a class="c54pg1" title="{{ item.product.name }}"
+                                        routerLink="/product/{{ item.product.code }}">{{ item.product.name }}
+                                    </a>
+                                    <div class="gvFc9h"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="">
+                            <div class="qNRZqG">
+                                <div class="iIg1CN">Variations:<div class="E33rwr"></div>
+                                </div>
+                                <div class="dDPSp3">{{ item.size.name }}</div>
+                                <div></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="">
+                            <div>
+                                <span class="vjkBXu">{{ item.product.price | currency: "VND"}}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-inline-block">
+                            <div class="quantity_selector">
+                                <span (click)="decQuantity(item)" class="minus"><i class="fa fa-minus"
+                                        aria-hidden="true"></i></span>
+                                <input #quantity_value type="text" class="quantity_value" [(ngModel)]="item.quantity"
+                                    (change)="updateCartItemQuantity(item, +quantity_value.value)" min="1">
+                                <span (click)="incQuantity(item)" class="plus"><i class="fa fa-plus"
+                                        aria-hidden="true"></i></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center" style="color: #ee4d2d;">
+                        <span>{{ item.quantity * item.product.price | currency: "VND" }}</span>
+                    </td>
+                    <td class="product-remove text-center">
+                        <a (click)="removeItem(item)"><span class="ion-ios-close"></span></a>
+                    </td>
+                </tr>
+
+            </ng-template>
+        </p-table>
+
+        <section class="yn6AIc dhqg2H shadow bg-body rounded">
+            <div class="w-100">
+                <div class="cart-total d-flex align-items-center justify-content-between">
 
                     <!-- <h3>Cart Totals</h3> -->
                     <!-- <p class="d-flex">
-                        <span>Subtotal:</span>
-                        <span>{{ totalPrice | currency: "VND" }}</span>
-                    </p>
-                    <p class="d-flex">
-                        <span>Delivery:</span>
-                        <span>đ0</span>
-                    </p>
-                    <p class="d-flex">
-                        <span>Discount:</span>
-                        <span>đ0</span>
-                    </p>
-                    <hr> -->
-                    <p class="d-flex total-price">
-                        <span>Total Payment:</span>
-                        <span>{{ totalPrice | currency: "VND" }}</span>
-                    </p>
+                            <span>Subtotal:</span>
+                            <span>{{ totalPrice | currency: "VND" }}</span>
+                        </p>
+                        <p class="d-flex">
+                            <span>Delivery:</span>
+                            <span>đ0</span>
+                        </p>
+                        <p class="d-flex">
+                            <span>Discount:</span>
+                            <span>đ0</span>
+                        </p>
+                        <hr> -->
+                    <div>Selected ({{ selectedItems.length }})</div>
+
+                    <div class="d-flex align-items-center justify-content-end">
+                        <div class="d-flex total-price mr-3">
+                            <label>Total: </label>
+                            <span class="ml-1">{{ totalPrice | currency: "VND" }}</span>
+                        </div>
+                        <a (click)="proceedToCheckout()" class="btn btn-primary btn-checkout py-2 px-5">Checkout</a>
+                    </div>
+
                 </div>
-                <p class="text-center"><a routerLink="/checkout" class="btn btn-primary py-3 px-4">Proceed to Checkout</a>
-                </p>
+
+            </div>
+        </section>
+
+    </div>
+</section>
+
+<ng-template #emptyCart>
+    <section class="ftco-section ftco-cart">
+        <div class="container">
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a routerLink="">Home</a></li>
+                    <li class="active"><a><i class="fa fa-angle-right" aria-hidden="true"></i>Cart</a></li>
+                </ul>
             </div>
         </div>
-    </div>
-    <ng-template #emptyCart>
         <div class="cart_none text-center">
-            <img src="https://d16py1fyt83ijv.cloudfront.net/vedobi/assets/img/empty-cart.webp" alt="Empty Cart" width="450">
+            <img src="https://d16py1fyt83ijv.cloudfront.net/vedobi/assets/img/empty-cart.webp" alt="Empty Cart"
+                width="450">
         </div>
-    </ng-template>
-</section>
+    </section>
+</ng-template>

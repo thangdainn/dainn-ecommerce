@@ -6,8 +6,6 @@ import {
   from,
   map,
   Observable,
-  of,
-  tap,
 } from 'rxjs';
 import { Cart } from '../common/cart';
 import { environment } from 'src/environments/environment.development';
@@ -20,7 +18,7 @@ export class CartService {
   storage: Storage = localStorage;
   carts: Cart[] = [];
   totalQuantity: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  totalPrice: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  // totalPrice: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   constructor(private httpClient: HttpClient) {
     let data = JSON.parse(this.storage.getItem('cartItems')!);
@@ -138,21 +136,24 @@ export class CartService {
     this.computeCartTotals();
   }
 
-  removeItem(cartItem: Cart) {
-    const itemIndex = this.carts.findIndex(
-      (tempCartItem) =>
-        tempCartItem.productId === cartItem.productId &&
-        tempCartItem.sizeId === cartItem.sizeId
-    );
-    if (itemIndex > -1) {
-      this.carts.splice(itemIndex, 1);
-      this.computeCartTotals();
+  removeItems(cartItems: Cart[]) {
+    let ids: number[] = [];
+    for (let item of cartItems) {
+      const itemIndex = this.carts.findIndex(
+        (tempCartItem) =>
+          tempCartItem.productId === item.productId &&
+          tempCartItem.sizeId === item.sizeId
+      );
+      if (itemIndex > -1) {
+        this.carts.splice(itemIndex, 1);
+        ids.push(item.id);
+        this.computeCartTotals();
+      }
     }
-    if (cartItem.id !== 0) {
-      this.removeFromDB([cartItem.id]).subscribe();
+    if (ids.length > 0) {
+      this.removeFromDB(ids).subscribe();
     }
-
-    // this.computeCartTotals();
+    
   }
 
   updateCartItemQuantity(cartItem: Cart, newQuantity: number) {
@@ -170,16 +171,7 @@ export class CartService {
   }
 
   computeCartTotals() {
-    let totalPriceValue: number = 0;
-    let totalQuantityValue: number = 0;
-
-    for (let item of this.carts) {
-      totalPriceValue += item.quantity * item.product.price;
-      totalQuantityValue++;
-    }
-    this.totalPrice.next(totalPriceValue);
-    this.totalQuantity.next(totalQuantityValue);
-
+    this.totalQuantity.next(this.carts.length);
     this.persistCartItems();
   }
 

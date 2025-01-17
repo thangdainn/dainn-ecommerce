@@ -17,8 +17,8 @@ export class PaymentStatusComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-      this.transactionCode = params['vnp_ResponseCode'];
-      this.orderId = params['vnp_TxnRef'];
+      this.transactionCode = params['responseCode'];
+      this.orderId = params['orderId'];
     });
     this.restoreAuthState();
     this.message = this.setStatusMessage(this.transactionCode);
