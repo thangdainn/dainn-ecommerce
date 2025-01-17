@@ -28,7 +28,7 @@ export class OrderService {
     keyword: string,
     status: string
   ): Observable<GetResponseOrder> {
-    let searchUrl = `${this.orderUrl}/my?page=${page}&size=${size}`;
+    let searchUrl = `${this.orderUrl}/me?page=${page}&size=${size}`;
     searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
 
     if (status.length == 0) {
