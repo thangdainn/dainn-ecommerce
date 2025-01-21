@@ -24,6 +24,7 @@
     "@popperjs/core": "^2.11.8",
     "net": "^1.0.2",
     "ngx-device-detector": "^6.0.2",
+    "ngx-infinite-scroll": "^16.0.0",
     "ngx-owl-carousel-o": "^16.0.0",
     "ngx-toastr": "^15.2.2",
     "primeng": "^16.2.0",

@@ -57,8 +57,14 @@
         </div>
     </div>
 
-    <div class="w-100">
-        <section class="QmO3Bu" aria-role="tablist">
+    <div class="w-100" 
+        infiniteScroll 
+        [infiniteScrollDistance]="2" 
+        [infiniteScrollThrottle]="500"
+        (scrolled)="onScroll()" 
+        [scrollWindow]="true">
+
+        <section class="QmO3Bu">
             <a *ngFor="let status of orderStatus" [class.mRVNLm]="selectedStatus === status.value" class="KI5har"
                 title="{{status.display}}" [attr.aria-selected]="selectedStatus === status.value"
                 (click)="handleStatusChange(status.value)">
@@ -82,14 +88,10 @@
                             </g>
                         </g>
                     </svg>
-                    <input 
-                        aria-label="Input to search" 
-                        role="search" 
-                        autocomplete="off"
-                        placeholder="You can search by Order ID or Product name"
-                        #keySearch
+                    <input aria-label="Input to search" role="search" autocomplete="off"
+                        placeholder="You can search by Order ID or Product name" #keySearch
                         (keyup.enter)="doSearch(keySearch.value)">
-                    </div>
+                </div>
             </section>
 
 
@@ -170,15 +172,18 @@
                                                                         </div>
                                                                     </div>
                                                                     <div>
-                                                                        <div class="rsautk" tabindex="0">Variation: {{detail.sizeName }}</div>
-                                                                        <div class="j3I_Nh" tabindex="0">x{{ detail.quantity }}</div> 
+                                                                        <div class="rsautk" tabindex="0">Variation:
+                                                                            {{detail.sizeName }}</div>
+                                                                        <div class="j3I_Nh" tabindex="0">x{{
+                                                                            detail.quantity }}</div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                             <div class="ylYzwa" tabindex="0">
                                                                 <div class="YRp1mm">
                                                                     <span class="q6Gzj5"></span>
-                                                                    <span class="nW_6Oi PNlXhK">{{ detail.price | currency : "VND" }}
+                                                                    <span class="nW_6Oi PNlXhK">{{ detail.price |
+                                                                        currency : "VND" }}
                                                                     </span>
                                                                 </div>
                                                             </div>
@@ -210,7 +215,7 @@
                                     {{ order.totalAmount | currency : "VND" }}
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="yyqgYp">
@@ -226,12 +231,21 @@
                                 </div>
                             </div>
                             <div class="hbQXWm">
-                                <div><button class="stardust-button stardust-button--secondary QY7kZh">Buy Again</button></div>
+                                <div><button class="stardust-button stardust-button--secondary QY7kZh">Buy
+                                        Again</button></div>
                             </div>
                         </section>
                     </div>
                 </div>
 
+            </div>
+
+            <div *ngIf="isLoading" class="text-center">
+                <div class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
             </div>
         </div>
 

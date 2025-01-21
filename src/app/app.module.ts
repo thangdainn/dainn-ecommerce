@@ -40,6 +40,9 @@ import { OrderService } from './services/order.service';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
 
 const routes: Routes = [
   { path: 'shop', component: ShopComponent },
@@ -90,6 +93,8 @@ const routes: Routes = [
     TableModule,
     CheckboxModule,
     ButtonModule,
+    DataViewModule,
+    InfiniteScrollModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

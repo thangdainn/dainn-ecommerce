@@ -26,14 +26,21 @@ export class PurchaseOrderComponent implements OnInit {
   sortDir: string = 'desc';
   keyword: string = '';
 
+  isLoading = false;
+
   constructor(private orderService: OrderService) {}
 
   ngOnInit(): void {
     this.keyword = '';
-    this.handleProductsPaginate();
+    this.loadOrders();
   }
 
-  handleProductsPaginate() {
+  toggleLoading() {
+    this.isLoading = !this.isLoading;
+  }
+
+  loadOrders() {
+    this.toggleLoading();
     this.orderService
       .getOrdersPaginate(
         this.page - 1,
@@ -43,19 +50,22 @@ export class PurchaseOrderComponent implements OnInit {
         this.keyword,
         ''
       )
-      .subscribe(this.processResult());
+      .subscribe({
+        next: this.processResult(),
+        error: (err) => console.error(err),
+        complete: () => this.toggleLoading(),
+      });
   }
 
-  processResult() {
-    return (data: any) => {
-      this.orders = data.data;
-      this.page = data.page + 1;
-      this.size = data.size;
-      this.totalElements = data.totalElements;
-    };
+  doSearch(value: string) {
+    this.keyword = value;
+    this.loadOrders();
   }
 
   handleStatusChange(status: string) {
+    this.orders = [];
+    this.toggleLoading();
+    this.page = 1;
     this.selectedStatus = status;
     this.orderService
       .getOrdersPaginate(
@@ -66,11 +76,49 @@ export class PurchaseOrderComponent implements OnInit {
         this.keyword,
         status
       )
-      .subscribe(this.processResult());
+      .subscribe({
+        next: this.processResult(),
+        error: (err) => console.error(err),
+        complete: () => this.toggleLoading(),
+      });
   }
 
-  doSearch(value: string) {
-    this.keyword = value;
-    this.handleProductsPaginate();
+  private processResult() {
+    return (data: any) => {
+      this.orders = data.data;
+      this.page = data.page + 1;
+      this.size = data.size;
+      this.totalElements = data.totalElements;
+    };
+  }
+
+  appendData() {
+    this.toggleLoading();
+    this.orderService
+      .getOrdersPaginate(
+        this.page - 1,
+        this.size,
+        this.sortBy,
+        this.sortDir,
+        this.keyword,
+        this.selectedStatus
+      )
+      .subscribe({
+        next: (data) => {
+          this.orders = [...this.orders, ...data.data];
+          this.page = data.page + 1;
+          this.size = data.size;
+          this.totalElements = data.totalElements;
+        },
+        error: (err) => console.error(err),
+        complete: () => this.toggleLoading(),
+      });
+  }
+
+  onScroll() {
+    if (this.orders.length < this.totalElements) {
+      this.page++;
+      this.appendData();
+    }
   }
 }

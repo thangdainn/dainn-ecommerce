@@ -3,8 +3,7 @@
         <div class="breadcrumbs d-flex flex-row align-items-center">
             <ul>
                 <li><a routerLink="">Home</a></li>
-                <li class="active"><a ><i class="fa fa-angle-right"
-                            aria-hidden="true"></i>Checkout</a></li>
+                <li class="active"><a><i class="fa fa-angle-right" aria-hidden="true"></i>Checkout</a></li>
             </ul>
         </div>
     </div>
@@ -12,129 +11,166 @@
         <div class="row justify-content-center">
             <div class="col-xl-10 ftco-animate">
                 <form [formGroup]="checkoutFormGroup" (ngSubmit)="onSubmit()">
-                    <div class="billing-form">
-                        <h3 class="mb-4 billing-heading">Billing Details</h3>
+                    <div class="row">
+                        <div class="billing-form col-8">
+                            <h3 class="mb-4 billing-heading">Billing Details</h3>
 
-                        <div class="row align-items-end justify-content-center">
-                            <div formGroupName="customer" class="row w-100">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="fullName">Full Name</label>
-                                        <input id="fullName" formControlName="name" type="text" class="form-control" placeholder="">
-                                        <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
-                                            <small class="text-danger" *ngIf="name?.errors?.['required'] || name?.errors?.['notOnlyWhitespace']">
-                                                Name is required.</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="firstname">Phone</label>
-                                        <input formControlName="phone" type="text" class="form-control" placeholder="">
-                                        <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
-                                            <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
-                                                number is required.</small>
-                                            <small class="text-danger" *ngIf="phone?.errors?.['pattern']">Phone
-                                                number must start with 0 and be 10 digits long.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-100"></div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="emailaddress">Email</label>
-                                        <input formControlName="email" type="email" class="form-control" placeholder="">
-                                        <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
-                                            <small class="text-danger" *ngIf="email?.errors?.['required']">Email
-                                                is required.</small>
-                                            <small class="text-danger" *ngIf="email?.errors?.['pattern']">Invalid
-                                                email format.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="emailaddress">Note</label>
-                                        <input formControlName="note" type="text" class="form-control" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div formGroupName="shippingAddress" class="row w-100">
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="country">Province</label>
-                                        <div class="select-wrap">
-                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                            <select formControlName="province" (change)="onProvinceChange($event)"
-                                                class="form-control">
-                                                <option *ngFor="let province of provinces" [value]="province.id">{{
-                                                    province.name }}</option>
-                                            </select>
-                                            <div *ngIf="province?.invalid && (province?.touched || province?.dirty)">
+                            <div class="row align-items-end justify-content-center">
+                                <div formGroupName="customer" class="row w-100">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="fullName">Full Name</label>
+                                            <input id="fullName" formControlName="name" type="text" class="form-control"
+                                                placeholder="">
+                                            <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
                                                 <small class="text-danger"
-                                                    *ngIf="province?.errors?.['required']">Province is required.</small>
+                                                    *ngIf="name?.errors?.['required'] || name?.errors?.['notOnlyWhitespace']">
+                                                    Name is required.</small>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="country">District</label>
-                                        <div class="select-wrap">
-                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                            <select formControlName="district" (change)="onDistrictChange($event)"
-                                                class="form-control">
-                                                <option *ngFor="let district of districts" [value]="district.id">{{
-                                                    district.name }}</option>
-                                            </select>
-                                            <div *ngIf="district?.invalid && (district?.touched || district?.dirty)">
-                                                <small class="text-danger"
-                                                    *ngIf="district?.errors?.['required']">District is required.</small>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="firstname">Phone</label>
+                                            <input formControlName="phone" type="text" class="form-control"
+                                                placeholder="">
+                                            <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
+                                                <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
+                                                    number is required.</small>
+                                                <small class="text-danger" *ngIf="phone?.errors?.['pattern']">Phone
+                                                    number must start with 0 and be 10 digits long.</small>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-100"></div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="emailaddress">Email</label>
+                                            <input formControlName="email" type="email" class="form-control"
+                                                placeholder="">
+                                            <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
+                                                <small class="text-danger" *ngIf="email?.errors?.['required']">Email
+                                                    is required.</small>
+                                                <small class="text-danger" *ngIf="email?.errors?.['pattern']">Invalid
+                                                    email format.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="emailaddress">Note</label>
+                                            <input formControlName="note" type="text" class="form-control"
+                                                placeholder="">
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="w-100"></div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="country">Ward</label>
-                                        <div class="select-wrap">
-                                            <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                            <select formControlName="ward" (change)="onWardChange($event)"
-                                                class="form-control">
-                                                <option *ngFor="let ward of wards" [value]="ward.id">{{ ward.name }}
-                                                </option>
-                                            </select>
-                                            <div *ngIf="ward?.invalid && (ward?.touched || ward?.dirty)">
-                                                <small class="text-danger" *ngIf="ward?.errors?.['required']">Ward is
+                                <div formGroupName="shippingAddress" class="row w-100">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="country">Province</label>
+                                            <div class="select-wrap">
+                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                                <select formControlName="province" (change)="onProvinceChange($event)"
+                                                    class="form-control">
+                                                    <option *ngFor="let province of provinces" [value]="province.id">{{
+                                                        province.name }}</option>
+                                                </select>
+                                                <div
+                                                    *ngIf="province?.invalid && (province?.touched || province?.dirty)">
+                                                    <small class="text-danger"
+                                                        *ngIf="province?.errors?.['required']">Province is
+                                                        required.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="country">District</label>
+                                            <div class="select-wrap">
+                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                                <select formControlName="district" (change)="onDistrictChange($event)"
+                                                    class="form-control">
+                                                    <option *ngFor="let district of districts" [value]="district.id">{{
+                                                        district.name }}</option>
+                                                </select>
+                                                <div
+                                                    *ngIf="district?.invalid && (district?.touched || district?.dirty)">
+                                                    <small class="text-danger"
+                                                        *ngIf="district?.errors?.['required']">District is
+                                                        required.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="w-100"></div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="country">Ward</label>
+                                            <div class="select-wrap">
+                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                                <select formControlName="ward" (change)="onWardChange($event)"
+                                                    class="form-control">
+                                                    <option *ngFor="let ward of wards" [value]="ward.id">{{ ward.name }}
+                                                    </option>
+                                                </select>
+                                                <div *ngIf="ward?.invalid && (ward?.touched || ward?.dirty)">
+                                                    <small class="text-danger" *ngIf="ward?.errors?.['required']">Ward
+                                                        is
+                                                        required.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="towncity">Address</label>
+                                            <input formControlName="address" type="text" class="form-control"
+                                                placeholder="">
+                                            <div *ngIf="address?.invalid && (address?.touched || ward?.dirty)">
+                                                <small class="text-danger" *ngIf="address?.errors?.['required']">Address
+                                                    is
                                                     required.</small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="towncity">Address</label>
-                                        <input formControlName="address" type="text" class="form-control"
-                                            placeholder="">
-                                        <div *ngIf="address?.invalid && (address?.touched || ward?.dirty)">
-                                            <small class="text-danger" *ngIf="address?.errors?.['required']">Address is
-                                                required.</small>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
+                        </div><!-- END -->
+
+                        <div class="col-4 mt-4">
+
+                            <p-dataView #dv [value]="items">
+                                <ng-template let-item pTemplate="listItem">
+                                    <div class="ml-3">
+                                        <div class="d-flex py-4 justify-content-start">
+                                            <img class="" [src]="item.product.imgUrl" [alt]="item.product.name" style="width: 35%;"/>
+                                            <div class="w-100" style="font-size: 15px;">
+                                                <div class="d-block" style="font-weight: 500;">
+                                                    {{ item.product.name }}
+                                                </div>
+                                                <div class="mt-2" >
+                                                    Size: <span class="" style="font-weight: 500;">{{ item.size.name }}</span>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-between text-danger">
+                                                    <span class="">{{item.product.price | currency: "VND"}}</span>
+                                                    <span style="font-weight: 500;"> x{{ item.quantity }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-dataView>
                         </div>
-                    </div><!-- END -->
-
-
+                    </div>
 
                     <div class="row mt-4 pt-3 d-flex">
                         <div class="col-md-6 d-flex">
@@ -170,15 +206,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div
-                                    *ngIf="paymentMethod?.invalid && (paymentMethod?.touched || paymentMethod?.dirty)">
-                                    <small class="text-danger"
-                                        *ngIf="paymentMethod?.errors?.['required']">Payment
+                                <div *ngIf="paymentMethod?.invalid && (paymentMethod?.touched || paymentMethod?.dirty)">
+                                    <small class="text-danger" *ngIf="paymentMethod?.errors?.['required']">Payment
                                         method is required.</small>
                                 </div>
 
-                                <p><button type="submit"
-                                        class="btn btn-primary py-3 px-4">Place an order</button></p>
+                                <p><button type="submit" class="btn btn-primary py-3 px-4">Place an order</button></p>
                             </div>
                         </div>
                     </div>
