@@ -15,8 +15,9 @@ export class HeaderComponent implements OnInit {
 
   private notificationSubscription: any;
 
-  constructor(private cartService: CartService,
-    private authService: AuthService,
+  constructor(
+    private cartService: CartService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -26,7 +27,7 @@ export class HeaderComponent implements OnInit {
     this.socketClient = Stomp.over(ws);
 
     this.socketClient.connect(
-      { Authorization: 'Bearer ' + localStorage.getItem("JWT_TOKEN") },
+      { Authorization: 'Bearer ' + localStorage.getItem('token') },
       () => {
         console.log('Connected to the server');
         this.notificationSubscription = this.socketClient.subscribe(
@@ -43,8 +44,17 @@ export class HeaderComponent implements OnInit {
   }
 
   updateCartStatus() {
-    this.cartService.totalQuantity.subscribe(
-      (data) => (this.totalQuantity = data)
-    );
+    this.authService.isAuthenticatedSubject.subscribe((isAuthenticated) => {
+      if (isAuthenticated) {
+        this.cartService.getCountCartItems().subscribe((totalQuantity) => {
+          this.totalQuantity = totalQuantity;
+          this.cartService.totalQuantity.next(totalQuantity);
+        });
+      } else {
+        this.cartService.totalQuantity.subscribe((totalQuantity) => {
+          this.totalQuantity = totalQuantity;
+        });
+      }
+    });
   }
 }

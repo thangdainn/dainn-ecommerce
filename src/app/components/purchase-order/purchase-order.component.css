@@ -573,7 +573,3 @@ div.a11y-hidden, h1.a11y-hidden, h2.a11y-hidden, h3.a11y-hidden, h4.a11y-hidden,
     background: #ee4d2d !important;
     border-color: #ee4d2d !important;
 }
-
-.order-list {
-    overflow: scroll;
-}

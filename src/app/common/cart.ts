@@ -8,7 +8,7 @@ export class Cart {
         public sizeId: number = 0,
         public quantity: number = 0,
         public userId: number = 0,
-        public maxQuantity: number = 0,
+        public stock: number = 0,
         public product: Product = new Product(),
         public size: Size = new Size()
     ) {}

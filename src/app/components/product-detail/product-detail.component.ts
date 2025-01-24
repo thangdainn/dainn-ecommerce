@@ -1,16 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Product} from 'src/app/common/product';
-import {ProductService} from 'src/app/services/product.service';
-import {firstValueFrom} from 'rxjs';
-import {OwlOptions} from 'ngx-owl-carousel-o';
-import {Size} from 'src/app/common/size';
-import {SizeService} from 'src/app/services/size.service';
-import {ProductSize} from 'src/app/common/product-size';
-import {CartService} from 'src/app/services/cart.service';
-import {Cart} from 'src/app/common/cart';
-import {ToastrService} from 'ngx-toastr';
-import {AuthService} from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Product } from 'src/app/common/product';
+import { ProductService } from 'src/app/services/product.service';
+import { firstValueFrom } from 'rxjs';
+import { OwlOptions } from 'ngx-owl-carousel-o';
+import { Size } from 'src/app/common/size';
+import { ProductSize } from 'src/app/common/product-size';
+import { CartService } from 'src/app/services/cart.service';
+import { Cart } from 'src/app/common/cart';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -48,26 +47,30 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private sizeService: SizeService,
     private cartService: CartService,
     private authService: AuthService,
     private route: ActivatedRoute,
     private toastService: ToastrService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.handleProductDetails().then(r => r);
+    this.handleProductDetails().then((r) => r);
   }
 
   async handleProductDetails() {
     try {
       const productIdParam = this.route.snapshot.paramMap.get('code');
-      const productCode: string = productIdParam !== null ? productIdParam : 'none';
-      this.sizeService.getProductSizeByCode(productCode).subscribe(data => {
-        this.productSizes = data;
-        this.totalQuantity = this.productSizes.reduce((acc, size) => acc + size.quantity, 0);
-      });
+      const productCode: string =
+        productIdParam !== null ? productIdParam : 'none';
+      this.productService
+        .getProductSizeByCode(productCode)
+        .subscribe((data) => {
+          this.productSizes = data;
+          this.totalQuantity = this.productSizes.reduce(
+            (acc, size) => acc + size.quantity,
+            0
+          );
+        });
 
       this.product = await firstValueFrom(
         this.productService.getProductByCode(productCode)
@@ -84,6 +87,7 @@ export class ProductDetailComponent implements OnInit {
   selectSize(size: any): void {
     if (size.quantity > 0) {
       this.selectedSize = size.sizeId;
+      this.sizeName = size.sizeName;
       this.totalQuantity = size.quantity;
       this.quantity = 1;
     }
@@ -110,37 +114,28 @@ export class ProductDetailComponent implements OnInit {
     } else {
       this.quantity = 1;
     }
-
   }
 
-  async addToCart(): Promise<void> {
+  addToCart() {
     if (this.selectedSize > 0) {
       try {
-        let maxQuantity = 0;
-        this.productSizes.forEach(ps => {
-          if (ps.sizeId === this.selectedSize) {
-            this.sizeName = ps.sizeName;
-            maxQuantity = ps.quantity;
-          }
-        });
         const cartItem = new Cart(
           null,
           this.product.id,
           this.selectedSize,
           this.quantity,
           this.authService.userIdSubject.value,
-          maxQuantity,
+          this.totalQuantity,
           this.product,
           new Size(this.selectedSize, this.sizeName)
         );
-        await firstValueFrom(this.cartService.addToCart(cartItem));
+        this.cartService.addToCart(cartItem);
         this.toastService.success('Added to cart', 'Success', {
           timeOut: 3000,
           progressBar: true,
           progressAnimation: 'increasing',
           positionClass: 'toast-top-right',
         });
-        this.cartService.computeCartTotals();
       } catch (error) {
         this.toastService.error('Error Adding to cart', 'Error', {
           timeOut: 3000,

@@ -26,12 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const jwtToken = this.authService.getToken();
 
     if (jwtToken) {
-      if (
-        !this.authService.isTokenExpired(jwtToken) &&
-        !this.authService.isAuthenticatedSubject.value
-      ) {
-        this.authService.setAuthenticationStatus(jwtToken);
-      }
+      
       request = this.addToken(request, jwtToken);
     }
     return next.handle(request).pipe(

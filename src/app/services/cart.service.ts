@@ -1,12 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  firstValueFrom,
-  from,
-  map,
-  Observable,
-} from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, Observable } from 'rxjs';
 import { Cart } from '../common/cart';
 import { environment } from 'src/environments/environment.development';
 
@@ -32,26 +26,45 @@ export class CartService {
     this.storage.setItem('cartItems', JSON.stringify(this.carts));
   }
 
-  getCarts(userId: number): Observable<Promise<Cart[]>> {
-    const cartUrl = `${this.baseUrl}/${userId}`;
-    return this.httpClient.get<Cart[]>(cartUrl, {}).pipe(
-      map(async (response) => {
-        for (let item of response) {
-          let cartExist = this.getCartExist(item);
-          if (cartExist) {
-            cartExist = this.updateCartExist(item, cartExist);
-            cartExist.userId = userId;
-            let res = await firstValueFrom(this.updateToDB(cartExist));
-            cartExist.id = res.id;
-          } else {
-            this.carts.push(item);
-          }
-        }
-        this.addCartSessionToDB(userId, this.carts);
-        this.computeCartTotals();
-        return this.carts;
-      })
+  getCartsFromLocal(): Cart[] {
+    let data = JSON.parse(this.storage.getItem('cartItems')!);
+    if (data != null) {
+      this.carts = data;
+    }
+    return this.carts;
+  }
+
+  getCountCartItems(): Observable<number> {
+    return this.httpClient.get<number>(this.baseUrl + '/count');
+  }
+
+  updateCartQuantity() {
+    this.getCountCartItems().subscribe((count) =>
+      this.totalQuantity.next(count)
     );
+  }
+
+  getCarts(
+    page: number,
+    size: number,
+    sortBy: string,
+    sortDir: string
+  ): Observable<GetResponseCart> {
+    return this.httpClient.get<GetResponseCart>(
+      `${this.baseUrl}?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`
+    );
+  }
+
+  handleCartLogin(userId: number): Observable<Cart[]> {
+    let data = JSON.parse(this.storage.getItem('cartItems')!);
+    if (data != null) {
+      this.storage.removeItem('cartItems');
+      data.forEach((item: Cart) => {
+        item.userId = userId;
+      });
+      return this.addToDB(data);
+    }
+    return from([]);
   }
 
   private getCartExist(cart: Cart) {
@@ -63,53 +76,33 @@ export class CartService {
   }
 
   private updateCartExist(item: Cart, cartExist: Cart): Cart {
-    if (item.quantity + cartExist.quantity > cartExist.maxQuantity) {
-      cartExist.quantity = cartExist.maxQuantity;
+    if (item.quantity + cartExist.quantity > cartExist.stock) {
+      cartExist.quantity = cartExist.stock;
     } else {
       cartExist.quantity += item.quantity;
     }
     return cartExist;
   }
 
-  private async addCartSessionToDB(userId: number, carts: Cart[]) {
-    for (let cart of carts) {
-      if (cart.id === 0 || cart.id == null) {
-        {
-          cart.userId = userId;
-          let res = await firstValueFrom(this.addToDB(cart));
-          cart.id = res.id;
-        }
-      }
+  async addToCart(cartItem: Cart) {
+    if (cartItem.userId !== 0) {
+      await firstValueFrom(this.addToDB([cartItem]));
+      this.updateCartQuantity();
+      return;
     }
-  }
-
-  addToCart(cartItem: Cart): Observable<Cart> {
-    return from(this.addToCartAsync(cartItem));
-  }
-
-  private async addToCartAsync(cartItem: Cart): Promise<Cart> {
     let cartExist = this.getCartExist(cartItem);
     if (cartExist) {
       cartExist = this.updateCartExist(cartItem, cartExist);
-      if (cartItem.userId !== 0) {
-        const updatedCart = await firstValueFrom(this.updateToDB(cartExist));
-        cartExist.id = updatedCart.id;
-        return cartExist;
-      }
     } else {
-      if (cartItem.userId !== 0) {
-        const newCart = await firstValueFrom(this.addToDB(cartItem));
-        cartItem.id = newCart.id;
-        this.carts.push(cartItem);
-        return cartItem;
-      }
       this.carts.push(cartItem);
     }
-    return {} as Cart;
+    console.log(this.carts);
+
+    this.computeCartTotals();
   }
 
-  addToDB(cartItem: Cart): Observable<Cart> {
-    return this.httpClient.post<Cart>(this.baseUrl, cartItem);
+  addToDB(items: Cart[]): Observable<Cart[]> {
+    return this.httpClient.post<Cart[]>(this.baseUrl, items);
   }
 
   updateToDB(cartItem: Cart): Observable<Cart> {
@@ -120,52 +113,42 @@ export class CartService {
     return this.httpClient.delete<Cart>(this.baseUrl, { body: ids });
   }
 
-  incQuantity(cartItem: Cart) {
-    cartItem.quantity++;
-    if (cartItem.userId !== 0) {
-      this.updateToDB(cartItem).subscribe();
-    }
-    this.computeCartTotals();
-  }
-
-  decQuantity(cartItem: Cart) {
-    cartItem.quantity--;
-    if (cartItem.userId !== 0) {
-      this.updateToDB(cartItem).subscribe();
-    }
-    this.computeCartTotals();
+  removeItemsInCache(cartItems: Cart[]) {
+    cartItems.forEach((tempCartItem) => {
+      const index = this.carts.findIndex(
+        (cartItem) =>
+          cartItem.productId === tempCartItem.productId &&
+          cartItem.sizeId === tempCartItem.sizeId
+      );
+      if (index > -1) {
+        this.carts.splice(index, 1);
+        this.computeCartTotals();
+      }
+    });
   }
 
   removeItems(cartItems: Cart[]) {
-    let ids: number[] = [];
-    for (let item of cartItems) {
-      const itemIndex = this.carts.findIndex(
-        (tempCartItem) =>
-          tempCartItem.productId === item.productId &&
-          tempCartItem.sizeId === item.sizeId
-      );
-      if (itemIndex > -1) {
-        this.carts.splice(itemIndex, 1);
-        ids.push(item.id);
-        this.computeCartTotals();
-      }
-    }
-    if (ids.length > 0) {
+    if (cartItems[0].userId !== 0) {
+      let ids = cartItems.map((item) => item.id);
       this.removeFromDB(ids).subscribe();
     }
-    
   }
 
   updateCartItemQuantity(cartItem: Cart, newQuantity: number) {
-    if (newQuantity > 0 && newQuantity <= cartItem.maxQuantity) {
+    if (newQuantity > 0 && newQuantity <= cartItem.stock) {
       cartItem.quantity = newQuantity;
-    } else if (newQuantity > cartItem.maxQuantity) {
-      cartItem.quantity = cartItem.maxQuantity;
+    } else if (newQuantity > cartItem.stock) {
+      cartItem.quantity = cartItem.stock;
     } else {
       cartItem.quantity = 1;
     }
     if (cartItem.userId !== 0) {
-      this.httpClient.put<Cart>(this.baseUrl, cartItem, {});
+      this.updateToDB(cartItem).subscribe();
+      return;
+    }
+    let cartExist = this.getCartExist(cartItem);
+    if (cartExist) {
+      cartExist.quantity = cartItem.quantity;
     }
     this.computeCartTotals();
   }
@@ -177,7 +160,13 @@ export class CartService {
 
   clearCart() {
     this.carts = [];
-    this.storage.removeItem('cartItems');
     this.computeCartTotals();
   }
+}
+
+interface GetResponseCart {
+  data: Cart[],
+  page: number,
+  size: number,
+  totalElements: number,
 }

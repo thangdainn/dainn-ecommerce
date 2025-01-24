@@ -314,11 +314,7 @@
     z-index: 2;
 }
 
-.btn-checkout {
-    /* color: #000000; */
-    border-radius: 3px;
-    font-size: 14px;
-}
+
 
 table thead {
   margin-bottom: 10px;
@@ -330,4 +326,16 @@ tr{
   font-size: 13.5px !important;
 }
 
+button {
+  background: rgba(239, 68, 68, 0.04) !important;
+  max-height: min-content;
+  align-items: flex-start;
+  padding: 2px 11px;
+}
 
+.btn-checkout {
+  /* color: #000000; */
+  border-radius: 3px;
+  font-size: 14px;
+  background: #dbcc8f !important;
+}

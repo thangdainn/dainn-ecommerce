@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { CartService } from './cart.service';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
@@ -12,15 +11,15 @@ export class AuthService {
   private authUrl = environment.apiUrl + '/api/auth';
   private logOutUrl = environment.apiUrl + '/logout';
 
-  private readonly JWT_TOKEN = 'JWT_TOKEN';
+  readonly token = 'token';
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   loggedUserSubject = new BehaviorSubject<string>('');
   userIdSubject = new BehaviorSubject<number>(0);
+  rolesSubject = new BehaviorSubject<string[]>([]);
 
   constructor(
     private httpClient: HttpClient,
     private deviceService: DeviceDetectorService,
-    private cartService: CartService
   ) {}
 
   login(user: {
@@ -32,9 +31,8 @@ export class AuthService {
     return this.httpClient
       .post<GetResponseLogin>(this.authUrl + '/login', user)
       .pipe(
-        tap((jwt) => {
+        tap(jwt => {
           this.setAuthenticationStatus(jwt.access_token);
-          this.cartService.getCarts(this.userIdSubject.value).subscribe();
         })
       );
   }
@@ -52,27 +50,37 @@ export class AuthService {
         }
       )
       .pipe(
-        tap((jwt) => {
+        tap(jwt => {
           this.setAuthenticationStatus(jwt.access_token);
-          this.cartService.getCarts(this.userIdSubject.value).subscribe();
         })
       );
   }
 
+  getMyInfo(): Observable<GetResponseInfo> {
+    return this.httpClient.get<GetResponseInfo>(this.authUrl + '/me');
+  }
+
   setAuthenticationStatus(access_token: any) {
     this.setToken(access_token);
-    const decodeJwt = this.decodeJwt(access_token);
-    this.loggedUserSubject.next(decodeJwt.name);
-    this.userIdSubject.next(decodeJwt.id);
-    this.isAuthenticatedSubject.next(true);
+    this.getMyInfo().subscribe({
+      next: response => {
+        this.loggedUserSubject.next(response.name);
+        this.userIdSubject.next(response.id);
+        this.isAuthenticatedSubject.next(true);
+        this.rolesSubject.next(response.rolesName);
+      },
+      error: () => {
+        this.isAuthenticatedSubject.next(false);
+      },
+    });
   }
 
   setToken(jwt: string) {
-    localStorage.setItem(this.JWT_TOKEN, jwt);
+    localStorage.setItem(this.token, jwt);
   }
 
   getToken(): string {
-    return localStorage.getItem(this.JWT_TOKEN)!;
+    return localStorage.getItem(this.token)!;
   }
 
   isTokenExpired(token: string): boolean {
@@ -85,24 +93,12 @@ export class AuthService {
     }
   }
 
-  me(id: number): Observable<GetResponseInfo> {
-    if (id) {
-      return this.httpClient.get<GetResponseInfo>(`${this.authUrl}/${id}`);
-    } else {
-      throw new Error('Token is invalid or expired');
-    }
-  }
-
   decodeJwt(token: string): any {
     const payload = token.split('.')[1];
     return JSON.parse(atob(payload));
   }
 
   logout(): void {
-    localStorage.removeItem(this.JWT_TOKEN);
-    this.isAuthenticatedSubject.next(false);
-    this.userIdSubject.next(0);
-    // this.cartService.clearCart();
     this.httpClient.post(this.logOutUrl, {}).subscribe();
   }
 
@@ -131,4 +127,6 @@ interface GetResponseLogin {
 interface GetResponseInfo {
   id: number;
   name: string;
+  email: string;
+  rolesName: string[];
 }

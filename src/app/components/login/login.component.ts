@@ -8,6 +8,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+import { CartService } from 'src/app/services/cart.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +24,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private cartService: CartService,
     private router: Router
   ) {}
 
@@ -48,8 +51,13 @@ export class LoginComponent implements OnInit {
       client_id: this.clientId,
       callback: (response: any) => {
         this.authService.loginWithGoogle(response).subscribe({
-          next: (response) => {
+          next: async (response) => {
             console.log('Login successful: ' + response);
+            await firstValueFrom(
+              this.cartService.handleCartLogin(
+                this.getUserId(response.access_token)
+              )
+            );
             this.router.navigate(['/']);
           },
           error: (err) => {
@@ -61,7 +69,7 @@ export class LoginComponent implements OnInit {
 
     google.accounts.id.renderButton(
       document.getElementById('google-signin-button'),
-      { theme: 'outline', size: 'large', type: 'icon' }
+      { theme: 'outline', size: 'large' }
     );
   }
 
@@ -77,8 +85,13 @@ export class LoginComponent implements OnInit {
         deviceInfo: '',
       })
       .subscribe({
-        next: (response) => {
+        next: async (response) => {
           console.log('Login successful: ' + response);
+          await firstValueFrom(
+            this.cartService.handleCartLogin(
+              this.getUserId(response.access_token)
+            )
+          );
           this.router.navigate(['/']);
         },
         error: (err) => {
@@ -93,5 +106,10 @@ export class LoginComponent implements OnInit {
 
   get password() {
     return this.loginFormGroup.get('password');
+  }
+
+  private getUserId(token: string): number {
+    const jwtDecoded = this.authService.decodeJwt(token);
+    return jwtDecoded.id;
   }
 }

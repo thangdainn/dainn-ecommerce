@@ -1,40 +1,49 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Product } from '../common/product';
 import { environment } from 'src/environments/environment.development';
+import { ProductSize } from '../common/product-size';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductService {
+  private baseUrl = environment.apiUrl + '/api/products';
 
-  private baseUrl = environment.apiUrl + '/api/products'
-
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {}
 
   getAllProduct(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.baseUrl);
   }
 
-  getProductsPaginate(page: number, size: number, sortBy: string, sortDir: string,
-                      keyword: string, categoryIds: number[], brandIds: number[],
-                      minPrice: number, maxPrice: number, isSubmitPrice: boolean): Observable<GetResponseProduct> {
+  getProductsPaginate(
+    page: number,
+    size: number,
+    sortBy: string,
+    sortDir: string,
+    keyword: string,
+    categoryIds: number[],
+    brandIds: number[],
+    minPrice: number,
+    maxPrice: number,
+    isSubmitPrice: boolean
+  ): Observable<GetResponseProduct> {
     let searchUrl = `${this.baseUrl}?page=${page}&size=${size}`;
     switch (sortBy) {
       case 'Latest':
-        sortBy = "createdDate";
-        sortDir = "desc";
+        sortBy = 'createdDate';
+        sortDir = 'desc';
         break;
       case 'Price: Low to High':
-        sortBy = "price";
+        sortBy = 'price';
         break;
       case 'Price: High to Low':
-        sortBy = "price";
-        sortDir = "desc";
+        sortBy = 'price';
+        sortDir = 'desc';
         break;
       default:
-        sortBy = "id";
+        sortBy = 'id';
         break;
     }
     searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
@@ -60,15 +69,32 @@ export class ProductService {
     return this.httpClient.get<Product>(productUrl);
   }
 
-  getTop10LeastProducts(): Observable<GetResponseProduct>{
+  getTop10LeastProducts(): Observable<GetResponseProduct> {
     const searchUrl = `${this.baseUrl}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
     return this.httpClient.get<GetResponseProduct>(searchUrl);
+  }
+
+  getStockByProductAndSize(
+    productId: number,
+    sizeId: number
+  ): Observable<ProductSize> {
+    const psUrl = `${this.baseUrl}/stock?productId=${productId}&sizeId=${sizeId}`;
+    return this.httpClient.get<ProductSize>(psUrl);
+  }
+
+  getProductSizeByCode(code: string): Observable<ProductSize[]> {
+    const psUrl = `${this.baseUrl}/stock/${code}`;
+    return this.httpClient
+      .get<ProductSize[]>(psUrl)
+      .pipe(
+        map((size) => size.sort((a, b) => a.sizeName.localeCompare(b.sizeName)))
+      );
   }
 }
 
 interface GetResponseProduct {
-  data: Product[],
-  page: number,
-  size: number,
-  totalElements: number,
+  data: Product[];
+  page: number;
+  size: number;
+  totalElements: number;
 }

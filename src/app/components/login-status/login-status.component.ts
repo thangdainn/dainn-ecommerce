@@ -19,6 +19,10 @@ export class LoginStatusComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const jwtToken = this.authService.getToken();
+    if (jwtToken) {
+      this.authService.setAuthenticationStatus(jwtToken);
+    }
     this.authService.isAuthenticatedSubject.subscribe((data) => {
       this.isAuthenticated = data;
     });
@@ -29,8 +33,10 @@ export class LoginStatusComponent implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.authService.isAuthenticatedSubject.next(false);
+    this.cartService.storage.removeItem(this.authService.token);
     this.authService.loggedUserSubject.next('');
+    this.authService.isAuthenticatedSubject.next(false);
+    this.authService.userIdSubject.next(0);
     this.cartService.clearCart();
     this.route.navigate(['/login']);
   }
