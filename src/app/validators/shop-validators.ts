@@ -7,4 +7,13 @@ export class ShopValidators {
         }
         return null;
     }
+
+    static passwordMisMatch(control: FormControl) : null | ValidationErrors {
+        const password = control.get('password');
+        const rePassword = control.get('rePassword');
+        if (password && rePassword && password.value !== rePassword.value) {
+            return {'passwordMisMatch': true};
+        }
+        return null;
+    }
 }

@@ -19,8 +19,15 @@ export class AuthService {
 
   constructor(
     private httpClient: HttpClient,
-    private deviceService: DeviceDetectorService,
+    private deviceService: DeviceDetectorService
   ) {}
+
+  register(user: { name: string; email: string; password: string }) {
+    return this.httpClient.post<GetResponseLogin>(
+      this.authUrl + '/register',
+      user
+    );
+  }
 
   login(user: {
     email: string;
@@ -31,7 +38,7 @@ export class AuthService {
     return this.httpClient
       .post<GetResponseLogin>(this.authUrl + '/login', user)
       .pipe(
-        tap(jwt => {
+        tap((jwt) => {
           this.setAuthenticationStatus(jwt.access_token);
         })
       );
@@ -50,7 +57,7 @@ export class AuthService {
         }
       )
       .pipe(
-        tap(jwt => {
+        tap((jwt) => {
           this.setAuthenticationStatus(jwt.access_token);
         })
       );
@@ -63,7 +70,7 @@ export class AuthService {
   setAuthenticationStatus(access_token: any) {
     this.setToken(access_token);
     this.getMyInfo().subscribe({
-      next: response => {
+      next: (response) => {
         this.loggedUserSubject.next(response.name);
         this.userIdSubject.next(response.id);
         this.isAuthenticatedSubject.next(true);

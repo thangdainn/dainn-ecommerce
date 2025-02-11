@@ -9,11 +9,19 @@
                     <div class="col-md-12">
                         <div class="form-block">
                             <div class="mb-4">
-                                <h3>Sign In</h3>
+                                <h3>Register</h3>
                                 <p class="mb-4">Lorem ipsum dolor sit amet elit. Sapiente sit aut eos consectetur
                                     adipisicing.</p>
                             </div>
-                            <form [formGroup]="loginFormGroup" (ngSubmit)="onSubmit()">
+                            <form [formGroup]="registerFormGroup" (ngSubmit)="onSubmit()">
+                                <div class="form-group first">
+                                    <label for="name">Name</label>
+                                    <input formControlName="name" type="text" class="form-control" id="name">
+                                    <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
+                                        <small class="text-danger" *ngIf="name?.errors?.['required']">Name
+                                            is required.</small>
+                                    </div>
+                                </div>
                                 <div class="form-group first">
                                     <label for="email">Email</label>
                                     <input formControlName="email" type="email" class="form-control" id="email">
@@ -23,8 +31,12 @@
                                         <small class="text-danger" *ngIf="email?.errors?.['pattern']">Invalid
                                             email format.</small>
                                     </div>
+                                    <div *ngIf="emailIsExisted" class="mt-2">
+                                        <small class="text-danger">Email existed</small>
+                                      </div>
                                 </div>
-                                <div class="form-group last mb-3">
+
+                                <div class="form-group last mb-4">
                                     <label for="password">Password</label>
                                     <input formControlName="password" type="password" class="form-control"
                                         id="password">
@@ -35,25 +47,22 @@
                                             be at least 6 characters long.</small>
                                     </div>
                                 </div>
-
-                                <div class="d-flex mb-5 align-items-center">
-                                    <span class="ml-auto"><a href="#" class="forgot-pass">Forgot Password</a></span>
+                                <div class="form-group last mb-4">
+                                    <label for="rePassword">Confirm Password</label>
+                                    <input formControlName="rePassword" type="password" class="form-control"
+                                        id="rePassword">
+                                    
+                                    <div *ngIf="registerFormGroup.errors?.['passwordMisMatch'] && (rePassword?.dirty || rePassword?.touched)">
+                                        <small class="text-danger">Passwords do not match.</small>
+                                    </div>
                                 </div>
 
-                                <button type="submit" value="Log In"
+                                <button type="submit" value="Register"
                                     class="btn btn-pill text-white btn-block btn-primary">Submit</button>
 
                                 <div class="d-flex mt-3 align-items-center justify-content-end">
-                                    <span class="ml-auto" style="font-size: 12px;">Don't have an account?</span>
-                                    <a routerLink="/register" class="forgot-pass">Sign up</a>
-                                </div>
-
-                                <p-divider align="center" type="solid">
-                                    <span class="text-muted">or log in with</span>
-                                </p-divider>
-
-                                <div class="social-login text-center">
-                                    <a id="google-signin-button"></a>
+                                    <span class="ml-auto" style="font-size: 12px;">Already have an account?</span>
+                                    <a routerLink="/login" class="forgot-pass">Sign in</a>
                                 </div>
                             </form>
                         </div>

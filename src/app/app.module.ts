@@ -41,7 +41,9 @@ import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
+import { DividerModule } from 'primeng/divider';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { RegisterComponent } from './components/register/register.component';
 
 
 const routes: Routes = [
@@ -55,6 +57,7 @@ const routes: Routes = [
   { path: 'order-status', component: PaymentStatusComponent },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'purchase', component: PurchaseOrderComponent, canActivate: [authGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
   { path: '', component: HomeComponent },
   { path: '', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' },
@@ -78,6 +81,7 @@ const routes: Routes = [
     LoginComponent,
     LoginStatusComponent,
     PurchaseOrderComponent,
+    RegisterComponent,
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -94,6 +98,7 @@ const routes: Routes = [
     CheckboxModule,
     ButtonModule,
     DataViewModule,
+    DividerModule,
     InfiniteScrollModule
   ],
   providers: [
