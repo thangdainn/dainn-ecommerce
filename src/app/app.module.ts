@@ -42,8 +42,9 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { DividerModule } from 'primeng/divider';
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { InfiniteScrollDirective  } from 'ngx-infinite-scroll';
 import { RegisterComponent } from './components/register/register.component';
+import { ScrollTopModule } from 'primeng/scrolltop';
 
 
 const routes: Routes = [
@@ -81,7 +82,7 @@ const routes: Routes = [
     LoginComponent,
     LoginStatusComponent,
     PurchaseOrderComponent,
-    RegisterComponent,
+    RegisterComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -99,7 +100,8 @@ const routes: Routes = [
     ButtonModule,
     DataViewModule,
     DividerModule,
-    InfiniteScrollModule
+    InfiniteScrollDirective,
+    ScrollTopModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
