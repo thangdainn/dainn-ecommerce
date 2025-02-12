@@ -14029,3 +14029,41 @@ asl-google-signin-button::part(icon) {
   border: 1px solid #dee2e6 !important;
   border-width: 1px 1px 1px 1px !important;
 }
+
+.p-button-custom {
+  background-color: #dbcc8f;
+  border: 1px solid #dbcc8f;
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}
+
+.p-button-success-custom {
+  background-color: #28a745;
+  border: 1px solid #28a745;
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}
+
+.p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
+  background-color: #dbcc8f;
+}
+
+.p-stepper .p-stepper-header.p-highlight .p-stepper-number {
+  background: #ffffff;
+  color: #dbcc8f;
+}
+
+.p-stepper .p-stepper-header.p-highlight .p-stepper-title {
+  color: #dbcc8f;
+}
+
+.pi {
+  font-size: 0.8rem;
+}
+
+p-password input,
+.input-password-custom {
+  border-radius: 6px;
+  width: 100%;
+  font-size: 0.8rem;
+}

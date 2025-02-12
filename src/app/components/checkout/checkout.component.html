@@ -149,20 +149,26 @@
                         <div class="col-4 mt-4">
 
                             <p-dataView #dv [value]="items">
-                                <ng-template let-item pTemplate="listItem">
+                                <ng-template let-item pTemplate="list">
                                     <div class="ml-3">
-                                        <div class="d-flex py-4 justify-content-start">
-                                            <img class="" [src]="item.product.imgUrl" [alt]="item.product.name" style="width: 35%;"/>
-                                            <div class="w-100" style="font-size: 15px;">
-                                                <div class="d-block" style="font-weight: 500;">
-                                                    {{ item.product.name }}
-                                                </div>
-                                                <div class="mt-2" >
-                                                    Size: <span class="" style="font-weight: 500;">{{ item.size.name }}</span>
-                                                </div>
-                                                <div class="d-flex align-items-center justify-content-between text-danger">
-                                                    <span class="">{{item.product.price | currency: "VND"}}</span>
-                                                    <span style="font-weight: 500;"> x{{ item.quantity }}</span>
+                                        <div class="col-12" *ngFor="let item of items; let first = first"
+                                            class="col-12">
+                                            <div class="d-flex py-4 justify-content-start">
+                                                <img class="" [src]="item.product.imgUrl" [alt]="item.product.name"
+                                                    style="width: 35%;" />
+                                                <div class="w-100" style="font-size: 15px;">
+                                                    <div class="d-block" style="font-weight: 500;">
+                                                        {{ item.product.name }}
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        Size: <span class="" style="font-weight: 500;">{{ item.size.name
+                                                            }}</span>
+                                                    </div>
+                                                    <div
+                                                        class="d-flex align-items-center justify-content-between text-danger">
+                                                        <span class="">{{item.product.price | currency: "VND"}}</span>
+                                                        <span style="font-weight: 500;"> x{{ item.quantity }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

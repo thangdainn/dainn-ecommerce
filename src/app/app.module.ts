@@ -45,6 +45,10 @@ import { DividerModule } from 'primeng/divider';
 import { InfiniteScrollDirective  } from 'ngx-infinite-scroll';
 import { RegisterComponent } from './components/register/register.component';
 import { ScrollTopModule } from 'primeng/scrolltop';
+import { StepperModule } from 'primeng/stepper';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputOtpModule } from 'primeng/inputotp';
+import { PasswordModule } from 'primeng/password';
 
 
 const routes: Routes = [
@@ -101,7 +105,11 @@ const routes: Routes = [
     DataViewModule,
     DividerModule,
     InfiniteScrollDirective,
-    ScrollTopModule
+    ScrollTopModule,
+    StepperModule,
+    FloatLabelModule,
+    InputOtpModule,
+    PasswordModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

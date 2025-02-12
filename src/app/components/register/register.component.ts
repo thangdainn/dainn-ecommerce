@@ -18,6 +18,9 @@ import { ToastrService } from 'ngx-toastr';
 export class RegisterComponent implements OnInit {
   registerFormGroup!: FormGroup;
   emailIsExisted: boolean = false;
+  otp: string = '';
+  verifyOtp: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -31,24 +34,80 @@ export class RegisterComponent implements OnInit {
   }
 
   private validateFormLogin() {
-    this.registerFormGroup = this.formBuilder.group({
-      name: new FormControl('', [
-        Validators.required,
-        ShopValidators.notOnlyWhitespace,
-      ]),
-      email: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(6),
-      ]),
-      rePassword: new FormControl('', [
-        Validators.required,
-      ]),
-    }, { validators: ShopValidators.passwordMisMatch }
-  );
+    this.registerFormGroup = this.formBuilder.group(
+      {
+        name: new FormControl('', [
+          Validators.required,
+          ShopValidators.notOnlyWhitespace,
+        ]),
+        email: new FormControl('', [
+          Validators.required,
+          Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
+        ]),
+        password: new FormControl('', [
+          Validators.required,
+          Validators.minLength(6),
+        ]),
+        rePassword: new FormControl('', [Validators.required]),
+      },
+      { validators: ShopValidators.passwordMisMatch }
+    );
+  }
+
+  onCheckEmail(nextCallback: any) {
+    if (this.emailIsExisted) {
+      this.emailIsExisted = false;
+    }
+    if (this.email!.invalid) {
+      this.email!.markAsTouched();
+      return;
+    }
+    this.isLoading = true;
+    this.authService.checkEmail(this.email!.value).subscribe({
+      next: (data) => {
+        if (data) {
+          this.emailIsExisted = true;
+          return;
+        }
+        this.authService.sendOtp(this.email!.value).subscribe({
+          next: () => {
+            nextCallback.emit();
+          },
+          error: (err) => {
+            console.log('Send OTP failed: ' + err.message);
+          },
+          complete: () => {
+            this.isLoading = false;
+          }
+        });
+      },
+      error: (err) => {
+        if (err.status === 400) {
+          this.emailIsExisted = true;
+        }
+        this.isLoading = false;
+      }
+    });
+  }
+
+  onVerifyOtp(nextCallback: any) {
+    this.isLoading = true;
+    this.authService.verifyOtp(this.email!.value, this.otp).subscribe({
+      next: (data) => {
+        if (!data) {
+          this.verifyOtp = "OTP is invalid";
+          return;
+        }
+        this.otp = '';
+        nextCallback.emit();
+      },
+      error: (err) => {
+        console.log('Verify OTP failed: ' + err.message);
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
   onSubmit() {
@@ -56,11 +115,12 @@ export class RegisterComponent implements OnInit {
       this.registerFormGroup.markAllAsTouched();
       return;
     }
+    this.isLoading = true;
     this.authService
       .register({
         name: this.name!.value,
         email: this.email!.value,
-        password: this.password!.value
+        password: this.password!.value,
       })
       .subscribe({
         next: () => {
@@ -81,6 +141,9 @@ export class RegisterComponent implements OnInit {
             console.log('Register failed: ' + err.message);
           }
         },
+        complete: () => {
+          this.isLoading = false;
+        }
       });
   }
 

@@ -4,9 +4,7 @@
 
 .form-block {
   background: #fff;
-  padding: 60px;
-  -webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 2rem 5rem;
 }
 @media (max-width: 991.98px) {
   .form-block {
@@ -252,3 +250,22 @@
 .text-muted {
   font-size: 13px;
 }
+
+.card {
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.p-component {
+  font-size: 0.8rem;
+}
+
+input {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  width: 14rem;
+}
+

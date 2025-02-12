@@ -67,6 +67,23 @@ export class AuthService {
     return this.httpClient.get<GetResponseInfo>(this.authUrl + '/me');
   }
 
+  checkEmail(email: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.authUrl + '/check-email', {
+      email,
+    });
+  }
+
+  sendOtp(email: string): Observable<any> {
+    return this.httpClient.post(this.authUrl + '/send-otp', { email });
+  }
+
+  verifyOtp(email: string, otp: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.authUrl + '/verify-otp', {
+      email,
+      otp,
+    });
+  }
+
   setAuthenticationStatus(access_token: any) {
     this.setToken(access_token);
     this.getMyInfo().subscribe({
