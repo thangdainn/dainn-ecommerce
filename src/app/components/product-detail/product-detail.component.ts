@@ -8,8 +8,8 @@ import { Size } from 'src/app/common/size';
 import { ProductSize } from 'src/app/common/product-size';
 import { CartService } from 'src/app/services/cart.service';
 import { Cart } from 'src/app/common/cart';
-import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-product-detail',
@@ -50,7 +50,7 @@ export class ProductDetailComponent implements OnInit {
     private cartService: CartService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private toastService: ToastrService
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -130,27 +130,12 @@ export class ProductDetailComponent implements OnInit {
           new Size(this.selectedSize, this.sizeName)
         );
         this.cartService.addToCart(cartItem);
-        this.toastService.success('Added to cart', 'Success', {
-          timeOut: 3000,
-          progressBar: true,
-          progressAnimation: 'increasing',
-          positionClass: 'toast-top-right',
-        });
+        this.showSuccess("Added to cart");
       } catch (error) {
-        this.toastService.error('Error Adding to cart', 'Error', {
-          timeOut: 3000,
-          progressBar: true,
-          progressAnimation: 'increasing',
-          positionClass: 'toast-top-right',
-        });
+        this.showError('Error adding to cart');
       }
     } else {
-      this.toastService.error('Please select size', 'Error', {
-        timeOut: 3000,
-        progressBar: true,
-        progressAnimation: 'increasing',
-        positionClass: 'toast-top-right',
-      });
+      this.showError('Please select size');
     }
   }
 
@@ -164,5 +149,21 @@ export class ProductDetailComponent implements OnInit {
     // } else {
     //   console.log('Please select size');
     // }
+  }
+
+  showSuccess(message: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: message,
+    });
+  }
+
+  showError(message: string) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
+    });
   }
 }

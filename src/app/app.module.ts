@@ -34,7 +34,6 @@ import { authGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { guestGuard } from './guards/guest.guard';
 import { AuthInterceptor } from './auth.interceptor';
-import { ToastrModule } from 'ngx-toastr';
 import { PurchaseOrderComponent } from './components/purchase-order/purchase-order.component';
 import { OrderService } from './services/order.service';
 import { TableModule } from 'primeng/table';
@@ -49,6 +48,9 @@ import { StepperModule } from 'primeng/stepper';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputOtpModule } from 'primeng/inputotp';
 import { PasswordModule } from 'primeng/password';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 
 const routes: Routes = [
@@ -60,9 +62,10 @@ const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
   { path: 'order-status', component: PaymentStatusComponent },
-  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'purchase', component: PurchaseOrderComponent, canActivate: [authGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+  { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },
   { path: '', component: HomeComponent },
   { path: '', redirectTo: '', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' },
@@ -86,7 +89,8 @@ const routes: Routes = [
     LoginComponent,
     LoginStatusComponent,
     PurchaseOrderComponent,
-    RegisterComponent
+    RegisterComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -98,7 +102,6 @@ const routes: Routes = [
     FormsModule,
     NgxSliderModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot(),
     TableModule,
     CheckboxModule,
     ButtonModule,
@@ -109,7 +112,8 @@ const routes: Routes = [
     StepperModule,
     FloatLabelModule,
     InputOtpModule,
-    PasswordModule
+    PasswordModule,
+    ToastModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -120,6 +124,7 @@ const routes: Routes = [
     CartService,
     OrderService,
     AuthService,
+    MessageService
   ],
   bootstrap: [AppComponent],
 })

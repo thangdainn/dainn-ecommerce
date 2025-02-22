@@ -1,23 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/services/auth.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.component.html',
+  styleUrl: './forgot-password.component.css'
 })
-export class RegisterComponent implements OnInit {
-  registerFormGroup!: FormGroup;
-  emailIsExisted: boolean = false;
+export class ForgotPasswordComponent implements OnInit {
+  newPassFormGroup!: FormGroup;
+  emailNotExisted: boolean = false;
   otp: string = '';
   verifyOtp: string = '';
   isLoading: boolean = false;
@@ -34,12 +29,8 @@ export class RegisterComponent implements OnInit {
   }
 
   private validateFormLogin() {
-    this.registerFormGroup = this.formBuilder.group(
+    this.newPassFormGroup = this.formBuilder.group(
       {
-        name: new FormControl('', [
-          Validators.required,
-          ShopValidators.notOnlyWhitespace,
-        ]),
         email: new FormControl('', [
           Validators.required,
           Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
@@ -55,8 +46,8 @@ export class RegisterComponent implements OnInit {
   }
 
   onCheckEmail(nextCallback: any) {
-    if (this.emailIsExisted) {
-      this.emailIsExisted = false;
+    if (this.emailNotExisted) {
+      this.emailNotExisted = false;
     }
     if (this.email!.invalid) {
       this.email!.markAsTouched();
@@ -65,8 +56,8 @@ export class RegisterComponent implements OnInit {
     this.isLoading = true;
     this.authService.checkEmail(this.email!.value).subscribe({
       next: (data) => {
-        if (data) {
-          this.emailIsExisted = true;
+        if (!data) {
+          this.emailNotExisted = true;
           return;
         }
         this.authService.sendOtp(this.email!.value).subscribe({
@@ -83,7 +74,7 @@ export class RegisterComponent implements OnInit {
       },
       error: (err) => {
         if (err.status === 400) {
-          this.emailIsExisted = true;
+          this.emailNotExisted = true;
         }
         this.isLoading = false;
       }
@@ -100,6 +91,7 @@ export class RegisterComponent implements OnInit {
         }
         this.otp = '';
         nextCallback.emit();
+        
       },
       error: (err) => {
         console.log('Verify OTP failed: ' + err.message);
@@ -111,26 +103,25 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.registerFormGroup.invalid) {
-      this.registerFormGroup.markAllAsTouched();
+    if (this.newPassFormGroup.invalid) {
+      this.newPassFormGroup.markAllAsTouched();
       return;
     }
     this.isLoading = true;
     this.authService
-      .register({
-        name: this.name!.value,
+      .forgotPassword({
         email: this.email!.value,
         password: this.password!.value,
       })
       .subscribe({
         next: () => {
-          this.showSuccess('Register successfully.');
+          this.showSuccess('Password changed successfully');
         },
         error: (err) => {
           if (err.status === 400) {
-            this.emailIsExisted = true;
+            this.emailNotExisted = true;
           } else {
-            this.showError('Register failed, please try again.');
+            console.log('Forgot password failed: ' + err.message);
           }
         },
         complete: () => {
@@ -140,34 +131,22 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-  get name() {
-    return this.registerFormGroup.get('name');
-  }
-
   get email() {
-    return this.registerFormGroup.get('email');
+    return this.newPassFormGroup.get('email');
   }
 
   get password() {
-    return this.registerFormGroup.get('password');
+    return this.newPassFormGroup.get('password');
   }
 
   get rePassword() {
-    return this.registerFormGroup.get('rePassword');
+    return this.newPassFormGroup.get('rePassword');
   }
 
   showSuccess(message: string) {
     this.messageService.add({
       severity: 'success',
       summary: 'Success',
-      detail: message,
-    });
-  }
-
-  showError(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Error',
       detail: message,
     });
   }

@@ -23,10 +23,11 @@ export class AuthService {
   ) {}
 
   register(user: { name: string; email: string; password: string }) {
-    return this.httpClient.post<GetResponseLogin>(
-      this.authUrl + '/register',
-      user
-    );
+    return this.httpClient.post<any>(this.authUrl + '/register', user);
+  }
+
+  forgotPassword(forgotPass: { email: string; password: string }) {
+    return this.httpClient.post<any>(this.authUrl + '/forgot-password', forgotPass);
   }
 
   login(user: {
