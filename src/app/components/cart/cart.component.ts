@@ -50,7 +50,7 @@ export class CartComponent implements OnInit {
               this.checkSelectedItem();
             },
             error: (err) => console.error(err),
-            complete: () => this.isLoading = false,
+            complete: () => (this.isLoading = false),
           });
       } else {
         this.carts = this.cartService.carts;
@@ -71,19 +71,20 @@ export class CartComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(() => {
       const selectedItem = history.state['selectedItem'];
 
-    if (selectedItem) {
-      const existingItem = this.carts.find(
-        (item) =>
-          item.productId === selectedItem.productId &&
-          item.sizeId === selectedItem.sizeId
-      );
-      if (existingItem) {
-        this.selectedItems.push(existingItem);
-      } else {
-        this.selectedItems.push(selectedItem);
+      if (selectedItem) {
+        const existingItem = this.carts.find(
+          (item) =>
+            item.productId === selectedItem.productId &&
+            item.sizeId === selectedItem.sizeId
+        );
+        if (existingItem) {
+          this.selectedItems.push(existingItem);
+        } else {
+          this.selectedItems.push(selectedItem);
+        }
+        this.computeTotals();
       }
-    }
-  });
+    });
   }
 
   private processResult(data: any) {
@@ -101,9 +102,10 @@ export class CartComponent implements OnInit {
     cartItem.quantity++;
     if (cartItem.userId !== 0) {
       this.cartService.updateToDB(cartItem).subscribe();
-      return;
+    } else {
+      this.cartService.computeCartTotals();
     }
-    this.cartService.computeCartTotals();
+    this.computeTotals();
   }
 
   decQuantity(cartItem: Cart) {
@@ -114,9 +116,10 @@ export class CartComponent implements OnInit {
     cartItem.quantity--;
     if (cartItem.userId !== 0) {
       this.cartService.updateToDB(cartItem).subscribe();
-      return;
+    } else {
+      this.cartService.computeCartTotals();
     }
-    this.cartService.computeCartTotals();
+    this.computeTotals();
   }
 
   removeItem(cartItem: Cart) {
@@ -126,12 +129,19 @@ export class CartComponent implements OnInit {
       if (index > -1) {
         this.carts.splice(index, 1);
       }
-      this.cartService.totalQuantity.next(
-        this.cartService.totalQuantity.value - 1
-      );
-      return;
+      this.removeFromSelectedItems(cartItem);
+    } else {
+      this.cartService.removeItemsInCache([cartItem]);
+      this.removeFromSelectedItems(cartItem);
     }
-    this.cartService.removeItemsInCache([cartItem]);
+    this.computeTotals();
+  }
+
+  private removeFromSelectedItems(cartItem: Cart) {
+    const selectedIndex = this.selectedItems.findIndex((item) => item.id === cartItem.id);
+    if (selectedIndex > -1) {
+      this.selectedItems.splice(selectedIndex, 1);
+    }
   }
 
   async handleRemoveItems() {
@@ -155,6 +165,7 @@ export class CartComponent implements OnInit {
           );
 
           this.selectedItems = [];
+          this.totalPrice = 0;
           return this.carts;
         }),
         catchError((error) => {
@@ -172,6 +183,7 @@ export class CartComponent implements OnInit {
       newQuantity = 1;
     }
     this.cartService.updateCartItemQuantity(cartItem, newQuantity);
+    this.computeTotals();
   }
 
   proceedToCheckout() {
@@ -211,7 +223,7 @@ export class CartComponent implements OnInit {
           this.totalElements = data.totalElements;
         },
         error: (err) => console.error(err),
-        complete: () => this.isLoading = false,
+        complete: () => (this.isLoading = false),
       });
   }
 
