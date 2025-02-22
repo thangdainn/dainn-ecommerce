@@ -93,8 +93,12 @@ export class CartService {
     let cartExist = this.getCartExist(cartItem);
     if (cartExist) {
       cartExist = this.updateCartExist(cartItem, cartExist);
+      this.carts = this.carts.filter(
+        (item) => item.productId !== cartExist!.productId || item.sizeId !== cartExist!.sizeId
+      );
+      this.carts.unshift(cartExist);
     } else {
-      this.carts.push(cartItem);
+      this.carts.unshift(cartItem);
     }
     console.log(this.carts);
 

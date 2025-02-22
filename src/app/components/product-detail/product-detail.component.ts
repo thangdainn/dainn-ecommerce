@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/common/product';
 import { ProductService } from 'src/app/services/product.service';
 import { firstValueFrom } from 'rxjs';
@@ -49,8 +49,9 @@ export class ProductDetailComponent implements OnInit {
     private productService: ProductService,
     private cartService: CartService,
     private authService: AuthService,
-    private route: ActivatedRoute,
-    private messageService: MessageService
+    private activeRoute: ActivatedRoute,
+    private messageService: MessageService,
+    private route: Router
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +60,7 @@ export class ProductDetailComponent implements OnInit {
 
   async handleProductDetails() {
     try {
-      const productIdParam = this.route.snapshot.paramMap.get('code');
+      const productIdParam = this.activeRoute.snapshot.paramMap.get('code');
       const productCode: string =
         productIdParam !== null ? productIdParam : 'none';
       this.productService
@@ -106,7 +107,6 @@ export class ProductDetailComponent implements OnInit {
   }
 
   updateQuantity(newQuantity: number): void {
-    // const quantity = Number(newQuantity);
     if (newQuantity > 0 && newQuantity <= this.totalQuantity) {
       this.quantity = newQuantity;
     } else if (newQuantity > this.totalQuantity) {
@@ -139,16 +139,30 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  buyNow(): void {
-    // if (this.selectedSize > 0) {
-    //   console.log('Buy now:', this.product.id, this.selectedSize, this.quantity);
-    //   this.cartService.getCartByUserId(this.userId).subscribe(data => {
-    //     console.log(data);
-    //   }
-    //   );
-    // } else {
-    //   console.log('Please select size');
-    // }
+  async buyNow(): Promise<void> {
+    if (this.selectedSize > 0) {
+      try {
+        const cartItem = new Cart(
+          null,
+          this.product.id,
+          this.selectedSize,
+          this.quantity,
+          this.authService.userIdSubject.value,
+          this.totalQuantity,
+          this.product,
+          new Size(this.selectedSize, this.sizeName)
+        );
+        await this.cartService.addToCart(cartItem);
+  
+        this.route.navigate(['/cart'], {
+          state: { selectedItem: cartItem }
+        });
+      } catch (error) {
+        this.showError('Error adding to cart');
+      }
+    } else {
+      this.showError('Please select size');
+    }
   }
 
   showSuccess(message: string) {

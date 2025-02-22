@@ -226,11 +226,11 @@
                         </div>
                         <section class="po9nwN">
                             <h3 class="a11y-hidden">Action Buttons Section</h3>
-                            <div class="aAXjeK">
+                            <div *ngIf="order.status == 'COMPLETED'" class="aAXjeK">
                                 <div><button class="stardust-button stardust-button--primary QY7kZh">Rate</button>
                                 </div>
                             </div>
-                            <div class="hbQXWm">
+                            <div *ngIf="order.status != 'PROCESSING'" class="hbQXWm">
                                 <div><button class="stardust-button stardust-button--secondary QY7kZh">Buy
                                         Again</button></div>
                             </div>

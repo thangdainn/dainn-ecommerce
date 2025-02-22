@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Cart } from 'src/app/common/cart';
 import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
-import { catchError, firstValueFrom, from, map, Observable, of } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-cart',
@@ -30,12 +30,13 @@ export class CartComponent implements OnInit {
     private cartService: CartService,
     private authService: AuthService,
     private productService: ProductService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
     this.listCartDetails();
   }
+
+  ngOnInit(): void {}
 
   listCartDetails() {
     this.authService.isAuthenticatedSubject.subscribe((data) => {
@@ -44,7 +45,10 @@ export class CartComponent implements OnInit {
         this.cartService
           .getCarts(this.page - 1, this.size, this.sortBy, this.sortDir)
           .subscribe({
-            next: this.processResult(),
+            next: (resp) => {
+              this.processResult(resp);
+              this.checkSelectedItem();
+            },
             error: (err) => console.error(err),
             complete: () => this.toggleLoading(),
           });
@@ -57,22 +61,40 @@ export class CartComponent implements OnInit {
               item.stock = data.quantity;
             });
         }
+        this.checkSelectedItem();
         this.toggleLoading();
       }
     });
+  }
+
+  private checkSelectedItem() {
+    this.activatedRoute.paramMap.subscribe(() => {
+      const selectedItem = history.state['selectedItem'];
+
+    if (selectedItem) {
+      const existingItem = this.carts.find(
+        (item) =>
+          item.productId === selectedItem.productId &&
+          item.sizeId === selectedItem.sizeId
+      );
+      if (existingItem) {
+        this.selectedItems.push(existingItem);
+      } else {
+        this.selectedItems.push(selectedItem);
+      }
+    }
+  });
   }
 
   toggleLoading() {
     this.isLoading = !this.isLoading;
   }
 
-  private processResult() {
-    return (data: any) => {
-      this.carts = data.data;
-      this.page = data.page + 1;
-      this.size = data.size;
-      this.totalElements = data.totalElements;
-    };
+  private processResult(data: any) {
+    this.carts = data.data;
+    this.page = data.page + 1;
+    this.size = data.size;
+    this.totalElements = data.totalElements;
   }
 
   incQuantity(cartItem: Cart) {
@@ -122,24 +144,24 @@ export class CartComponent implements OnInit {
     this.toggleLoading();
   }
 
-
   removeItems(): Observable<Cart[]> {
     if (this.authService.isAuthenticatedSubject.value) {
       let ids = this.selectedItems.map((item) => item.id);
       return this.cartService.removeFromDB(ids).pipe(
         map(() => {
           this.carts = this.carts.filter(
-            cartItem => !this.selectedItems.some(item => item.id === cartItem.id)
+            (cartItem) =>
+              !this.selectedItems.some((item) => item.id === cartItem.id)
           );
-  
+
           this.cartService.totalQuantity.next(
             this.cartService.totalQuantity.value - this.selectedItems.length
           );
-  
+
           this.selectedItems = [];
           return this.carts;
         }),
-        catchError(error => {
+        catchError((error) => {
           console.error('Error removing items', error);
           return of(this.carts);
         })
@@ -159,7 +181,6 @@ export class CartComponent implements OnInit {
   proceedToCheckout() {
     console.log(this.selectedItems);
     if (this.selectedItems.length === 0) {
-      alert('Please select at least one item to proceed to checkout');
       return;
     }
     this.router.navigate(['/checkout'], {
