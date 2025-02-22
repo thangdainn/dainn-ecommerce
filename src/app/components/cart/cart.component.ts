@@ -23,8 +23,8 @@ export class CartComponent implements OnInit {
   sortBy: string = 'modifiedDate';
   sortDir: string = 'desc';
 
-  isLoading = false;
-  loading = false;
+  isLoading: boolean = false;
+  loading: boolean = false;
 
   constructor(
     private cartService: CartService,
@@ -40,7 +40,7 @@ export class CartComponent implements OnInit {
 
   listCartDetails() {
     this.authService.isAuthenticatedSubject.subscribe((data) => {
-      this.toggleLoading();
+      this.isLoading = true;
       if (data) {
         this.cartService
           .getCarts(this.page - 1, this.size, this.sortBy, this.sortDir)
@@ -50,7 +50,7 @@ export class CartComponent implements OnInit {
               this.checkSelectedItem();
             },
             error: (err) => console.error(err),
-            complete: () => this.toggleLoading(),
+            complete: () => this.isLoading = false,
           });
       } else {
         this.carts = this.cartService.carts;
@@ -62,7 +62,7 @@ export class CartComponent implements OnInit {
             });
         }
         this.checkSelectedItem();
-        this.toggleLoading();
+        this.isLoading = false;
       }
     });
   }
@@ -84,10 +84,6 @@ export class CartComponent implements OnInit {
       }
     }
   });
-  }
-
-  toggleLoading() {
-    this.isLoading = !this.isLoading;
   }
 
   private processResult(data: any) {
@@ -139,9 +135,9 @@ export class CartComponent implements OnInit {
   }
 
   async handleRemoveItems() {
-    this.toggleLoading();
+    this.isLoading = true;
     await firstValueFrom(this.removeItems());
-    this.toggleLoading();
+    this.isLoading = false;
   }
 
   removeItems(): Observable<Cart[]> {
@@ -204,7 +200,7 @@ export class CartComponent implements OnInit {
   }
 
   appendData() {
-    this.toggleLoading();
+    this.isLoading = true;
     this.cartService
       .getCarts(this.page - 1, this.size, this.sortBy, this.sortDir)
       .subscribe({
@@ -215,7 +211,7 @@ export class CartComponent implements OnInit {
           this.totalElements = data.totalElements;
         },
         error: (err) => console.error(err),
-        complete: () => this.toggleLoading(),
+        complete: () => this.isLoading = false,
       });
   }
 
