@@ -14044,6 +14044,14 @@ asl-google-signin-button::part(icon) {
   border-radius: 6px;
 }
 
+.p-button-login-custom {
+  width: 100%;
+  background-color: #dbcc8f;
+  border: 1px solid #dbcc8f;
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}
+
 .p-stepper .p-stepper-header:has(~ .p-highlight) .p-stepper-separator {
   background-color: #dbcc8f;
 }

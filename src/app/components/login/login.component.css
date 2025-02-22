@@ -249,3 +249,10 @@
 .text-muted {
   font-size: 13px;
 }
+
+input {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.3rem 0.75rem;
+  width: 14rem;
+}

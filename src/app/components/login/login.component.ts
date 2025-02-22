@@ -21,6 +21,9 @@ export class LoginComponent implements OnInit {
   private clientId: string =
     '871646200780-eu45o1bggee0k30hcv6u17b7gdco0ji9.apps.googleusercontent.com';
 
+  isLoading: boolean = false;
+  loginError: string = '';
+
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
@@ -39,10 +42,7 @@ export class LoginComponent implements OnInit {
         Validators.required,
         Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
       ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(6),
-      ]),
+      password: new FormControl('', [Validators.required]),
     });
   }
 
@@ -78,6 +78,7 @@ export class LoginComponent implements OnInit {
       this.loginFormGroup.markAllAsTouched();
       return;
     }
+    this.isLoading = true;
     this.authService
       .login({
         email: this.email?.value,
@@ -92,10 +93,14 @@ export class LoginComponent implements OnInit {
               this.getUserId(response.access_token)
             )
           );
-          this.router.navigate(['/']);
         },
         error: (err) => {
-          console.log('Login failed: ' + err.message);
+          this.loginError = err.error.detail;
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
+          this.router.navigate(['/']);
         },
       });
   }
