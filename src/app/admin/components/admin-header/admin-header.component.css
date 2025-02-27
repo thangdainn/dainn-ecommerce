@@ -1,0 +1,5 @@
+.container {
+  box-shadow: 0 0 0.375rem 0.25rem rgba(161, 172, 184, 0.15);
+  padding: 0.75rem;
+  margin: 0.75rem auto 0.75rem;
+}

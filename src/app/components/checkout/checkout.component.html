@@ -20,8 +20,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="fullName">Full Name</label>
-                                            <input id="fullName" formControlName="name" type="text" class="form-control"
-                                                placeholder="">
+                                            <input pInputText formControlName="name" id="fullName" class="w-100"/>
                                             <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
                                                 <small class="text-danger"
                                                     *ngIf="name?.errors?.['required'] || name?.errors?.['notOnlyWhitespace']">
@@ -32,9 +31,8 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="firstname">Phone</label>
-                                            <input formControlName="phone" type="text" class="form-control"
-                                                placeholder="">
+                                            <label for="phone">Phone</label>
+                                            <input pInputText formControlName="phone" id="phone" class="w-100"/>
                                             <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
                                                 <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
                                                     number is required.</small>
@@ -47,9 +45,8 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="emailaddress">Email</label>
-                                            <input formControlName="email" type="email" class="form-control"
-                                                placeholder="">
+                                            <label for="email">Email</label>
+                                            <input pInputText formControlName="email" id="email" class="w-100"/>
                                             <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
                                                 <small class="text-danger" *ngIf="email?.errors?.['required']">Email
                                                     is required.</small>
@@ -60,50 +57,66 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="emailaddress">Note</label>
-                                            <input formControlName="note" type="text" class="form-control"
-                                                placeholder="">
+                                            <label for="note">Note</label>
+                                            <input pInputText formControlName="note" id="note" class="w-100"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div formGroupName="shippingAddress" class="row w-100">
-
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="country">Province</label>
-                                            <div class="select-wrap">
-                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                                <select formControlName="province" (change)="onProvinceChange($event)"
-                                                    class="form-control">
-                                                    <option *ngFor="let province of provinces" [value]="province.id">{{
-                                                        province.name }}</option>
-                                                </select>
-                                                <div
-                                                    *ngIf="province?.invalid && (province?.touched || province?.dirty)">
-                                                    <small class="text-danger"
-                                                        *ngIf="province?.errors?.['required']">Province is
-                                                        required.</small>
-                                                </div>
+                                            <label for="country" class="w-100">Province</label>
+                                            <p-dropdown [options]="provinces" (onChange)="onProvinceChange($event)"
+                                                optionLabel="name" [filter]="true" filterBy="name"
+                                                placeholder="Select a province" [loading]="isLoadingProvince"
+                                                formControlName="province">
+                                                <ng-template pTemplate="selectedItem" let-selectedOption>
+                                                    <div class="flex align-items-center gap-2">
+
+                                                        <div>{{ selectedOption.name }}</div>
+                                                    </div>
+                                                </ng-template>
+                                                <ng-template let-country pTemplate="item">
+                                                    <div class="flex align-items-center gap-2">
+
+                                                        <div>{{ country.name }}</div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-dropdown>
+                                            <div *ngIf="province?.invalid && (province?.touched || province?.dirty)">
+                                                <small class="text-danger"
+                                                    *ngIf="province?.errors?.['required']">Province
+                                                    is
+                                                    required.</small>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="country">District</label>
-                                            <div class="select-wrap">
-                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                                <select formControlName="district" (change)="onDistrictChange($event)"
-                                                    class="form-control">
-                                                    <option *ngFor="let district of districts" [value]="district.id">{{
-                                                        district.name }}</option>
-                                                </select>
-                                                <div
-                                                    *ngIf="district?.invalid && (district?.touched || district?.dirty)">
-                                                    <small class="text-danger"
-                                                        *ngIf="district?.errors?.['required']">District is
-                                                        required.</small>
-                                                </div>
+                                            <p-dropdown [options]="districts" (onChange)="onDistrictChange($event)"
+                                                optionLabel="name" [filter]="true" filterBy="name"
+                                                placeholder="Select a district" [loading]="isLoadingDistrict"
+                                                formControlName="district">
+                                                <ng-template pTemplate="selectedItem" let-selectedOption>
+                                                    <div class="flex align-items-center gap-2">
+
+                                                        <div>{{ selectedOption.name }}</div>
+                                                    </div>
+                                                </ng-template>
+                                                <ng-template let-country pTemplate="item">
+                                                    <div class="flex align-items-center gap-2">
+
+                                                        <div>{{ country.name }}</div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-dropdown>
+                                            <div *ngIf="district?.invalid && (district?.touched || district?.dirty)">
+                                                <small class="text-danger"
+                                                    *ngIf="district?.errors?.['required']">District is
+                                                    required.</small>
                                             </div>
                                         </div>
                                     </div>
@@ -112,18 +125,28 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="country">Ward</label>
-                                            <div class="select-wrap">
-                                                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                                <select formControlName="ward" (change)="onWardChange($event)"
-                                                    class="form-control">
-                                                    <option *ngFor="let ward of wards" [value]="ward.id">{{ ward.name }}
-                                                    </option>
-                                                </select>
-                                                <div *ngIf="ward?.invalid && (ward?.touched || ward?.dirty)">
-                                                    <small class="text-danger" *ngIf="ward?.errors?.['required']">Ward
-                                                        is
-                                                        required.</small>
-                                                </div>
+
+                                            <p-dropdown [options]="districts" (onChange)="onWardChange($event)"
+                                                optionLabel="name" [filter]="true" filterBy="name"
+                                                placeholder="Select a ward" [loading]="isLoadingWard"
+                                                formControlName="ward">
+                                                <ng-template pTemplate="selectedItem" let-selectedOption>
+                                                    <div class="flex align-items-center gap-2">
+
+                                                        <div>{{ selectedOption.name }}</div>
+                                                    </div>
+                                                </ng-template>
+                                                <ng-template let-country pTemplate="item">
+                                                    <div class="flex align-items-center gap-2">
+
+                                                        <div>{{ country.name }}</div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-dropdown>
+                                            <div *ngIf="district?.invalid && (district?.touched || district?.dirty)">
+                                                <small class="text-danger"
+                                                    *ngIf="district?.errors?.['required']">District is
+                                                    required.</small>
                                             </div>
                                         </div>
                                     </div>
@@ -171,7 +194,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <p-divider />
                                         </div>
+
                                     </div>
                                 </ng-template>
                             </p-dataView>

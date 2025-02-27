@@ -50,7 +50,10 @@ import { InputOtpModule } from 'primeng/inputotp';
 import { PasswordModule } from 'primeng/password';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { adminGuard } from './guards/admin.guard';
 
 
 const routes: Routes = [
@@ -66,9 +69,10 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },
+  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule), canActivate: [adminGuard] },
   { path: '', component: HomeComponent },
   { path: '', redirectTo: '', pathMatch: 'full' },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  // { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({
@@ -113,7 +117,9 @@ const routes: Routes = [
     FloatLabelModule,
     InputOtpModule,
     PasswordModule,
-    ToastModule
+    ToastModule,
+    DropdownModule,
+    InputTextModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -124,7 +130,8 @@ const routes: Routes = [
     CartService,
     OrderService,
     AuthService,
-    MessageService
+    MessageService,
+    ConfirmationService
   ],
   bootstrap: [AppComponent],
 })

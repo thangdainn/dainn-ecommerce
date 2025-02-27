@@ -14026,7 +14026,7 @@ asl-google-signin-button::part(icon) {
 }
 
 .p-datatable .p-datatable-tbody > tr {
-  border: 1px solid #dee2e6 !important;
+  border: 1px solid #dee2e6;
   border-width: 1px 1px 1px 1px !important;
 }
 
@@ -14077,6 +14077,132 @@ p-password input,
 }
 
 .p-toast {
-  width: 300px; /* Điều chỉnh chiều rộng */
-  font-size: 11px; /* Điều chỉnh kích thước chữ */
+  width: 300px;
+  font-size: 11px;
+}
+
+p-dropdown > div {
+  width: 100%;
+}
+
+.p-dropdown-label,
+.p-dropdown-trigger {
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}
+.p-dropdown-label,
+.p-dropdown-header,
+.p-dropdown-item {
+  font-size: 0.8rem;
+}
+
+p-menu,
+p-menu > div {
+  width: 100%;
+  box-shadow: 0 0 0.375rem 0.25rem rgba(161, 172, 184, 0.15);
+  border: none;
+}
+
+.p-menu ul {
+  padding: 5px 10px;
+  height: calc(100vh - 152px);
+  
+  position: relative;
+}
+
+.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link {
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  color: #000000;
+}
+
+.p-menu-list::-webkit-scrollbar,
+.p-submenu-list::-webkit-scrollbar {
+  width: 10px;
+  transition: width 0.3s ease-in-out;
+}
+
+.p-menu-list::-webkit-scrollbar-track,
+.p-submenu-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 50px;
+  transition: background 0.3s ease-in-out;
+}
+
+.p-menu-list::-webkit-scrollbar-thumb,
+.p-submenu-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 50px;
+  border: 2px solid #f1f1f1;
+  transition: background 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.p-menu-list,
+.p-submenu-list {
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #d4bfa059 #ffffff;
+}
+
+.p-menu-list:hover, .p-submenu-list:hover {
+  overflow-y: auto;
+}
+
+.p-menu-list:hover::-webkit-scrollbar,
+.p-submenu-list:hover::-webkit-scrollbar {
+  display: block; 
+}
+
+.p-menu-list::-webkit-scrollbar-thumb:hover,
+.p-submenu-list::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.p-menu-list::-webkit-scrollBar-button,
+.p-submenu-list::-webkit-scrollBar-button {
+  display: none;
+}
+
+.p-menuitem-link.active {
+  background-color: #e9ecef; 
+  font-weight: 500;
+}
+
+.p-menuitem-link.active:hover {
+  background-color: #dee2e6;
+}
+
+
+.p-datatable {
+  font-size: 0.8rem;
+}
+
+.p-button.p-button-icon-only.p-button-rounded {
+  border-radius: 50%;
+}
+
+.p-button.p-button-text:not(:disabled):active {
+  background: rgba(59, 130, 246, 0.16);
+  border-color: transparent;
+}
+
+.p-button.p-button-text:not(:disabled):hover {
+  background: rgb(59 130 246 / 10%);
+  border-color: transparent;
+}
+
+.p-button:focus {
+  outline: none !important; /* Loại bỏ viền focus */
+}
+
+.p-datatable .p-datatable-header {
+  background-color: #fff;
+}
+
+.p-confirm-popup {
+  font-size: 0.8rem;
+}
+.p-confirm-popup button{
+  padding: 0.03rem 0.7rem;
+  border-radius: 6px;
 }

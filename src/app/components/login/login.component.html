@@ -14,7 +14,7 @@
 
                                 <div class="mb-3">
                                     <label for="email">Email</label>
-                                    <input pInputText formControlName="email" id="email" class="w-100">
+                                    <input pInputText formControlName="email" id="email" class="w-100"/>
                                     <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
                                         <small class="text-danger" *ngIf="email?.errors?.['required']">Email
                                             is required.</small>

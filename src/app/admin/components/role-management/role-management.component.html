@@ -1,0 +1,49 @@
+<div class="card px-4">
+    <p-toast/>
+    <p-table [value]="roles" [tableStyle]="{ 'min-width': '50rem' }" [loading]="isLoading" [paginator]="true"
+        [rows]="10" [(selection)]="selectedRoles" [responsive]="true">
+        <ng-template pTemplate="caption">
+            <div class="d-flex justify-content-end">
+                <p-confirmPopup />
+                <p-button 
+                    *ngIf="selectedRoles.length !== 0" 
+                    [loading]="isDeleting" icon="pi pi-trash" severity="danger"
+                    [rounded]="true" [text]="true" [raised]="true" 
+                    (click)="confirmDelete($event)" />
+                <p-button routerLink="create" icon="pi pi-plus" [rounded]="true" [text]="true" [raised]="true" class="mx-3" />
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th pSortableColumn="id">
+                    # <p-sortIcon field="id" />
+                </th>
+                <th pSortableColumn="name">
+                    Name <p-sortIcon field="name" />
+                </th>
+                <th>Description</th>
+                <th pSortableColumn="status">
+                    Status <p-sortIcon field="status" />
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-role>
+            <tr style="border: none;">
+                <td>
+                    <p-tableCheckbox [value]="role" />
+                </td>
+                <td>{{role.id}}</td>
+                <td>{{role.name}}</td>
+                <td>{{role.description}}</td>
+                <td><p-tag [value]="role.status == 1 ? 'Enable' : 'Disable'" [severity]="getSeverity(role.status)" /></td>
+                <td>
+                    <p-button routerLink="edit/{{role.name}}" icon="pi pi-pencil" [rounded]="true" [text]="true" [raised]="true" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

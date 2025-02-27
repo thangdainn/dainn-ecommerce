@@ -132,6 +132,10 @@ export class AuthService {
     return !!token && !this.isTokenExpired(token);
   }
 
+  isAdmin(): boolean {
+    return this.rolesSubject.value.includes('ROLE_ADMIN');
+  }
+
   refreshToken(): Observable<GetResponseLogin> {
     return this.httpClient.post<GetResponseLogin>(
       this.authUrl + '/refresh-token',

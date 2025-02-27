@@ -1,0 +1,15 @@
+.info {
+    font-size: 1em;
+}
+
+.info .font-bold {
+    font-weight: bold;
+}
+
+.info .text-sm {
+    font-size: 0.8em;
+}
+
+.text-primary-admin {
+    color: #b7a24d;
+}

@@ -36,6 +36,10 @@ export class CheckoutComponent implements OnInit {
   districtsData: string = '';
   wardsData: string = '';
 
+  isLoadingProvince: boolean = false;
+  isLoadingDistrict: boolean = false;
+  isLoadingWard: boolean = false;
+
   totalPrice: number = 0;
   totalQuantity: number = 0;
   deliveryFee: number = 0;
@@ -106,48 +110,49 @@ export class CheckoutComponent implements OnInit {
 
 
   loadProvinces() {
+    this.isLoadingProvince = true;
     this.locationService.getProvinces().subscribe((data) => {
       this.provinces = data.data;
+      this.isLoadingProvince = false;
     });
     this.districts = [];
     this.districtsData = '';
   }
 
   loadDistricts(provinceId: number) {
+    this.isLoadingDistrict = true;
     this.locationService.getDistricts(provinceId).subscribe((data) => {
       this.districts = data.data;
+      this.isLoadingDistrict = false
     });
     this.wards = [];
     this.wardsData = '';
   }
 
   loadWards(districtId: number) {
+    this.isLoadingWard = true;
     this.locationService.getWards(districtId).subscribe((data) => {
       this.wards = data.data;
+      this.isLoadingWard = false;
     });
   }
 
   onProvinceChange(provinceEvent: any): void {
-    const provinceId = provinceEvent.target.value;
+    const provinceId = provinceEvent.value.id;
     this.loadDistricts(provinceId);
-    const province =
-      provinceEvent.target.options[provinceEvent.target.options.selectedIndex]
-        .text;
-    this.provincesData = province;
+    
+    this.provincesData = provinceEvent.value.name;
   }
 
   onDistrictChange(districtEvent: any): void {
-    const districtId = districtEvent.target.value;
+    const districtId = districtEvent.value.id;
     this.loadWards(districtId);
-    const district =
-      districtEvent.target.options[districtEvent.target.options.selectedIndex]
-        .text;
-    this.districtsData = district;
+  
+    this.districtsData = districtEvent.value.name;
   }
+
   onWardChange(wardEvent: any): void {
-    const ward =
-      wardEvent.target.options[wardEvent.target.options.selectedIndex].text;
-    this.wardsData = ward;
+    this.wardsData = wardEvent.value.name;
   }
 
   get name() {

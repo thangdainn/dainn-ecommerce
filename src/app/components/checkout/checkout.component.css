@@ -1,6 +1,11 @@
-.cart-detail button:disabled{
-    cursor: not-allowed;
-    background-color: #ccc;
-    border: 1px solid #ccc;
-    color: #333;
+.cart-detail button:disabled {
+  cursor: not-allowed;
+  background-color: #ccc;
+  border: 1px solid #ccc;
+  color: #333;
+}
+
+input {
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
 }
