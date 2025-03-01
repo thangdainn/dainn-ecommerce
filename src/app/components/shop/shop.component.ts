@@ -71,7 +71,7 @@ export class ShopComponent implements OnInit{
   }
 
   listProductCategories() {
-    this.categoryService.getCategories().subscribe((data) => {
+    this.categoryService.getAll().subscribe((data) => {
       this.categories = data;
     });
   }

@@ -1,23 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { Role } from 'src/app/common/role';
-import { RoleService } from 'src/app/services/role.service';
-
-interface PageEvent {
-  first: number;
-  rows: number;
-  page: number;
-  pageCount: number;
-}
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { Category } from 'src/app/common/category';
+import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
-  selector: 'app-role-management',
-  templateUrl: './role-management.component.html',
-  styleUrl: './role-management.component.css',
+  selector: 'app-category-management',
+  templateUrl: './category-management.component.html',
+  styleUrl: './category-management.component.css'
 })
-export class RoleManagementComponent implements OnInit {
-  roles!: Role[];
-  selectedRoles: Role[] = [];
+export class CategoryManagementComponent  implements OnInit {
+  categories!: Category[];
+  selectedCates: Category[] = [];
   statuses!: any[];
 
   isLoading: boolean = false;
@@ -34,20 +27,20 @@ export class RoleManagementComponent implements OnInit {
   status: number = 1;
 
   constructor(
-    private roleService: RoleService,
+    private categoryService: CategoryService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
-    this.getRolesPaginator();
+    this.getCatesPaginator();
     this.initStatuses();
   }
 
-  getRolesPaginator() {
+  getCatesPaginator() {
     this.isLoading = true;
-    this.roleService
-      .getRolesPaginate(
+    this.categoryService
+      .getAllPaginate(
         this.page,
         this.size,
         this.sortBy,
@@ -67,7 +60,7 @@ export class RoleManagementComponent implements OnInit {
   }
 
   processResult(data: any) {
-    this.roles = data.data;
+    this.categories = data.data;
     this.page = data.page;
     this.size = data.size;
     this.totalElements = data.totalElements;
@@ -93,13 +86,13 @@ export class RoleManagementComponent implements OnInit {
 
   filterStatus(status: number) {
     this.status = status;
-    this.getRolesPaginator();
+    this.getCatesPaginator();
   }
 
   handleSearch(event: any) {
     this.keyword = event.target.value;
     this.resetFilter();
-    this.getRolesPaginator();
+    this.getCatesPaginator();
   }
 
   resetFilter() {
@@ -111,7 +104,7 @@ export class RoleManagementComponent implements OnInit {
   onPageChange(event: any) {
     this.page = event.page;
     this.size = event.rows;
-    this.getRolesPaginator();
+    this.getCatesPaginator();
   }
 
   confirmDelete(event: Event) {
@@ -121,30 +114,30 @@ export class RoleManagementComponent implements OnInit {
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
-        this.deleteRoles();
+        this.deleteCates();
       },
     });
   }
 
-  deleteRoles() {
+  deleteCates() {
     this.isDeleting = true;
-    let ids = this.selectedRoles.map((role) => role.id);
-    this.roleService.deleteRoles(ids).subscribe({
+    let ids = this.selectedCates.map((cate) => cate.id);
+    this.categoryService.deleteByIds(ids).subscribe({
       next: () => {
-        this.roles = this.roles.filter(
-          (role) => !this.selectedRoles.includes(role)
+        this.categories = this.categories.filter(
+          (cate) => !this.selectedCates.includes(cate)
         );
         
         this.showSuccess('Deleted successfully');
-        this.selectedRoles = [];
+        this.selectedCates = [];
         this.isDeleting = false;
         this.resetFilter();
-        this.getRolesPaginator();
+        this.getCatesPaginator();
       },
       error: (err) => {
         console.log(err);
 
-        this.showError('Error deleting role');
+        this.showError('Error deleting category');
         this.isDeleting = false;
       },
     });

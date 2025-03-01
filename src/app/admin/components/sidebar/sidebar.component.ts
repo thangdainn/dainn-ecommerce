@@ -38,6 +38,16 @@ export class SidebarComponent {
             routerLink: '/admin/users',
           },
           {
+            label: 'Orders',
+            icon: 'pi pi-fw pi-shopping-cart',
+            routerLink: '/admin/orders',
+          },
+          {
+            label: 'Products',
+            icon: 'pi pi-fw pi-shopping-cart',
+            routerLink: '/admin/products',
+          },
+          {
             label: 'Sizes',
             icon: 'pi pi-fw pi-cog',
             routerLink: '/admin/sizes',
@@ -48,19 +58,9 @@ export class SidebarComponent {
             routerLink: '/admin/brands',
           },
           {
-            label: 'Products',
-            icon: 'pi pi-fw pi-shopping-cart',
-            routerLink: '/admin/products',
-          },
-          {
             label: 'Categories',
             icon: 'pi pi-fw pi-folder',
             routerLink: '/admin/categories',
-          },
-          {
-            label: 'Orders',
-            icon: 'pi pi-fw pi-shopping-cart',
-            routerLink: '/admin/orders',
           },
         ],
       },

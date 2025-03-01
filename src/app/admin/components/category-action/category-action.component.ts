@@ -1,25 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Category } from 'src/app/common/category';
 import { Role } from 'src/app/common/role';
-import { RoleService } from 'src/app/services/role.service';
+import { CategoryService } from 'src/app/services/category.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
-  selector: 'app-role-management-action',
-  templateUrl: './role-management-action.component.html',
-  styleUrl: './role-management-action.component.css',
+  selector: 'app-category-action',
+  templateUrl: './category-action.component.html',
+  styleUrl: './category-action.component.css'
 })
-export class RoleManagementActionComponent implements OnInit {
+export class CategoryActionComponent  implements OnInit {
   editFormGroup!: FormGroup;
-  roleIsExisted: boolean = false;
-  role: Role = new Role();
+  cateIsExisted: boolean = false;
+  cate: Category = new Role();
   status: boolean = true;
 
   isLoading: boolean = false;
@@ -27,7 +23,7 @@ export class RoleManagementActionComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private roleService: RoleService,
+    private cateService: CategoryService,
     private activeRoute: ActivatedRoute
   ) {}
 
@@ -56,13 +52,12 @@ export class RoleManagementActionComponent implements OnInit {
   handleUpdateMode() {
     if (!this.isCreateMode()) {
       this.activeRoute.params.subscribe((params) => {
-        const name = params['name'];
-        this.roleService.getRoleByName(name).subscribe((data) => {
-          this.role = data;
+        const id = params['id'];
+        this.cateService.getById(id).subscribe((data) => {
+          this.cate = data;
           this.status = this.revertStatus(data.status);
           console.log(this.revertStatus(data.status));
-          
-          console.log(data);
+
           this.editFormGroup.patchValue({
             name: data.name.split('_')[1],
             description: data.description,
@@ -95,18 +90,18 @@ export class RoleManagementActionComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.role.name = this.editFormGroup.value.name;
-    this.role.description = this.editFormGroup.value.description;
+    this.cate.name = this.editFormGroup.value.name;
+    this.cate.description = this.editFormGroup.value.description;
     if (this.isCreateMode()) {
-      this.createRole(this.role);
+      this.createCate(this.cate);
     } else {
-      this.role.status = this.unRevertStatus(this.status);
-      this.updateRole(this.role);
+      this.cate.status = this.unRevertStatus(this.status);
+      this.updateCate(this.cate);
     }
   }
 
-  createRole(role: Role) {
-    this.roleService.createRole(role).subscribe({
+  createCate(cate: Category) {
+    this.cateService.create(cate).subscribe({
       next: () => {
         this.showSuccess('Create role successfully');
         this.isLoading = false;
@@ -120,8 +115,8 @@ export class RoleManagementActionComponent implements OnInit {
     });
   }
 
-  updateRole(role: Role) {
-    this.roleService.updateRole(role).subscribe({
+  updateCate(cate: Category) {
+    this.cateService.update(cate).subscribe({
       next: () => {
         this.showSuccess('Update role successfully');
         this.isLoading = false;

@@ -19,11 +19,13 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RoleManagementComponent } from './components/role-management/role-management.component';
-import { RoleManagementActionComponent } from './components/role-management-action/role-management-action.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PaginatorModule } from 'primeng/paginator';
+import { CategoryManagementComponent } from './components/category-management/category-management.component';
+import { RoleActionComponent } from './components/role-action/role-action.component';
+import { CategoryActionComponent } from './components/category-action/category-action.component';
 
 const routes: Routes = [
   {
@@ -32,8 +34,12 @@ const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'roles', component: RoleManagementComponent },
-      { path: 'roles/create', component: RoleManagementActionComponent },
-      { path: 'roles/edit/:name', component: RoleManagementActionComponent },
+      { path: 'roles/create', component: RoleActionComponent },
+      { path: 'roles/edit/:name', component: RoleActionComponent },
+      { path: 'categories', component: CategoryManagementComponent },
+      { path: 'categories/create', component: CategoryActionComponent },
+      { path: 'categories/edit/:id', component: CategoryActionComponent },
+
     ],
   },
 ];
@@ -45,7 +51,9 @@ const routes: Routes = [
     AdminHeaderComponent,
     SidebarComponent,
     RoleManagementComponent,
-    RoleManagementActionComponent,
+    RoleActionComponent,
+    CategoryManagementComponent,
+    CategoryActionComponent
   ],
   imports: [
     CommonModule,
@@ -67,7 +75,7 @@ const routes: Routes = [
     DropdownModule,
     IconFieldModule,
     InputIconModule,
-    PaginatorModule
+    PaginatorModule,
   ],
 })
 export class AdminModule {}
