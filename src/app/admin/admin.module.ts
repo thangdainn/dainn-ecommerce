@@ -20,6 +20,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RoleManagementComponent } from './components/role-management/role-management.component';
 import { RoleManagementActionComponent } from './components/role-management-action/role-management-action.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { PaginatorModule } from 'primeng/paginator';
 
 const routes: Routes = [
   {
@@ -59,7 +63,11 @@ const routes: Routes = [
     ButtonModule,
     ConfirmPopupModule,
     InputTextModule,
-    InputTextareaModule
+    InputTextareaModule,
+    DropdownModule,
+    IconFieldModule,
+    InputIconModule,
+    PaginatorModule
   ],
 })
 export class AdminModule {}

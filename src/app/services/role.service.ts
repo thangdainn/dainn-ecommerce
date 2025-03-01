@@ -16,6 +16,24 @@ export class RoleService {
     return this.httpClient.get<Role[]>(this.baseUrl);
   }
 
+  getRolesPaginate(
+    page: number,
+    size: number,
+    sortBy: string,
+    sortDir: string,
+    keyword: string,
+    status: number
+  ): Observable<GetResponseRole> {
+    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}&status=${status}`;
+    searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
+    if (keyword.length > 0) {
+      searchUrl += `&keyword=${keyword}`;
+    }
+    console.log(searchUrl);
+
+    return this.httpClient.get<GetResponseRole>(searchUrl);
+  }
+
   getRoleByName(name: string): Observable<Role> {
     return this.httpClient.get<Role>(`${this.baseUrl}/${name}`);
   }
@@ -31,4 +49,11 @@ export class RoleService {
   updateRole(role: Role): Observable<Role> {
     return this.httpClient.put<Role>(`${this.baseUrl}/${role.id}`, role);
   }
+}
+
+interface GetResponseRole {
+  data: Role[];
+  page: number;
+  size: number;
+  totalElements: number;
 }

@@ -14206,3 +14206,13 @@ p-menu > div {
   padding: 0.03rem 0.7rem;
   border-radius: 6px;
 }
+
+.p-column-filter-overlay-menu .p-column-filter-buttonbar {
+  padding: 0 1rem;
+  font-size: 0.6rem;
+}
+
+.p-column-filter-overlay-menu .p-column-filter-buttonbar button {
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}

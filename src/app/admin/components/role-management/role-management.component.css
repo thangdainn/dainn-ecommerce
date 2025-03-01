@@ -1,0 +1,5 @@
+.p-column-filter-menu-button,
+.p-column-filter-clear-button,
+.p-column-filter-apply-button {
+  display: none !important;
+}

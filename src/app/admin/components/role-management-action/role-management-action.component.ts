@@ -5,7 +5,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Role } from 'src/app/common/role';
 import { RoleService } from 'src/app/services/role.service';
@@ -20,6 +20,7 @@ export class RoleManagementActionComponent implements OnInit {
   editFormGroup!: FormGroup;
   roleIsExisted: boolean = false;
   role: Role = new Role();
+  status: boolean = true;
 
   isLoading: boolean = false;
 
@@ -27,19 +28,16 @@ export class RoleManagementActionComponent implements OnInit {
     private formBuilder: FormBuilder,
     private messageService: MessageService,
     private roleService: RoleService,
-    private activeRoute: ActivatedRoute,
-    private router: Router
+    private activeRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.validateForm();
     this.handleUpdateMode();
   }
-  
 
   private validateForm() {
     this.editFormGroup = this.formBuilder.group({
-      id: new FormControl(''),
       name: new FormControl('', [
         Validators.required,
         ShopValidators.notOnlyWhitespace,
@@ -61,8 +59,11 @@ export class RoleManagementActionComponent implements OnInit {
         const name = params['name'];
         this.roleService.getRoleByName(name).subscribe((data) => {
           this.role = data;
+          this.status = this.revertStatus(data.status);
+          console.log(this.revertStatus(data.status));
+          
+          console.log(data);
           this.editFormGroup.patchValue({
-            id: data.id,
             name: data.name.split('_')[1],
             description: data.description,
           });
@@ -79,8 +80,12 @@ export class RoleManagementActionComponent implements OnInit {
     return this.editFormGroup.get('description');
   }
 
-  get status() {
-    return this.editFormGroup.get('status');
+  revertStatus(status: number): boolean {
+    return status == 1;
+  }
+
+  unRevertStatus(status: boolean): number {
+    return status ? 1 : 0;
   }
 
   onSubmit() {
@@ -90,15 +95,18 @@ export class RoleManagementActionComponent implements OnInit {
     }
 
     this.isLoading = true;
+    this.role.name = this.editFormGroup.value.name;
+    this.role.description = this.editFormGroup.value.description;
     if (this.isCreateMode()) {
-      this.createRole();
+      this.createRole(this.role);
     } else {
-      this.updateRole();
+      this.role.status = this.unRevertStatus(this.status);
+      this.updateRole(this.role);
     }
   }
 
-  createRole() {
-    this.roleService.createRole(this.editFormGroup.value).subscribe({
+  createRole(role: Role) {
+    this.roleService.createRole(role).subscribe({
       next: () => {
         this.showSuccess('Create role successfully');
         this.isLoading = false;
@@ -112,8 +120,8 @@ export class RoleManagementActionComponent implements OnInit {
     });
   }
 
-  updateRole() {
-    this.roleService.updateRole(this.editFormGroup.value).subscribe({
+  updateRole(role: Role) {
+    this.roleService.updateRole(role).subscribe({
       next: () => {
         this.showSuccess('Update role successfully');
         this.isLoading = false;
@@ -141,5 +149,4 @@ export class RoleManagementActionComponent implements OnInit {
       detail: message,
     });
   }
-
 }

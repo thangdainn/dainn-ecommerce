@@ -28,7 +28,10 @@
                                 is required.</small>
                         </div>
                     </div>
-
+                    <div *ngIf="!isCreateMode()" class="d-flex flex-column gap-2 mb-3">
+                        <label for="status">Status</label>
+                        <p-inputSwitch [(ngModel)]="this.status" [ngModelOptions]="{standalone: true}"/>
+                    </div>
                 </div>
             </div>
         </div>

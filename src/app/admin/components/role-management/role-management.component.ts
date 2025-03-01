@@ -3,6 +3,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Role } from 'src/app/common/role';
 import { RoleService } from 'src/app/services/role.service';
 
+interface PageEvent {
+  first: number;
+  rows: number;
+  page: number;
+  pageCount: number;
+}
+
 @Component({
   selector: 'app-role-management',
   templateUrl: './role-management.component.html',
@@ -12,12 +19,20 @@ export class RoleManagementComponent implements OnInit {
   roles!: Role[];
   selectedRoles: Role[] = [];
   clonedProducts: { [s: string]: Role } = {};
+  statuses!: any[];
 
   isLoading: boolean = false;
   isDeleting: boolean = false;
 
   visible: boolean = false;
-  
+
+  keyword: string = '';
+  page: number = 0;
+  size: number = 5;
+  totalElements: number = 0;
+  sortBy: string = 'id';
+  sortDir: string = 'asc';
+  status: number = 1;
 
   constructor(
     private roleService: RoleService,
@@ -26,15 +41,37 @@ export class RoleManagementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getRoles();
+    this.getRolesPaginator();
+    this.initStatuses();
   }
 
-  getRoles() {
+  getRolesPaginator() {
     this.isLoading = true;
-    this.roleService.getAllRoles().subscribe((data) => {
-      this.roles = data;
-      this.isLoading = false;
-    });
+    this.roleService
+      .getRolesPaginate(
+        this.page,
+        this.size,
+        this.sortBy,
+        this.sortDir,
+        this.keyword,
+        this.status
+      )
+      .subscribe({
+        next: (res) => {
+          this.processResult(res), (this.isLoading = false);
+        },
+        error: (err) => {
+          console.log(err);
+          this.isLoading = false;
+        },
+      });
+  }
+
+  processResult(data: any) {
+    this.roles = data.data;
+    this.page = data.page;
+    this.size = data.size;
+    this.totalElements = data.totalElements;
   }
 
   getSeverity(status: number) {
@@ -46,6 +83,36 @@ export class RoleManagementComponent implements OnInit {
       default:
         return 'warning';
     }
+  }
+
+  initStatuses() {
+    this.statuses = [
+      { label: 'Enable', value: 1 },
+      { label: 'Disable', value: 0 },
+    ];
+  }
+
+  filterStatus(status: number) {
+    this.status = status;
+    this.getRolesPaginator();
+  }
+
+  handleSearch(event: any) {
+    this.keyword = event.target.value;
+    this.resetFilter();
+    this.getRolesPaginator();
+  }
+
+  resetFilter() {
+    this.page = 0;
+    this.size = 5;
+    this.status = 1;
+  }
+
+  onPageChange(event: any) {
+    this.page = event.page;
+    this.size = event.rows;
+    this.getRolesPaginator();
   }
 
   confirmDelete(event: Event) {
@@ -60,10 +127,6 @@ export class RoleManagementComponent implements OnInit {
     });
   }
 
-  editRole(role: Role) {
-    console.log(role);
-  }
-
   deleteRoles() {
     this.isDeleting = true;
     let ids = this.selectedRoles.map((role) => role.id);
@@ -72,13 +135,14 @@ export class RoleManagementComponent implements OnInit {
         this.roles = this.roles.filter(
           (role) => !this.selectedRoles.includes(role)
         );
+        
         this.showSuccess('Role(s) deleted successfully');
         this.selectedRoles = [];
         this.isDeleting = false;
       },
       error: (err) => {
         console.log(err);
-        
+
         this.showError('Error deleting role(s)');
         this.isDeleting = false;
       },
