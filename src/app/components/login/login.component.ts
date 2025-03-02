@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
                 this.getUserId(response.access_token)
               )
             );
-            this.router.navigateByUrl(this.activeRoute.snapshot.queryParams['returnUrl'] || '/');
+            this.router.navigateByUrl((this.activeRoute.snapshot.queryParams['returnUrl']) as string || '/');
           },
           error: (err) => {
             console.log('Login failed: ' + err.message);
