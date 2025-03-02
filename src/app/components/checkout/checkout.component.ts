@@ -59,6 +59,8 @@ export class CheckoutComponent implements OnInit {
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.items = navigation.extras.state['items'];
+    } else {
+      this.router.navigate(['/cart']);
     }
   }
 

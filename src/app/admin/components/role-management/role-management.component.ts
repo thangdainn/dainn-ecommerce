@@ -135,7 +135,7 @@ export class RoleManagementComponent implements OnInit {
           (role) => !this.selectedRoles.includes(role)
         );
         
-        this.showSuccess('Deleted successfully');
+        this.showSuccess('Delete successfully');
         this.selectedRoles = [];
         this.isDeleting = false;
         this.resetFilter();
@@ -144,7 +144,7 @@ export class RoleManagementComponent implements OnInit {
       error: (err) => {
         console.log(err);
 
-        this.showError('Error deleting role');
+        this.showError('Error delete');
         this.isDeleting = false;
       },
     });

@@ -9,12 +9,17 @@ import {
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
 
-  constructor(private authService: AuthService, private cartService: CartService) {}
+  constructor(
+    private authService: AuthService,
+    private cartService: CartService,
+    private router: Router
+  ) {}
 
   intercept(
     request: HttpRequest<unknown>,
@@ -26,15 +31,20 @@ export class AuthInterceptor implements HttpInterceptor {
     const jwtToken = this.authService.getToken();
 
     if (jwtToken) {
-      
       request = this.addToken(request, jwtToken);
     }
     return next.handle(request).pipe(
       catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          return this.handle401Error(request, next);
-        } else {
-          return throwError(() => error);
+        switch (error.status) {
+          case 401:
+            return this.handle401Error(request, next);
+          case 403:
+            this.router.navigate(['/access-denied']);
+            return throwError(() => error);
+            // break;
+          default:
+            this.router.navigate(['/login']);
+            return throwError(() => error);
         }
       })
     );
@@ -47,7 +57,7 @@ export class AuthInterceptor implements HttpInterceptor {
       return this.authService.refreshToken().pipe(
         switchMap((jwt: any) => {
           this.isRefreshing = false;
-          
+
           const newToken = jwt.access_token;
           this.authService.setAuthenticationStatus(newToken);
 
@@ -57,6 +67,11 @@ export class AuthInterceptor implements HttpInterceptor {
           this.isRefreshing = false;
           this.cartService.clearCart();
           this.authService.logout();
+          this.cartService.storage.removeItem(this.authService.token);
+          this.authService.loggedUserSubject.next('');
+          this.authService.isAuthenticatedSubject.next(false);
+          this.authService.userIdSubject.next(0);
+          this.router.navigate(['/login']);
           return throwError(() => err);
         })
       );

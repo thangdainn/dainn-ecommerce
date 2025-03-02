@@ -6,7 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { firstValueFrom } from 'rxjs';
@@ -28,7 +28,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private activeRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -58,7 +59,7 @@ export class LoginComponent implements OnInit {
                 this.getUserId(response.access_token)
               )
             );
-            this.router.navigate(['/']);
+            this.router.navigateByUrl(this.activeRoute.snapshot.queryParams['returnUrl'] || '/');
           },
           error: (err) => {
             console.log('Login failed: ' + err.message);
@@ -93,14 +94,12 @@ export class LoginComponent implements OnInit {
               this.getUserId(response.access_token)
             )
           );
+          this.isLoading = false;
+          this.router.navigateByUrl((this.activeRoute.snapshot.queryParams['returnUrl']) as string || '/');
         },
         error: (err) => {
           this.loginError = err.error.detail;
           this.isLoading = false;
-        },
-        complete: () => {
-          this.isLoading = false;
-          this.router.navigate(['/']);
         },
       });
   }

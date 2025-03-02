@@ -1,7 +1,7 @@
 <div class="container">
     <p-toast></p-toast>
     <div class="mb-4">
-        <h3>{{ isCreateMode() ? 'Create ' : 'Edit '}} category</h3>
+        <h3>{{ isCreateMode() ? 'Create ' : 'Edit '}} brand</h3>
     </div>
     <form [formGroup]="editFormGroup">
         <div class="row justify-content-center">
@@ -14,8 +14,8 @@
                             <small class="text-danger" *ngIf="name?.errors?.['required']">Name
                                 is required.</small>
                         </div>
-                        <div *ngIf="cateIsExisted" class="mt-2">
-                            <small class="text-danger">Category existed</small>
+                        <div *ngIf="brandIsExisted" class="mt-2">
+                            <small class="text-danger">Brand existed</small>
                         </div>
                     </div>
                     <div class="d-flex flex-column gap-2 mb-3">

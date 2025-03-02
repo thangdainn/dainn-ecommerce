@@ -1,25 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-} from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Role } from 'src/app/common/role';
-import { RoleService } from 'src/app/services/role.service';
+import { Brand } from 'src/app/common/brand';
+import { BrandService } from 'src/app/services/brand.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
-  selector: 'app-role-action',
-  templateUrl: './role-action.component.html',
-  styleUrl: './role-action.component.css',
+  selector: 'app-brand-action',
+  templateUrl: './brand-action.component.html',
+  styleUrl: './brand-action.component.css'
 })
-export class RoleActionComponent implements OnInit {
+export class BrandActionComponent   implements OnInit {
   editFormGroup!: FormGroup;
-  roleIsExisted: boolean = false;
-  role: Role = new Role();
+  brandIsExisted: boolean = false;
+  brand: Brand = new Brand();
   status: boolean = true;
 
   isLoading: boolean = false;
@@ -27,7 +22,7 @@ export class RoleActionComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private roleService: RoleService,
+    private brandService: BrandService,
     private activeRoute: ActivatedRoute
   ) {}
 
@@ -56,15 +51,14 @@ export class RoleActionComponent implements OnInit {
   handleUpdateMode() {
     if (!this.isCreateMode()) {
       this.activeRoute.params.subscribe((params) => {
-        const name = params['name'];
-        this.roleService.getRoleByName(name).subscribe((data) => {
-          this.role = data;
+        const id = params['id'];
+        this.brandService.getById(id).subscribe((data) => {
+          this.brand = data;
           this.status = this.revertStatus(data.status);
           console.log(this.revertStatus(data.status));
 
-          console.log(data);
           this.editFormGroup.patchValue({
-            name: data.name.split('_')[1],
+            name: data.name,
             description: data.description,
           });
         });
@@ -95,45 +89,40 @@ export class RoleActionComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.role.name = this.editFormGroup.value.name;
-    this.role.description = this.editFormGroup.value.description;
+    this.brand.name = this.editFormGroup.value.name;
+    this.brand.description = this.editFormGroup.value.description;
     if (this.isCreateMode()) {
-      this.createRole(this.role);
+      this.createBrand(this.brand);
     } else {
-      this.role.status = this.unRevertStatus(this.status);
-      this.updateRole(this.role);
+      this.brand.status = this.unRevertStatus(this.status);
+      this.updateBrand(this.brand);
     }
   }
 
-  createRole(role: Role) {
-    this.roleService.createRole(role).subscribe({
+  createBrand(brand: Brand) {
+    this.brandService.create(brand).subscribe({
       next: () => {
-        this.showSuccess('Create successfully');
+        this.showSuccess('Create role successfully');
         this.isLoading = false;
         this.editFormGroup.reset();
       },
       error: (err) => {
-        if (err.status === 409) {
-          this.showError('Role is existed');
-          this.roleIsExisted = false;
-          return;
-        }
-        console.log('Create failed: ' + err.message);
-        this.showError('Create failed');
+        console.log('Create role failed: ' + err.message);
+        this.showError('Create role failed');
         this.isLoading = false;
       },
     });
   }
 
-  updateRole(role: Role) {
-    this.roleService.updateRole(role).subscribe({
+  updateBrand(brand: Brand) {
+    this.brandService.update(brand).subscribe({
       next: () => {
-        this.showSuccess('Update successfully');
+        this.showSuccess('Update role successfully');
         this.isLoading = false;
       },
       error: (err) => {
-        console.log('Update failed: ' + err.message);
-        this.showError('Update failed');
+        console.log('Update role failed: ' + err.message);
+        this.showError('Update role failed');
         this.isLoading = false;
       },
     });

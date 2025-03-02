@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Category } from 'src/app/common/category';
-import { Role } from 'src/app/common/role';
 import { CategoryService } from 'src/app/services/category.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
@@ -15,7 +14,7 @@ import { ShopValidators } from 'src/app/validators/shop-validators';
 export class CategoryActionComponent  implements OnInit {
   editFormGroup!: FormGroup;
   cateIsExisted: boolean = false;
-  cate: Category = new Role();
+  cate: Category = new Category();
   status: boolean = true;
 
   isLoading: boolean = false;
@@ -59,7 +58,7 @@ export class CategoryActionComponent  implements OnInit {
           console.log(this.revertStatus(data.status));
 
           this.editFormGroup.patchValue({
-            name: data.name.split('_')[1],
+            name: data.name,
             description: data.description,
           });
         });
@@ -103,13 +102,13 @@ export class CategoryActionComponent  implements OnInit {
   createCate(cate: Category) {
     this.cateService.create(cate).subscribe({
       next: () => {
-        this.showSuccess('Create role successfully');
+        this.showSuccess('Create successfully');
         this.isLoading = false;
         this.editFormGroup.reset();
       },
       error: (err) => {
-        console.log('Create role failed: ' + err.message);
-        this.showError('Create role failed');
+        console.log('Create failed: ' + err.message);
+        this.showError('Create failed');
         this.isLoading = false;
       },
     });
@@ -118,12 +117,12 @@ export class CategoryActionComponent  implements OnInit {
   updateCate(cate: Category) {
     this.cateService.update(cate).subscribe({
       next: () => {
-        this.showSuccess('Update role successfully');
+        this.showSuccess('Update successfully');
         this.isLoading = false;
       },
       error: (err) => {
-        console.log('Update role failed: ' + err.message);
-        this.showError('Update role failed');
+        console.log('Update failed: ' + err.message);
+        this.showError('Update failed');
         this.isLoading = false;
       },
     });

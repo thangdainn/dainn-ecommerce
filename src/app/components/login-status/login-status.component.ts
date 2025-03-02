@@ -19,10 +19,6 @@ export class LoginStatusComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const jwtToken = this.authService.getToken();
-    if (jwtToken) {
-      this.authService.setAuthenticationStatus(jwtToken);
-    }
     this.authService.isAuthenticatedSubject.subscribe((data) => {
       this.isAuthenticated = data;
     });

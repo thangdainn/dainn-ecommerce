@@ -1,0 +1,28 @@
+<section class="ftco-section">
+    <div class="access-denied-container w-100 d-flex justify-content-center align-items-center">
+        <p-card [style]="{ width: '26rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }">
+            <ng-template pTemplate="header">
+                <h1 class="text-4xl font-bold text-red-600 t-center">403 - Access Denied</h1>
+            </ng-template>
+            <ng-template pTemplate="body">
+                <p class="text-lg text-gray-700 mb-4">
+                    You do not have permission to access this page.
+                </p>
+                <div *ngIf="authService.isAdmin(); else endUserContent">
+                    <p>Please contact the administrator for assistance.</p>
+                    <div class="d-flex justify-content-between gap-2 mt-3">
+                        <p-button label="Back to Admin" icon="pi pi-arrow-left" (click)="goBack()"
+                            styleClass="p-button-custom" />
+                        <p-button label="Contact Support" icon="pi pi-envelope" (click)="contactSupport()"
+                            styleClass="p-button-help-custom" severity="help"/>
+                    </div>
+                </div>
+                <ng-template #endUserContent>
+                    <p>Please log in with appropriate credentials or return to the homepage.</p>
+                    <p-button label="Back to Homepage" icon="pi pi-home" (click)="goBack()"
+                        styleClass="p-button-custom" />
+                </ng-template>
+            </ng-template>
+        </p-card>
+    </div>
+</section>

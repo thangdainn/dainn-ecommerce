@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { Brand } from 'src/app/common/brand';
 import { Category } from 'src/app/common/category';
-import { CategoryService } from 'src/app/services/category.service';
+import { BrandService } from 'src/app/services/brand.service';
 
 @Component({
-  selector: 'app-category-management',
-  templateUrl: './category-management.component.html',
-  styleUrl: './category-management.component.css'
+  selector: 'app-brand-management',
+  templateUrl: './brand-management.component.html',
+  styleUrl: './brand-management.component.css'
 })
-export class CategoryManagementComponent  implements OnInit {
-  categories!: Category[];
-  selectedCates: Category[] = [];
+export class BrandManagementComponent implements OnInit {
+  brands!: Brand[];
+  selectedBrands: Brand[] = [];
   statuses!: any[];
 
   isLoading: boolean = false;
@@ -27,7 +28,7 @@ export class CategoryManagementComponent  implements OnInit {
   status: number = 1;
 
   constructor(
-    private categoryService: CategoryService,
+    private brandService: BrandService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
@@ -39,7 +40,7 @@ export class CategoryManagementComponent  implements OnInit {
 
   getCatesPaginator() {
     this.isLoading = true;
-    this.categoryService
+    this.brandService
       .getAllPaginate(
         this.page,
         this.size,
@@ -60,7 +61,7 @@ export class CategoryManagementComponent  implements OnInit {
   }
 
   processResult(data: any) {
-    this.categories = data.data;
+    this.brands = data.data;
     this.page = data.page;
     this.size = data.size;
     this.totalElements = data.totalElements;
@@ -114,22 +115,22 @@ export class CategoryManagementComponent  implements OnInit {
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
-        this.deleteCates();
+        this.deleteBrands();
       },
     });
   }
 
-  deleteCates() {
+  deleteBrands() {
     this.isDeleting = true;
-    let ids = this.selectedCates.map((cate) => cate.id);
-    this.categoryService.deleteByIds(ids).subscribe({
+    let ids = this.selectedBrands.map((cate) => cate.id);
+    this.brandService.deleteByIds(ids).subscribe({
       next: () => {
-        this.categories = this.categories.filter(
-          (cate) => !this.selectedCates.includes(cate)
+        this.brands = this.brands.filter(
+          (brand) => !this.selectedBrands.includes(brand)
         );
         
-        this.showSuccess('Delete successfully');
-        this.selectedCates = [];
+        this.showSuccess('Deleted successfully');
+        this.selectedBrands = [];
         this.isDeleting = false;
         this.resetFilter();
         this.getCatesPaginator();
@@ -137,7 +138,7 @@ export class CategoryManagementComponent  implements OnInit {
       error: (err) => {
         console.log(err);
 
-        this.showError('Error delete');
+        this.showError('Error deleting category');
         this.isDeleting = false;
       },
     });

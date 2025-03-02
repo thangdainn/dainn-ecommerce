@@ -65,7 +65,7 @@ export class ShopComponent implements OnInit{
   }
 
   listProductBrands() {
-    this.brandService.getBrands().subscribe((data) => {
+    this.brandService.getAll().subscribe((data) => {
       this.brands = data;
     });
   }

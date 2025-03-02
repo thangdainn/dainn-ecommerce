@@ -26,12 +26,15 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CategoryManagementComponent } from './components/category-management/category-management.component';
 import { RoleActionComponent } from './components/role-action/role-action.component';
 import { CategoryActionComponent } from './components/category-action/category-action.component';
+import { BrandManagementComponent } from './components/brand-management/brand-management.component';
+import { BrandActionComponent } from './components/brand-action/brand-action.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'roles', component: RoleManagementComponent },
       { path: 'roles/create', component: RoleActionComponent },
@@ -39,7 +42,9 @@ const routes: Routes = [
       { path: 'categories', component: CategoryManagementComponent },
       { path: 'categories/create', component: CategoryActionComponent },
       { path: 'categories/edit/:id', component: CategoryActionComponent },
-
+      { path: 'brands', component: BrandManagementComponent },
+      { path: 'brands/create', component: BrandActionComponent },
+      { path: 'brands/edit/:id', component: BrandActionComponent },
     ],
   },
 ];
@@ -53,7 +58,9 @@ const routes: Routes = [
     RoleManagementComponent,
     RoleActionComponent,
     CategoryManagementComponent,
-    CategoryActionComponent
+    CategoryActionComponent,
+    BrandManagementComponent,
+    BrandActionComponent
   ],
   imports: [
     CommonModule,

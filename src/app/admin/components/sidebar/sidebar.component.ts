@@ -1,15 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
+  name: string = '';
+  role: string = "ADMIN";
+
+  storage: Storage = localStorage;
+
+  constructor(private authService: AuthService, private route: Router) {}
 
   ngOnInit() {
+    this.authService.loggedUserSubject.subscribe((data) => {
+      this.name = data;
+    });
+
     this.items = [
       {
         separator: true,
@@ -75,7 +87,7 @@ export class SidebarComponent {
           {
             label: 'Logout',
             icon: 'pi pi-sign-out',
-            routerLink: '/logout',
+            command: () => this.logout(),
           },
         ],
       },
@@ -83,5 +95,14 @@ export class SidebarComponent {
         separator: true,
       },
     ];
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.storage.removeItem(this.authService.token);
+    this.authService.loggedUserSubject.next('');
+    this.authService.isAuthenticatedSubject.next(false);
+    this.authService.userIdSubject.next(0);
+    this.route.navigate(['/login']);
   }
 }

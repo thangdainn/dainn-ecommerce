@@ -54,6 +54,12 @@ import { MessageService, ConfirmationService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { adminGuard } from './guards/admin.guard';
+import { NotFoundComponent } from './components/error/not-found/not-found.component';
+import { AccessDeniedComponent } from './components/error/access-denied/access-denied.component';
+import { RoleService } from './services/role.service';
+import { LocationService } from './services/location.service';
+import { PaymentService } from './services/payment.service';
+import { CardModule } from 'primeng/card';
 
 
 const routes: Routes = [
@@ -71,8 +77,8 @@ const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule), canActivate: [adminGuard] },
   { path: '', component: HomeComponent },
-  { path: '', redirectTo: '', pathMatch: 'full' },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: 'access-denied', component: AccessDeniedComponent },
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
@@ -94,7 +100,9 @@ const routes: Routes = [
     LoginStatusComponent,
     PurchaseOrderComponent,
     RegisterComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    NotFoundComponent,
+    AccessDeniedComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -119,7 +127,8 @@ const routes: Routes = [
     PasswordModule,
     ToastModule,
     DropdownModule,
-    InputTextModule
+    InputTextModule,
+    CardModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
@@ -130,6 +139,9 @@ const routes: Routes = [
     CartService,
     OrderService,
     AuthService,
+    RoleService,
+    LocationService,
+    PaymentService,
     MessageService,
     ConfirmationService,
   ],

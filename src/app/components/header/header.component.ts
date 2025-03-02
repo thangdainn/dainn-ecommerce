@@ -23,29 +23,29 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.updateCartStatus();
 
-    let ws = new SockJS('http://localhost:8090/api/ws');
-    this.socketClient = Stomp.over(ws);
+    // let ws = new SockJS('http://localhost:8090/api/ws');
+    // this.socketClient = Stomp.over(ws);
 
-    this.socketClient.connect(
-      { Authorization: 'Bearer ' + localStorage.getItem('token') },
-      () => {
-        console.log('Connected to the server');
-        this.notificationSubscription = this.socketClient.subscribe(
-          `/user/${this.authService.userIdSubject.value}/notifications`,
-          (message: any) => {
-            console.log('Received message: ' + message);
-          }
-        );
-      },
-      (error: any) => {
-        console.log('Cannot connect to the server: ' + error);
-      }
-    );
+    // this.socketClient.connect(
+    //   { Authorization: 'Bearer ' + localStorage.getItem('token') },
+    //   () => {
+    //     console.log('Connected to the server');
+    //     this.notificationSubscription = this.socketClient.subscribe(
+    //       `/user/${this.authService.userIdSubject.value}/notifications`,
+    //       (message: any) => {
+    //         console.log('Received message: ' + message);
+    //       }
+    //     );
+    //   },
+    //   (error: any) => {
+    //     console.log('Cannot connect to the server: ' + error);
+    //   }
+    // );
   }
 
   updateCartStatus() {
     this.authService.isAuthenticatedSubject.subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
+      if (isAuthenticated && this.authService.rolesSubject.value.includes('ROLE_USER')) {
         this.cartService.getCountCartItems().subscribe((totalQuantity) => {
           this.totalQuantity = totalQuantity;
           this.cartService.totalQuantity.next(totalQuantity);

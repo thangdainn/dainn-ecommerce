@@ -14037,6 +14037,13 @@ asl-google-signin-button::part(icon) {
   border-radius: 6px;
 }
 
+.p-button-help-custom {
+  background-color: #a855f7;
+  border: 1px solid #a855f7;
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}
+
 .p-button-success-custom {
   background-color: #28a745;
   border: 1px solid #28a745;
