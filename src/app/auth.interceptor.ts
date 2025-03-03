@@ -43,7 +43,6 @@ export class AuthInterceptor implements HttpInterceptor {
             return throwError(() => error);
             // break;
           default:
-            this.router.navigate(['/login']);
             return throwError(() => error);
         }
       })

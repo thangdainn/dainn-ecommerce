@@ -28,6 +28,8 @@ import { RoleActionComponent } from './components/role-action/role-action.compon
 import { CategoryActionComponent } from './components/category-action/category-action.component';
 import { BrandManagementComponent } from './components/brand-management/brand-management.component';
 import { BrandActionComponent } from './components/brand-action/brand-action.component';
+import { SizeActionComponent } from './components/size-action/size-action.component';
+import { SizeManagementComponent } from './components/size-management/size-management.component';
 
 const routes: Routes = [
   {
@@ -45,6 +47,9 @@ const routes: Routes = [
       { path: 'brands', component: BrandManagementComponent },
       { path: 'brands/create', component: BrandActionComponent },
       { path: 'brands/edit/:id', component: BrandActionComponent },
+      { path: 'sizes', component: SizeManagementComponent },
+      { path: 'sizes/create', component: SizeActionComponent },
+      { path: 'sizes/edit/:id', component: SizeActionComponent },
     ],
   },
 ];
@@ -60,7 +65,9 @@ const routes: Routes = [
     CategoryManagementComponent,
     CategoryActionComponent,
     BrandManagementComponent,
-    BrandActionComponent
+    BrandActionComponent,
+    SizeManagementComponent,
+    SizeActionComponent,
   ],
   imports: [
     CommonModule,

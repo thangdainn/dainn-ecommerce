@@ -107,6 +107,11 @@ export class CategoryActionComponent  implements OnInit {
         this.editFormGroup.reset();
       },
       error: (err) => {
+        if (err.status === 400) {
+          this.cateIsExisted = true;
+          this.isLoading = false;
+          return;
+        }
         console.log('Create failed: ' + err.message);
         this.showError('Create failed');
         this.isLoading = false;
@@ -121,6 +126,11 @@ export class CategoryActionComponent  implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
+        if (err.status === 400) {
+          this.cateIsExisted = true;
+          this.isLoading = false;
+          return;
+        }
         console.log('Update failed: ' + err.message);
         this.showError('Update failed');
         this.isLoading = false;

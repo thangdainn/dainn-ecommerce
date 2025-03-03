@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormBuilder,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Brand } from 'src/app/common/brand';
@@ -9,9 +14,9 @@ import { ShopValidators } from 'src/app/validators/shop-validators';
 @Component({
   selector: 'app-brand-action',
   templateUrl: './brand-action.component.html',
-  styleUrl: './brand-action.component.css'
+  styleUrl: './brand-action.component.css',
 })
-export class BrandActionComponent   implements OnInit {
+export class BrandActionComponent implements OnInit {
   editFormGroup!: FormGroup;
   brandIsExisted: boolean = false;
   brand: Brand = new Brand();
@@ -102,13 +107,18 @@ export class BrandActionComponent   implements OnInit {
   createBrand(brand: Brand) {
     this.brandService.create(brand).subscribe({
       next: () => {
-        this.showSuccess('Create role successfully');
+        this.showSuccess('Create successfully');
         this.isLoading = false;
         this.editFormGroup.reset();
       },
       error: (err) => {
-        console.log('Create role failed: ' + err.message);
-        this.showError('Create role failed');
+        if (err.status === 400) {
+          this.brandIsExisted = true;
+          this.isLoading = false;
+          return;
+        }
+        console.log('Create failed: ' + err.message);
+        this.showError('Create failed');
         this.isLoading = false;
       },
     });
@@ -117,12 +127,17 @@ export class BrandActionComponent   implements OnInit {
   updateBrand(brand: Brand) {
     this.brandService.update(brand).subscribe({
       next: () => {
-        this.showSuccess('Update role successfully');
+        this.showSuccess('Update successfully');
         this.isLoading = false;
       },
       error: (err) => {
-        console.log('Update role failed: ' + err.message);
-        this.showError('Update role failed');
+        if (err.status === 400) {
+          this.brandIsExisted = true;
+          this.isLoading = false;
+          return;
+        }
+        console.log('Update failed: ' + err.message);
+        this.showError('Update failed');
         this.isLoading = false;
       },
     });

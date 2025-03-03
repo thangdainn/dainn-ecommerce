@@ -7,19 +7,20 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Role } from 'src/app/common/role';
-import { RoleService } from 'src/app/services/role.service';
+import { Brand } from 'src/app/common/brand';
+import { Size } from 'src/app/common/size';
+import { SizeService } from 'src/app/services/size.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
-  selector: 'app-role-action',
-  templateUrl: './role-action.component.html',
-  styleUrl: './role-action.component.css',
+  selector: 'app-size-action',
+  templateUrl: './size-action.component.html',
+  styleUrl: './size-action.component.css',
 })
-export class RoleActionComponent implements OnInit {
+export class SizeActionComponent implements OnInit {
   editFormGroup!: FormGroup;
-  roleIsExisted: boolean = false;
-  role: Role = new Role();
+  sizeIsExisted: boolean = false;
+  size: Size = new Size();
   status: boolean = true;
 
   isLoading: boolean = false;
@@ -27,7 +28,7 @@ export class RoleActionComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private messageService: MessageService,
-    private roleService: RoleService,
+    private sizeService: SizeService,
     private activeRoute: ActivatedRoute
   ) {}
 
@@ -56,15 +57,14 @@ export class RoleActionComponent implements OnInit {
   handleUpdateMode() {
     if (!this.isCreateMode()) {
       this.activeRoute.params.subscribe((params) => {
-        const name = params['name'];
-        this.roleService.getRoleByName(name).subscribe((data) => {
-          this.role = data;
+        const id = params['id'];
+        this.sizeService.getById(id).subscribe((data) => {
+          this.size = data;
           this.status = this.revertStatus(data.status);
           console.log(this.revertStatus(data.status));
 
-          console.log(data);
           this.editFormGroup.patchValue({
-            name: data.name.split('_')[1],
+            name: data.name,
             description: data.description,
           });
         });
@@ -95,18 +95,18 @@ export class RoleActionComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.role.name = this.editFormGroup.value.name;
-    this.role.description = this.editFormGroup.value.description;
+    this.size.name = this.editFormGroup.value.name;
+    this.size.description = this.editFormGroup.value.description;
     if (this.isCreateMode()) {
-      this.createRole(this.role);
+      this.createSize(this.size);
     } else {
-      this.role.status = this.unRevertStatus(this.status);
-      this.updateRole(this.role);
+      this.size.status = this.unRevertStatus(this.status);
+      this.updateSize(this.size);
     }
   }
 
-  createRole(role: Role) {
-    this.roleService.createRole(role).subscribe({
+  createSize(size: Size) {
+    this.sizeService.create(size).subscribe({
       next: () => {
         this.showSuccess('Create successfully');
         this.isLoading = false;
@@ -114,7 +114,7 @@ export class RoleActionComponent implements OnInit {
       },
       error: (err) => {
         if (err.status === 400) {
-          this.roleIsExisted = false;
+          this.sizeIsExisted = true;
           this.isLoading = false;
           return;
         }
@@ -125,15 +125,15 @@ export class RoleActionComponent implements OnInit {
     });
   }
 
-  updateRole(role: Role) {
-    this.roleService.updateRole(role).subscribe({
+  updateSize(size: Size) {
+    this.sizeService.update(size).subscribe({
       next: () => {
         this.showSuccess('Update successfully');
         this.isLoading = false;
       },
       error: (err) => {
         if (err.status === 400) {
-          this.roleIsExisted = true;
+          this.sizeIsExisted = true;
           this.isLoading = false;
           return;
         }
