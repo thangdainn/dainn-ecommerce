@@ -24,12 +24,12 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { PaginatorModule } from 'primeng/paginator';
 import { CategoryManagementComponent } from './components/category-management/category-management.component';
-import { RoleActionComponent } from './components/role-action/role-action.component';
-import { CategoryActionComponent } from './components/category-action/category-action.component';
 import { BrandManagementComponent } from './components/brand-management/brand-management.component';
-import { BrandActionComponent } from './components/brand-action/brand-action.component';
-import { SizeActionComponent } from './components/size-action/size-action.component';
 import { SizeManagementComponent } from './components/size-management/size-management.component';
+import { UserManagementComponent } from './components/user-management/user-management.component';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DialogModule } from 'primeng/dialog';
+import { PasswordModule } from 'primeng/password';
 
 const routes: Routes = [
   {
@@ -39,17 +39,10 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'roles', component: RoleManagementComponent },
-      { path: 'roles/create', component: RoleActionComponent },
-      { path: 'roles/edit/:name', component: RoleActionComponent },
       { path: 'categories', component: CategoryManagementComponent },
-      { path: 'categories/create', component: CategoryActionComponent },
-      { path: 'categories/edit/:id', component: CategoryActionComponent },
       { path: 'brands', component: BrandManagementComponent },
-      { path: 'brands/create', component: BrandActionComponent },
-      { path: 'brands/edit/:id', component: BrandActionComponent },
       { path: 'sizes', component: SizeManagementComponent },
-      { path: 'sizes/create', component: SizeActionComponent },
-      { path: 'sizes/edit/:id', component: SizeActionComponent },
+      { path: 'users', component: UserManagementComponent },
     ],
   },
 ];
@@ -61,13 +54,10 @@ const routes: Routes = [
     AdminHeaderComponent,
     SidebarComponent,
     RoleManagementComponent,
-    RoleActionComponent,
     CategoryManagementComponent,
-    CategoryActionComponent,
     BrandManagementComponent,
-    BrandActionComponent,
     SizeManagementComponent,
-    SizeActionComponent,
+    UserManagementComponent,
   ],
   imports: [
     CommonModule,
@@ -90,6 +80,9 @@ const routes: Routes = [
     IconFieldModule,
     InputIconModule,
     PaginatorModule,
+    MultiSelectModule,
+    DialogModule,
+    PasswordModule
   ],
 })
 export class AdminModule {}

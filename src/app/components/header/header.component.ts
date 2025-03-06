@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit {
 
   updateCartStatus() {
     this.authService.isAuthenticatedSubject.subscribe((isAuthenticated) => {
-      if (isAuthenticated && this.authService.rolesSubject.value.includes('ROLE_USER')) {
+      if (isAuthenticated && this.authService.roleSubject.value === 'ROLE_USER') {
         this.cartService.getCountCartItems().subscribe((totalQuantity) => {
           this.totalQuantity = totalQuantity;
           this.cartService.totalQuantity.next(totalQuantity);

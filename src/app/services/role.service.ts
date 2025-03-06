@@ -12,11 +12,11 @@ export class RoleService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getAllRoles(): Observable<Role[]> {
+  getAll(): Observable<Role[]> {
     return this.httpClient.get<Role[]>(this.baseUrl);
   }
 
-  getRolesPaginate(
+  getAllPaginate(
     page: number,
     size: number,
     sortBy: string,
@@ -34,19 +34,19 @@ export class RoleService {
     return this.httpClient.get<GetResponseRole>(searchUrl);
   }
 
-  getRoleByName(name: string): Observable<Role> {
+  getByName(name: string): Observable<Role> {
     return this.httpClient.get<Role>(`${this.baseUrl}/${name}`);
   }
 
-  deleteRoles(ids: number[]): Observable<any> {
+  deleteByIds(ids: number[]): Observable<any> {
     return this.httpClient.delete(this.baseUrl, { body: ids });
   }
 
-  createRole(role: Role): Observable<Role> {
+  create(role: Role): Observable<Role> {
     return this.httpClient.post<Role>(this.baseUrl, role);
   }
 
-  updateRole(role: Role): Observable<Role> {
+  update(role: Role): Observable<Role> {
     return this.httpClient.put<Role>(`${this.baseUrl}/${role.id}`, role);
   }
 }

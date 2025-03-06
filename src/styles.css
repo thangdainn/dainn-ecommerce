@@ -242,12 +242,16 @@ th {
 
 label {
   display: inline-block;
-  margin-bottom: 0.5rem;
+  /* margin-bottom: 0.5rem; */
 }
 
-button {
-  border-radius: 0;
+.field {
+  margin-bottom: 1rem;
 }
+
+/* button {
+  border-radius: 0;
+} */
 
 button:focus {
   outline: 1px dotted;
@@ -14222,4 +14226,47 @@ p-menu > div {
 .p-column-filter-overlay-menu .p-column-filter-buttonbar button {
   padding: 0.3rem 0.9rem;
   border-radius: 6px;
+}
+
+.p-multiselect {
+  font-size: 0.8rem;
+}
+
+.p-multiselect-panel .p-multiselect-header {
+  font-size: 0.8rem;
+}
+
+.p-multiselect-panel .p-multiselect-items {
+  font-size: 0.8rem;
+}
+
+.p-multiselect-panel .p-multiselect-header .p-multiselect-filter-container .p-inputtext {
+  padding: 0.2rem 0.5rem;
+}
+
+.p-dialog .p-dialog-header {
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+}
+
+.p-dialog .p-dialog-footer {
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.p-dialog {
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.p-icon-field-left > .p-inputtext {
+  padding-left: 2rem;
+}
+
+.p-dialog .p-dialog-content {
+  font-size: 0.8rem;
+}
+
+.p-dialog-content {
+  overflow-y: unset;
 }

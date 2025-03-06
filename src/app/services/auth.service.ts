@@ -15,7 +15,7 @@ export class AuthService {
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   loggedUserSubject = new BehaviorSubject<string>('');
   userIdSubject = new BehaviorSubject<number>(0);
-  rolesSubject = new BehaviorSubject<string[]>([]);
+  roleSubject = new BehaviorSubject<string>('');
 
   constructor(
     private httpClient: HttpClient,
@@ -92,7 +92,7 @@ export class AuthService {
         this.loggedUserSubject.next(response.name);
         this.userIdSubject.next(response.id);
         this.isAuthenticatedSubject.next(true);
-        this.rolesSubject.next(response.rolesName);
+        this.roleSubject.next(response.roleName);
       },
       error: () => {
         this.isAuthenticatedSubject.next(false);
@@ -133,7 +133,7 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    return this.rolesSubject.value.includes('ROLE_ADMIN');
+    return this.roleSubject.value.includes('ROLE_ADMIN');
   }
 
   refreshToken(): Observable<GetResponseLogin> {
@@ -157,5 +157,5 @@ interface GetResponseInfo {
   id: number;
   name: string;
   email: string;
-  rolesName: string[];
+  roleName: string;
 }

@@ -27,7 +27,7 @@
                     shape="circle" />
                 <span class="d-inline-flex flex-column info">
                     <span class="font-bold">{{ name }}</span>
-                    <span class="text-sm">{{ role }}</span>
+                    <span class="text-sm">{{ role.split('_')[1] }}</span>
                 </span>
             </div>
         </ng-template>

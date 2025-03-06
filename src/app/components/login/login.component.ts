@@ -89,6 +89,11 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: async (response) => {
           console.log('Login successful: ' + response);
+          if (this.authService.roleSubject.value !== 'ROLE_USER') {
+            this.isLoading = false;
+            this.router.navigateByUrl('/admin');
+            return;
+          }
           await firstValueFrom(
             this.cartService.handleCartLogin(
               this.getUserId(response.access_token)

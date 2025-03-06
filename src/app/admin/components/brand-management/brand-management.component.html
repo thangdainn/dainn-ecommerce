@@ -1,7 +1,7 @@
 <div class="card px-4">
     <p-toast />
     <p-table [value]="brands" [tableStyle]="{ 'min-width': '50rem' }" [loading]="isLoading"
-         [(selection)]="selectedBrands" [responsive]="true">
+        [(selection)]="selectedBrands">
         <ng-template pTemplate="caption">
             <div class="row my-3">
                 <div class="col-6 row justify-content-start">
@@ -9,15 +9,16 @@
                         <p-inputIcon>
                             <i class="pi pi-search"></i>
                         </p-inputIcon>
-                        <input pInputText type="text" (change)="handleSearch($event)" placeholder="Enter brand name..." />
+                        <input pInputText type="text" (change)="handleSearch($event)"
+                            placeholder="Enter brand name..." />
                     </p-iconField>
                 </div>
                 <div class="col-6 row justify-content-end">
                     <p-confirmPopup />
-                    <p-button [disabled]="status == 0 || selectedBrands && selectedBrands.length == 0" [loading]="isDeleting" icon="pi pi-trash"
-                        severity="danger" [rounded]="true" [text]="true" [raised]="true"
-                        (click)="confirmDelete($event)" />
-                    <p-button routerLink="create" icon="pi pi-plus" [rounded]="true" [text]="true" [raised]="true"
+                    <p-button [disabled]="status == 0 || selectedBrands && selectedBrands.length == 0"
+                        [loading]="isDeleting" icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true"
+                        [raised]="true" (click)="confirmDelete($event)" />
+                    <p-button (onClick)="openNew()" icon="pi pi-plus" [rounded]="true" [text]="true" [raised]="true"
                         class="ml-3" />
                 </div>
             </div>
@@ -27,9 +28,7 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-                <th pSortableColumn="id">
-                    # <p-sortIcon field="id" />
-                </th>
+                <th>#</th>
                 <th pSortableColumn="name">
                     Name <p-sortIcon field="name" />
                 </th>
@@ -40,17 +39,11 @@
                         Status
                         <p-columnFilter field="status" type="boolean" display="menu">
                             <ng-template pTemplate="filter" let-value>
-                                <p-dropdown 
-                                    [ngModel]="value" 
-                                    [options]="statuses"
-                                    [(ngModel)]="status"
-                                    (onChange)="filterStatus($event.value)" 
-                                    [autoDisplayFirst]="true"
-                                    [showClear]="false"
-                                    placeholder="Any">
+                                <p-dropdown [ngModel]="value" [options]="statuses" [(ngModel)]="status"
+                                    (onChange)="filterStatus($event.value)" [autoDisplayFirst]="true"
+                                    [showClear]="false" placeholder="Any">
                                     <ng-template let-option pTemplate="item">
-                                        <p-tag 
-                                            [value]="option.value == 1 ? 'Enable' : 'Disable'"
+                                        <p-tag [value]="option.value == 1 ? 'Enable' : 'Disable'"
                                             [severity]="getSeverity(option.value)" />
                                     </ng-template>
                                 </p-dropdown>
@@ -63,30 +56,68 @@
                 </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-cate let-index="rowIndex" let-rowData="rowData">
+        <ng-template pTemplate="body" let-brand let-index="rowIndex" let-rowData="rowData">
             <tr style="border: none;">
                 <td>
-                    <p-tableCheckbox [value]="cate" />
+                    <p-tableCheckbox [value]="brand" />
                 </td>
                 <td>{{ page*size + index + 1}}</td>
-                <td>{{cate.name}}</td>
-                <td>{{cate.description}}</td>
+                <td>{{brand.name}}</td>
+                <td>{{brand.description}}</td>
                 <td>
-                    <p-tag [value]="cate.status == 1 ? 'Enable' : 'Disable'" [severity]="getSeverity(cate.status)" />
+                    <p-tag [value]="brand.status == 1 ? 'Enable' : 'Disable'" [severity]="getSeverity(brand.status)" />
                 </td>
                 <td>
-                    <p-button routerLink="edit/{{cate.id}}" icon="pi pi-pencil" [rounded]="true" [text]="true"
+                    <p-button (onClick)="openEdit(brand)" icon="pi pi-pencil" [rounded]="true" [text]="true"
                         [raised]="true" />
                 </td>
             </tr>
         </ng-template>
     </p-table>
     <div class="d-flex justify-content-center">
-        <p-paginator 
-            (onPageChange)="onPageChange($event)" 
-            [first]="page" 
-            [rows]="size" 
-            [totalRecords]="totalElements" 
+        <p-paginator (onPageChange)="onPageChange($event)" [first]="page * size" [rows]="size" [totalRecords]="totalElements"
             [rowsPerPageOptions]="[5, 10, 20]" />
     </div>
+    <p-dialog [(visible)]="brandDialog" [style]="{ width: '450px' }" [header]="brand.id ===0 ? 'Create' : 'Update'"
+        [modal]="true" styleClass="p-fluid">
+
+        <ng-template pTemplate="content">
+            <form [formGroup]="editFormGroup">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" formControlName="name" [(ngModel)]="brand.name" required
+                        autofocus class="w-100" />
+                    <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
+                        <small class="text-danger" *ngIf="name?.errors?.['required']">Name
+                            is required.</small>
+                    </div>
+                    <div *ngIf="brandIsExisted" class="mt-2">
+                        <small class="text-danger">Brand existed</small>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea formControlName="description"
+                        [(ngModel)]="brand.description" required rows="3" cols="20" class="w-100">
+                    </textarea>
+                    <div *ngIf="description?.invalid && (description?.touched || description?.dirty)">
+                        <small class="text-danger" *ngIf="description?.errors?.['required']">Description
+                            is required.</small>
+                    </div>
+                </div>
+
+                <div class="field d-flex align-items-center" *ngIf="brand.id !== 0">
+                    <label for="status" class="mr-3">Status</label>
+                    <p-inputSwitch [(ngModel)]="brandStatus" [ngModelOptions]="{standalone: true}">
+                    </p-inputSwitch>
+                </div>
+            </form>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveEdit()" />
+        </ng-template>
+    </p-dialog>
 </div>

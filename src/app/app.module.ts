@@ -60,6 +60,7 @@ import { RoleService } from './services/role.service';
 import { LocationService } from './services/location.service';
 import { PaymentService } from './services/payment.service';
 import { CardModule } from 'primeng/card';
+import { UserService } from './services/user.service';
 
 
 const routes: Routes = [
@@ -140,6 +141,7 @@ const routes: Routes = [
     OrderService,
     AuthService,
     RoleService,
+    UserService,
     LocationService,
     PaymentService,
     MessageService,

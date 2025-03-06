@@ -1,0 +1,201 @@
+<div class="card px-4">
+    <p-toast />
+    <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }" [loading]="isLoading" [(selection)]="selectedUsers"
+        >
+        <ng-template pTemplate="caption">
+            <div class="row my-3">
+                <div class="col-6 row justify-content-start">
+                    <p-iconField iconPosition="left" class="ml-3">
+                        <p-inputIcon>
+                            <i class="pi pi-search"></i>
+                        </p-inputIcon>
+                        <input pInputText type="text" (change)="handleSearch($event)"
+                            placeholder="Enter name or email..." />
+                    </p-iconField>
+                </div>
+                <div class="col-6 row justify-content-end">
+                    <p-confirmPopup />
+                    <p-button [disabled]="status == 0 || selectedUsers && selectedUsers.length == 0"
+                        [loading]="isDeleting" icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true"
+                        [raised]="true" (click)="confirmDelete($event)" />
+                    <p-button (onClick)="openNew()" icon="pi pi-plus" [rounded]="true" [text]="true" [raised]="true"
+                        class="ml-3" />
+                </div>
+            </div>
+
+
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th>#</th>
+                <th pSortableColumn="name">
+                    Name <p-sortIcon field="name" />
+                </th>
+                <th pSortableColumn="email">
+                    Email <p-sortIcon field="email" />
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Provider
+                        <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false"
+                            [showOperator]="false" [showAddButton]="false" class="ml-auto">
+                            <ng-template pTemplate="filter" let-value>
+                                <p-multiSelect [options]="providers" placeholder="Select"
+                                    [(ngModel)]="selectedProviders" (onChange)="getUsersPaginator()"
+                                    optionLabel="label">
+                                    <ng-template let-option pTemplate="item">
+                                        <div class="inline-block vertical-align-middle">
+                                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect>
+                            </ng-template>
+                        </p-columnFilter>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Role
+                        <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false"
+                            [showOperator]="false" [showAddButton]="false" class="ml-auto">
+                            <ng-template pTemplate="filter" let-value>
+                                <p-multiSelect [options]="roles" placeholder="Select" [(ngModel)]="selectedRoles"
+                                    (onChange)="filterByRoles()" optionLabel="name">
+                                    <ng-template let-option pTemplate="item">
+                                        <div class="inline-block vertical-align-middle">
+                                            <span class="ml-1 mt-1">{{ option.name }}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect>
+                            </ng-template>
+                        </p-columnFilter>
+                    </div>
+                </th>
+
+                <th>
+                    <!-- Status -->
+                    <div class="d-flex align-items-center justify-content-between">
+                        Status
+                        <p-columnFilter field="status" type="boolean" display="menu">
+                            <ng-template pTemplate="filter" let-value>
+                                <p-dropdown [ngModel]="value" [options]="statuses" [(ngModel)]="status"
+                                    (onChange)="filterStatus($event.value)" [autoDisplayFirst]="true"
+                                    [showClear]="false" placeholder="Any">
+                                    <ng-template let-option pTemplate="item">
+                                        <p-tag [value]="option.value == 1 ? 'Enable' : 'Disable'"
+                                            [severity]="getSeverity(option.value)" />
+                                    </ng-template>
+                                </p-dropdown>
+                            </ng-template>
+                        </p-columnFilter>
+                    </div>
+                </th>
+
+                <th>Create Date</th>
+
+                <th>
+                    Action
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user let-index="rowIndex" let-rowData="rowData">
+            <tr style="border: none;">
+                <td>
+                    <p-tableCheckbox [value]="user" />
+                </td>
+                <td>{{ page*size + index + 1}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.provider}}</td>
+                <td>{{user.roleName.split('_')[1]}}</td>
+                <td>
+                    <p-tag [value]="user.status == 1 ? 'Enable' : 'Disable'" [severity]="getSeverity(user.status)" />
+                </td>
+                <td>{{user.createdDate | date : 'MM/dd/yyyy'}}</td>
+
+                <td>
+                    <p-button (onClick)="openEdit(user)" icon="pi pi-pencil" [rounded]="true" [text]="true"
+                        [raised]="true" />
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <div class="d-flex justify-content-center">
+        <p-paginator 
+            (onPageChange)="onPageChange($event)" 
+            [first]="page * size" 
+            [rows]="size" 
+            [totalRecords]="totalElements"
+            [rowsPerPageOptions]="[5, 10, 20]" />
+    </div>
+    <p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" [header]="user.id ===0 ? 'Create' : 'Update'"
+        [modal]="true" styleClass="p-fluid">
+
+        <ng-template pTemplate="content">
+            <form [formGroup]="editFormGroup">
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="text" pInputText id="email" formControlName="email" required autofocus class="w-100" />
+                    <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
+                        <small class="text-danger" *ngIf="email?.errors?.['required']">Email
+                            is required.</small>
+                    </div>
+                    <div *ngIf="userIsExisted" class="mt-2">
+                        <small class="text-danger">Email existed</small>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" formControlName="name" required autofocus class="w-100" />
+                    <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
+                        <small class="text-danger" *ngIf="name?.errors?.['required']">Name
+                            is required.</small>
+                    </div>
+                </div>
+
+                <div class="field" *ngIf="user.id === 0">
+                    <label for="password">Password</label>
+                    <p-password formControlName="password" [feedback]="false" class="w-100"
+                        styleClass="input-password-custom" [toggleMask]="true" />
+                    <div *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+                        <small class="text-danger" *ngIf="password?.errors?.['required']">Password
+                            is required.</small>
+                        <small class="text-danger" *ngIf="password?.errors?.['minlength']">Password must
+                            be at least 6 characters long.</small>
+                    </div>
+                </div>
+
+                <div class="field row align-items-center">
+                    <div [ngClass]="user.id !== 0 ? 'col-6' : 'col-12'">
+                        <label for="role">Role</label>
+                        <p-dropdown inputId="role" [options]="roles" formControlName="role" optionLabel="name"
+                            optionValue="name">
+                        </p-dropdown>
+                        <small class="text-danger" *ngIf="role?.invalid && (role?.touched || role?.dirty)">
+                            Role is required.
+                        </small>
+                    </div>
+                    <div class="col-6 row flex-column align-items-center" *ngIf="user.id !== 0">
+                        <label for="status" class="">Status</label>
+                        <p-inputSwitch [(ngModel)]="userStatus" [ngModelOptions]="{standalone: true}" class="mt-2">
+                        </p-inputSwitch>
+                    </div>
+                </div>
+
+                <div class="field d-flex align-items-center" *ngIf="user.id !== 0">
+
+                </div>
+
+
+            </form>
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveEdit()" [loading]="isLoadingEdit"/>
+        </ng-template>
+    </p-dialog>
+</div>

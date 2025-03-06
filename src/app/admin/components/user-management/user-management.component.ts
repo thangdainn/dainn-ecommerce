@@ -1,30 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormGroup,
-  FormControl,
-  Validators,
   FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
 } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { Role } from 'src/app/common/role';
+import { User } from 'src/app/common/user';
 import { RoleService } from 'src/app/services/role.service';
+import { UserService } from 'src/app/services/user.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
-  selector: 'app-role-management',
-  templateUrl: './role-management.component.html',
-  styleUrl: './role-management.component.css',
+  selector: 'app-user-management',
+  templateUrl: './user-management.component.html',
+  styleUrl: './user-management.component.css',
 })
-export class RoleManagementComponent implements OnInit {
-  roles!: Role[];
-  selectedRoles: Role[] = [];
+export class UserManagementComponent implements OnInit {
+  users!: User[];
+  selectedUsers: User[] = [];
   statuses!: any[];
 
-  role: Role = new Role();
-  roleDialog: boolean = false;
+  roles!: Role[];
+  selectedRoles: Role[] = [];
+
+  providers!: object[];
+  selectedProviders: object[] = [];
+
+  user: User = new User();
+  userDialog: boolean = false;
   editFormGroup!: FormGroup;
-  roleIsExisted: boolean = false;
-  roleStatus: boolean = true;
+  userIsExisted: boolean = false;
+  userStatus: boolean = true;
 
   isLoadingEdit: boolean = false;
   isLoading: boolean = false;
@@ -41,6 +49,7 @@ export class RoleManagementComponent implements OnInit {
   status: number = 1;
 
   constructor(
+    private userService: UserService,
     private roleService: RoleService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -48,21 +57,39 @@ export class RoleManagementComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getRolesPaginator();
+    this.getUsersPaginator();
+    this.initRoles();
     this.initStatuses();
+    this.initProviders();
     this.initValidateForm();
   }
 
-  getRolesPaginator() {
+  initRoles() {
+    this.roleService.getAll().subscribe({
+      next: (res) => {
+        this.roles = res.map((role) => {
+          role.name = role.name.split('_')[1];
+          return role;
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
+
+  getUsersPaginator() {
     this.isLoading = true;
-    this.roleService
+    this.userService
       .getAllPaginate(
         this.page,
         this.size,
         this.sortBy,
         this.sortDir,
         this.keyword,
-        this.status
+        this.status,
+        this.selectedRoles.map((role) => role.id),
+        this.selectedProviders
       )
       .subscribe({
         next: (res) => {
@@ -76,7 +103,7 @@ export class RoleManagementComponent implements OnInit {
   }
 
   processResult(data: any) {
-    this.roles = data.data;
+    this.users = data.data;
     this.page = data.page;
     this.size = data.size;
     this.totalElements = data.totalElements;
@@ -84,14 +111,19 @@ export class RoleManagementComponent implements OnInit {
 
   private initValidateForm() {
     this.editFormGroup = this.formBuilder.group({
+      email: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
       name: new FormControl('', [
         Validators.required,
         ShopValidators.notOnlyWhitespace,
       ]),
-      description: new FormControl('', [
-        Validators.required,
-        ShopValidators.notOnlyWhitespace,
-      ]),
+      role: new FormControl('', [Validators.required]),
     });
   }
 
@@ -106,6 +138,13 @@ export class RoleManagementComponent implements OnInit {
     }
   }
 
+  initProviders() {
+    this.providers = [
+      { label: 'Local', value: 'local' },
+      { label: 'Google', value: 'google' },
+    ];
+  }
+
   initStatuses() {
     this.statuses = [
       { label: 'Enable', value: 1 },
@@ -113,16 +152,21 @@ export class RoleManagementComponent implements OnInit {
     ];
   }
 
+  filterByRoles() {
+    this.resetPage();
+    this.getUsersPaginator();
+  }
+
   filterStatus(status: number) {
     this.status = status;
     this.resetPage();
-    this.getRolesPaginator();
+    this.getUsersPaginator();
   }
 
   handleSearch(event: any) {
     this.keyword = event.target.value;
     this.resetFilter();
-    this.getRolesPaginator();
+    this.getUsersPaginator();
   }
 
   resetFilter() {
@@ -138,7 +182,7 @@ export class RoleManagementComponent implements OnInit {
   onPageChange(event: any) {
     this.page = event.page;
     this.size = event.rows;
-    this.getRolesPaginator();
+    this.getUsersPaginator();
   }
 
   confirmDelete(event: Event) {
@@ -148,55 +192,66 @@ export class RoleManagementComponent implements OnInit {
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
-        this.deleteRoles();
+        this.deleteUsers();
       },
     });
   }
 
-  deleteRoles() {
+  deleteUsers() {
     this.isDeleting = true;
-    let ids = this.selectedRoles.map((role) => role.id);
-    this.roleService.deleteByIds(ids).subscribe({
+    let ids = this.selectedUsers.map((cate) => cate.id);
+    this.userService.deleteByIds(ids).subscribe({
       next: () => {
-        this.roles = this.roles.filter(
-          (role) => !this.selectedRoles.includes(role)
+        this.users = this.users.filter(
+          (user) => !this.selectedUsers.includes(user)
         );
 
-        this.showSuccess('Delete successfully');
-        this.selectedRoles = [];
+        this.showSuccess('Deleted successfully');
+        this.selectedUsers = [];
         this.isDeleting = false;
         this.resetFilter();
-        this.getRolesPaginator();
+        this.getUsersPaginator();
       },
       error: (err) => {
         console.log(err);
 
-        this.showError('Error delete');
+        this.showError('Error deleting');
         this.isDeleting = false;
       },
     });
   }
 
   openNew() {
+    this.userIsExisted = false;
     this.isLoadingEdit = false;
-    this.role = new Role();
+    this.user = new User();
     this.editFormGroup.reset();
-    this.roleDialog = true;
+    this.userDialog = true;
   }
 
-  openEdit(role: Role) {
+  openEdit(user: User) {
+    this.userIsExisted = false;
     this.isLoadingEdit = false;
-    this.role = { ...role };
+    this.user = { ...user };
+    this.user.roleName = this.user.roleName.split('_')[1];
+
+    const selectedRole = this.roles.find(
+      (role) => role.name === this.user.roleName
+    );
+
     this.editFormGroup.patchValue({
-      name: role.name,
-      description: role.description,
+      name: user.name,
+      email: user.email,
+      password: 'dainnshop',
+      role: selectedRole?.name,
     });
-    this.roleStatus = this.revertStatus(role.status);
-    this.roleDialog = true;
+
+    this.userStatus = this.revertStatus(user.status);
+    this.userDialog = true;
   }
 
   hideDialog() {
-    this.roleDialog = false;
+    this.userDialog = false;
   }
 
   saveEdit() {
@@ -205,29 +260,40 @@ export class RoleManagementComponent implements OnInit {
       return;
     }
     this.isLoadingEdit = true;
-    this.role.name = this.role.name.split('_')[1];
-    if (this.role.id === 0) {
-      this.createRole(this.role);
+    this.user.name = this.name?.value;
+    this.user.email = this.email?.value;
+    this.user.roleName = this.role?.value;
+    this.user.provider = 'local';
+
+    if (this.user.id === 0) {
+      this.user.password = this.password?.value;
+
+      console.log(this.user);
+
+      this.createUser(this.user);
     } else {
-      this.role.status = this.unRevertStatus(this.roleStatus);
-      this.updateRole(this.role);
+      this.user.password = '';
+      this.user.status = this.unRevertStatus(this.userStatus);
+      console.log(this.user);
+
+      this.updateUser(this.user);
     }
   }
 
-  createRole(role: Role) {
-    this.roleService.create(role).subscribe({
+  createUser(user: User) {
+    this.userService.create(user).subscribe({
       next: () => {
         this.showSuccess('Create successfully');
         this.isLoadingEdit = false;
         this.editFormGroup.reset();
         this.resetFilter();
-        this.getRolesPaginator();
-        this.roleDialog = false;
-        this.role = new Role();
+        this.getUsersPaginator();
+        this.userDialog = false;
+        this.user = new User();
       },
       error: (err) => {
         if (err.status === 400) {
-          this.roleIsExisted = true;
+          this.userIsExisted = true;
           this.isLoadingEdit = false;
           return;
         }
@@ -238,18 +304,18 @@ export class RoleManagementComponent implements OnInit {
     });
   }
 
-  updateRole(role: Role) {
-    this.roleService.update(role).subscribe({
+  updateUser(user: User): any {
+    this.userService.update(user).subscribe({
       next: () => {
         this.showSuccess('Update successfully');
         this.isLoadingEdit = false;
-        this.getRolesPaginator();
-        this.roleDialog = false;
-        this.role = new Role();
+        this.getUsersPaginator();
+        this.userDialog = false;
+        this.user = new User();
       },
       error: (err) => {
         if (err.status === 400) {
-          this.roleIsExisted = true;
+          this.userIsExisted = true;
           this.isLoadingEdit = false;
           return;
         }
@@ -272,8 +338,16 @@ export class RoleManagementComponent implements OnInit {
     return this.editFormGroup.get('name');
   }
 
-  get description() {
-    return this.editFormGroup.get('description');
+  get email() {
+    return this.editFormGroup.get('email');
+  }
+
+  get password() {
+    return this.editFormGroup.get('password');
+  }
+
+  get role() {
+    return this.editFormGroup.get('role');
   }
 
   showSuccess(message: string) {

@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
   name: string = '';
-  role: string = "ADMIN";
+  role: string = '';
 
   storage: Storage = localStorage;
 
@@ -20,6 +20,10 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.authService.loggedUserSubject.subscribe((data) => {
       this.name = data;
+    });
+
+    this.authService.roleSubject.subscribe((data) => {
+      this.role = data;
     });
 
     this.items = [

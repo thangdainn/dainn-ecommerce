@@ -1,19 +1,32 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { Brand } from 'src/app/common/brand';
-import { Category } from 'src/app/common/category';
 import { BrandService } from 'src/app/services/brand.service';
+import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
   selector: 'app-brand-management',
   templateUrl: './brand-management.component.html',
-  styleUrl: './brand-management.component.css'
+  styleUrl: './brand-management.component.css',
 })
 export class BrandManagementComponent implements OnInit {
   brands!: Brand[];
+  brand: Brand = new Brand();
+  brandDialog: boolean = false;
   selectedBrands: Brand[] = [];
   statuses!: any[];
 
+  editFormGroup!: FormGroup;
+  brandIsExisted: boolean = false;
+  brandStatus: boolean = true;
+
+  isLoadingEdit: boolean = false;
   isLoading: boolean = false;
   isDeleting: boolean = false;
 
@@ -30,12 +43,14 @@ export class BrandManagementComponent implements OnInit {
   constructor(
     private brandService: BrandService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
     this.getCatesPaginator();
     this.initStatuses();
+    this.initValidateForm();
   }
 
   getCatesPaginator() {
@@ -67,6 +82,19 @@ export class BrandManagementComponent implements OnInit {
     this.totalElements = data.totalElements;
   }
 
+  private initValidateForm() {
+    this.editFormGroup = this.formBuilder.group({
+      name: new FormControl('', [
+        Validators.required,
+        ShopValidators.notOnlyWhitespace,
+      ]),
+      description: new FormControl('', [
+        Validators.required,
+        ShopValidators.notOnlyWhitespace,
+      ]),
+    });
+  }
+
   getSeverity(status: number) {
     switch (status) {
       case 1:
@@ -87,6 +115,7 @@ export class BrandManagementComponent implements OnInit {
 
   filterStatus(status: number) {
     this.status = status;
+    this.resetPage();
     this.getCatesPaginator();
   }
 
@@ -100,6 +129,10 @@ export class BrandManagementComponent implements OnInit {
     this.page = 0;
     this.size = 5;
     this.status = 1;
+  }
+
+  resetPage() {
+    this.page = 0;
   }
 
   onPageChange(event: any) {
@@ -128,7 +161,7 @@ export class BrandManagementComponent implements OnInit {
         this.brands = this.brands.filter(
           (brand) => !this.selectedBrands.includes(brand)
         );
-        
+
         this.showSuccess('Deleted successfully');
         this.selectedBrands = [];
         this.isDeleting = false;
@@ -142,6 +175,104 @@ export class BrandManagementComponent implements OnInit {
         this.isDeleting = false;
       },
     });
+  }
+
+  openNew() {
+    this.isLoadingEdit = false;
+    this.brand = new Brand();
+    this.editFormGroup.reset();
+    this.brandDialog = true;
+  }
+
+  openEdit(brand: Brand) {
+    this.isLoadingEdit = false;
+    this.brand = { ...brand };
+    this.editFormGroup.patchValue({
+      name: brand.name,
+      description: brand.description,
+    });
+    this.brandStatus = this.revertStatus(brand.status);
+    this.brandDialog = true;
+  }
+
+  hideDialog() {
+    this.brandDialog = false;
+  }
+
+  saveEdit() {
+    if (this.editFormGroup.invalid) {
+      this.editFormGroup.markAllAsTouched();
+      return;
+    }
+    this.isLoadingEdit = true;
+    if (this.brand.id === 0) {
+      this.createBrand(this.brand);
+    } else {
+      this.brand.status = this.unRevertStatus(this.brandStatus);
+      this.updateBrand(this.brand);
+    }
+  }
+
+  createBrand(brand: Brand): any {
+    this.brandService.create(brand).subscribe({
+      next: () => {
+        this.showSuccess('Create successfully');
+        this.isLoadingEdit = false;
+        this.editFormGroup.reset();
+        this.resetFilter();
+        this.getCatesPaginator();
+        this.brandDialog = false;
+        this.brand = new Brand();
+      },
+      error: (err) => {
+        if (err.status === 400) {
+          this.brandIsExisted = true;
+          this.isLoadingEdit = false;
+          return;
+        }
+        console.log('Create failed: ' + err.message);
+        this.showError('Create failed');
+        this.isLoadingEdit = false;
+      },
+    });
+  }
+
+  updateBrand(brand: Brand): any {
+    this.brandService.update(brand).subscribe({
+      next: () => {
+        this.showSuccess('Update successfully');
+        this.isLoadingEdit = false;
+        this.getCatesPaginator();
+        this.brandDialog = false;
+        this.brand = new Brand();
+      },
+      error: (err) => {
+        if (err.status === 400) {
+          this.brandIsExisted = true;
+          this.isLoadingEdit = false;
+          return;
+        }
+        console.log('Update failed: ' + err.message);
+        this.showError('Update failed');
+        this.isLoadingEdit = false;
+      },
+    });
+  }
+
+  revertStatus(status: number): boolean {
+    return status == 1;
+  }
+
+  unRevertStatus(status: boolean): number {
+    return status ? 1 : 0;
+  }
+
+  get name() {
+    return this.editFormGroup.get('name');
+  }
+
+  get description() {
+    return this.editFormGroup.get('description');
   }
 
   showSuccess(message: string) {
