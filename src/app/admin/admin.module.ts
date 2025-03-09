@@ -32,6 +32,11 @@ import { DialogModule } from 'primeng/dialog';
 import { PasswordModule } from 'primeng/password';
 import { OrderManagementComponent } from './components/order-management/order-management.component';
 import { CalendarModule } from 'primeng/calendar';
+import { OrderDetailComponent } from './components/order-detail/order-detail.component';
+import { CardModule } from 'primeng/card';
+import { StepperModule } from 'primeng/stepper';
+import { TimelineModule } from 'primeng/timeline';
+import { DividerModule } from 'primeng/divider';
 
 const routes: Routes = [
   {
@@ -46,6 +51,7 @@ const routes: Routes = [
       { path: 'sizes', component: SizeManagementComponent },
       { path: 'users', component: UserManagementComponent },
       { path: 'orders', component: OrderManagementComponent },
+      { path: 'orders/:id', component: OrderDetailComponent },
     ],
   },
 ];
@@ -62,6 +68,7 @@ const routes: Routes = [
     SizeManagementComponent,
     UserManagementComponent,
     OrderManagementComponent,
+    OrderDetailComponent
   ],
   imports: [
     CommonModule,
@@ -87,7 +94,11 @@ const routes: Routes = [
     MultiSelectModule,
     DialogModule,
     PasswordModule,
-    CalendarModule
+    CalendarModule,
+    CardModule,
+    StepperModule,
+    TimelineModule,
+    DividerModule
   ],
 })
 export class AdminModule {}

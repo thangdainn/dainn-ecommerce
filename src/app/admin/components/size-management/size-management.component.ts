@@ -127,7 +127,7 @@ export class SizeManagementComponent implements OnInit {
 
   resetFilter() {
     this.page = 0;
-    this.size = 5;
+    // this.size = 5;
     this.status = 1;
   }
 

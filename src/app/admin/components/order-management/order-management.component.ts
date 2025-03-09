@@ -30,13 +30,10 @@ export class OrderManagementComponent implements OnInit {
   selectedOrders: Order[] = [];
   statuses: any[] = [];
 
-  editFormGroup!: FormGroup;
-  brandIsExisted: boolean = false;
-  brandStatus: boolean = true;
-
   isLoadingEdit: boolean = false;
   isLoading: boolean = false;
-  isDeleting: boolean = false;
+  isConfirming: boolean = false;
+  isCanceling: boolean = false;
 
   visible: boolean = false;
 
@@ -62,7 +59,6 @@ export class OrderManagementComponent implements OnInit {
   ngOnInit() {
     this.getOrdersPaginator();
     this.initStatuses();
-    this.initValidateForm();
     this.initDateRangeFilter();
   }
 
@@ -105,19 +101,6 @@ export class OrderManagementComponent implements OnInit {
     this.page = data.page;
     this.size = data.size;
     this.totalElements = data.totalElements;
-  }
-
-  private initValidateForm() {
-    this.editFormGroup = this.formBuilder.group({
-      name: new FormControl('', [
-        Validators.required,
-        ShopValidators.notOnlyWhitespace,
-      ]),
-      description: new FormControl('', [
-        Validators.required,
-        ShopValidators.notOnlyWhitespace,
-      ]),
-    });
   }
 
   initDateRangeFilter() {
@@ -199,7 +182,7 @@ export class OrderManagementComponent implements OnInit {
 
   resetFilter() {
     this.page = 0;
-    this.size = 5;
+    // this.size = 5;
     this.status = OrderStatus.ALL;
   }
 
@@ -213,106 +196,55 @@ export class OrderManagementComponent implements OnInit {
     this.getOrdersPaginator();
   }
 
-  confirmDelete(event: Event) {
+  confirmOrder(event: Event) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: 'Do you want to delete?',
+      message: 'Do you want to confirm?',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
-        this.deleteBrands();
+        this.isConfirming = true;
+        this.updateOrderStatus(OrderStatus.SHIPPING);
       },
     });
   }
 
-  deleteBrands() {
-    this.isDeleting = true;
-    let ids = this.selectedOrders.map((order) => order.id);
-    this.orderService.deleteByIds(ids).subscribe({
-      next: () => {
-        this.orders = this.orders.filter(
-          (brand) => !this.selectedOrders.includes(brand)
-        );
+  cancelOrder(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to cancel?',
+      icon: 'pi pi-info-circle',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      accept: () => {
+        this.isCanceling = true;
+        this.updateOrderStatus(OrderStatus.CANCELLED);
+      },
+    });
+  }
 
-        this.showSuccess('Deleted successfully');
+  updateOrderStatus(status: OrderStatus) {
+    const ids = this.selectedOrders.map((order) => order.id);
+    this.orderService.updateStatuses(ids, status).subscribe({
+      next: (response) => {
+        if (status === OrderStatus.SHIPPING) {
+          this.isConfirming = false;
+        } else if (status === OrderStatus.CANCELLED) {
+          this.isCanceling = false;
+        }
         this.selectedOrders = [];
-        this.isDeleting = false;
         this.resetFilter();
         this.getOrdersPaginator();
+        this.showSuccess('Successfully');
       },
       error: (err) => {
-        console.log(err);
-
-        this.showError('Error deleting category');
-        this.isDeleting = false;
-      },
-    });
-  }
-
-  openNew() {
-    this.isLoadingEdit = false;
-    this.order = new Order();
-    this.editFormGroup.reset();
-    this.orderDialog = true;
-  }
-
-  openEdit(order: Order) {
-    this.isLoadingEdit = false;
-    this.order = { ...order };
-    // this.editFormGroup.patchValue({
-    //   name: order.name,
-    //   description: order.description,
-    // });
-    // this.orderStatus = this.revertStatus(order.status);
-    this.orderDialog = true;
-  }
-
-  hideDialog() {
-    this.orderDialog = false;
-  }
-
-  saveEdit() {
-    if (this.editFormGroup.invalid) {
-      this.editFormGroup.markAllAsTouched();
-      return;
-    }
-    this.isLoadingEdit = true;
-    // if (this.order.id === 0) {
-    //   this.createBrand(this.order);
-    // } else {
-    // this.order.status = this.unRevertStatus(this.orderStatus);
-    this.updateStatus(this.order);
-    // }
-  }
-
-  updateStatus(order: Order): any {
-    this.orderService.update(order).subscribe({
-      next: () => {
-        this.showSuccess('Update successfully');
-        this.isLoadingEdit = false;
-        this.getOrdersPaginator();
-        this.orderDialog = false;
-        this.order = new Order();
-      },
-      error: (err) => {
-        if (err.status === 400) {
-          this.brandIsExisted = true;
-          this.isLoadingEdit = false;
-          return;
+        if (status === OrderStatus.SHIPPING) {
+          this.isConfirming = false;
+        } else if (status === OrderStatus.CANCELLED) {
+          this.isCanceling = false;
         }
-        console.log('Update failed: ' + err.message);
-        this.showError('Update failed');
-        this.isLoadingEdit = false;
+        this.showError('Failed');
       },
     });
-  }
-
-  get name() {
-    return this.editFormGroup.get('name');
-  }
-
-  get description() {
-    return this.editFormGroup.get('description');
   }
 
   showSuccess(message: string) {

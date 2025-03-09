@@ -1,0 +1,174 @@
+<div class="card flex justify-content-center px-4">
+    <div *ngIf="order.status != 'CANCELLED'; else cancelOrderUI">
+        <p-stepper [(activeStep)]="active">
+            <p-stepperPanel>
+                <ng-template pTemplate="header" let-index="index">
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <div class="bg-transparent border-none d-inline-flex flex-column gap-2">
+                            <span
+                                class="step-icon border-round border-2  d-inline-flex align-items-center justify-content-center"
+                                [ngClass]="{
+                            'bg-primary app-border-primary': index <= active!,
+                            'surface-border': index > active!
+                        }">
+                                <i class="pi pi-spinner"></i>
+                            </span>
+                        </div>
+                        <span class="text-sm text-center text-sm font-semibold display-6">
+                            Processing
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content" >
+                    <div class="flex justify-content-end">
+                        <p-button *ngIf="order.status !== 'TO_PAY'" (onClick)="confirmOrder()" [loading]="isLoadingStatus" label="Confirm"
+                            styleClass="p-button-success-custom" class="pr-2" />
+                        <p-button (onClick)="cancelOrder()" [loading]="isLoadingStatus" label="Cancel"
+                            styleClass="p-button-danger-custom" />
+
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+            <p-stepperPanel>
+                <ng-template pTemplate="header" let-index="index">
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <div class="bg-transparent border-none d-inline-flex flex-column gap-2">
+                            <span
+                                class="step-icon border-round border-2 d-inline-flex align-items-center justify-content-center"
+                                [ngClass]="{
+                            'bg-primary app-border-primary': index <= active!,
+                            'surface-border': index > active!
+                        }">
+                                <i class="pi pi-truck"></i>
+                            </span>
+                        </div>
+                        <span class="text-sm text-center text-sm font-semibold display-6">
+                            Shipping
+                        </span>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+            <p-stepperPanel>
+                <ng-template pTemplate="header" let-index="index">
+                    <div class="d-flex flex-column align-items-center pt-4">
+                        <div class="bg-transparent border-none d-inline-flex flex-column gap-2">
+                            <span
+                                class="step-icon border-round border-2 w-3rem h-3rem d-inline-flex align-items-center justify-content-center"
+                                [ngClass]="{
+                            'bg-primary app-border-primary': index <= active!,
+                            'surface-border': index > active!
+                        }">
+                                <i class="pi pi-check-circle"></i>
+                            </span>
+                        </div>
+                        <span class="text-sm text-center text-sm font-semibold display-6">
+                            Completed
+                        </span>
+                    </div>
+                </ng-template>
+            </p-stepperPanel>
+        </p-stepper>
+        <div class="row admin-card mb-4" *ngIf="order.status === 'SHIPPING' || order.status === 'COMPLETED'">
+            <div class="col-4 container-box">
+                <div class=" py-3">
+                    <h6 class="text-start pb-2 fw-bolder">Delivery address</h6>
+                    <p class="fw-bolder">{{ order.customerName }}</p>
+                    <p>{{ order.customerPhone }}</p>
+                    <p>{{ order.shippingAddress }}</p>
+                </div>
+            </div>
+            <div class="col-2">
+                <p-divider layout="vertical" />
+            </div>
+            <div class="col-6 container-box row justify-content-start">
+                <div class=" py-3">
+                    <h6 class="text-center pb-2 fw-bolder">Timeline</h6>
+                    <p-timeline [value]="events">
+                        <ng-template pTemplate="content" let-event>
+                            <small class="p-text-secondary">{{ event.date }}</small>
+                            <p class="mt-1 mb-0">{{ event.details }}</p>
+                        </ng-template>
+                        <ng-template pTemplate="opposite" let-event>
+                            {{ event.status }}
+                        </ng-template>
+                    </p-timeline>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #cancelOrderUI>
+        <div class="row admin-card my-4">
+            <div class="col-12">
+                <div class=" py-3">
+                    <h6 class="text-center pb-2 fw-bolder">Order has been cancelled</h6>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <div>
+        <div class="YL_VlX">
+            <div>
+                <div class="J632se">
+                    <section *ngFor="let detail of order.details">
+                        <h3 class="a11y-hidden">Order Item List Section</h3><a aria-label="Go to PDP"
+                            routerLink="/product/{{detail.productCode}}"><span class="a11y-hidden">Go to
+                                PDP</span>
+                            <div>
+                                <div class="bdAfgU">
+                                    <div class="FNHV0p">
+                                        <div>
+                                            <section>
+                                                <div class="mZ1OWk">
+                                                    <div class="dJaa92">
+                                                        <img src="{{detail.productImage}}" class="gQuHsZ"
+                                                            alt="Product Image" tabindex="0">
+                                                        <div class="nmdHRf">
+                                                            <div>
+                                                                <div class="zWrp4w"><span class="DWVWOJ" tabindex="0">{{
+                                                                        detail.productName
+                                                                        }}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div class="rsautk" tabindex="0">Variation:
+                                                                    {{detail.sizeName }}</div>
+                                                                <div class="j3I_Nh" tabindex="0">x{{
+                                                                    detail.quantity }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="ylYzwa" tabindex="0">
+                                                        <div class="YRp1mm">
+                                                            <span class="q6Gzj5"></span>
+                                                            <span class="nW_6Oi PNlXhK">{{ detail.price |
+                                                                currency : "VND" }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="PB3XKx"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </section>
+                </div>
+            </div>
+            <div class="PwTjsu">
+                <div class="jThQdh d3c_3g"> </div>
+                <div class="jThQdh G5W3v8"> </div>
+            </div>
+            <div class="LwXnUQ">
+                <div class="d-flex justify-content-end align-items-center">
+                    <label class="juCcT0">Order Total:</label>
+                    <div class="t7TQaf" tabindex="0" aria-label="Order Total: ₫66.000">
+                        {{ order.totalAmount | currency : "VND" }}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

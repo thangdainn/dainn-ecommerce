@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Order } from '../common/order';
+import { OrderStatus } from '../shared/enums/order-status';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,7 @@ export class OrderService {
 
     if (status.length == 0 && keyword.length != 0) {
       searchUrl += `&keyword=${keyword}`;
-    } else if (status.length != 0){
+    } else if (status.length != 0) {
       searchUrl += `&status=${status}`;
     }
     console.log(searchUrl);
@@ -56,7 +57,7 @@ export class OrderService {
 
     if (keyword.length != 0) {
       searchUrl += `&keyword=${keyword}`;
-    } 
+    }
     if (status.length != 0) {
       searchUrl += `&status=${status}`;
     }
@@ -79,12 +80,15 @@ export class OrderService {
     return this.httpClient.delete(this.baseUrl, { body: ids });
   }
 
-  create(size: Order): Observable<Order> {
-    return this.httpClient.post<Order>(this.baseUrl, size);
+  create(order: Order): Observable<Order> {
+    return this.httpClient.post<Order>(this.baseUrl, order);
   }
 
-  update(size: Order): Observable<Order> {
-    return this.httpClient.put<Order>(`${this.baseUrl}/${size.id}`, size);
+  updateStatuses(ids: number[], status: string): Observable<Order> {
+    return this.httpClient.put<Order>(`${this.baseUrl}/status`, {
+      ids: ids,
+      status: status,
+    });
   }
 }
 

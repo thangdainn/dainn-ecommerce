@@ -101,7 +101,7 @@ h6 {
 
 p {
   margin-top: 0;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
 }
 
 abbr[title],
@@ -2280,6 +2280,11 @@ textarea.form-control {
   margin-top: 0.25rem;
   font-size: 80%;
   color: #28a745;
+}
+
+.border-none {
+  border-width: 0px !important;
+  border-style: none;
 }
 
 .valid-tooltip {
@@ -7101,6 +7106,10 @@ button.bg-dark:focus {
   border-color: #007bff !important;
 }
 
+.app-border-primary {
+  border-color: #dbcc8f !important;
+}
+
 .border-secondary {
   border-color: #6c757d !important;
 }
@@ -7221,6 +7230,10 @@ button.bg-dark:focus {
   display: -webkit-inline-box !important;
   display: -ms-inline-flexbox !important;
   display: inline-flex !important;
+}
+
+.text-sm {
+  font-size: 0.8rem !important;
 }
 
 @media (min-width: 576px) {
@@ -12161,11 +12174,11 @@ h5,
 }
 .cart .total,
 .cart .price,
-.cart .size  {
+.cart .size {
   color: #000000;
 }
 
-.cart .total{
+.cart .total {
   width: 160px;
 }
 
@@ -12201,7 +12214,6 @@ h5,
   color: #ee4d2d;
   font-weight: 600;
 }
-
 
 .cart-total hr {
   background: rgba(255, 255, 255, 0.1);
@@ -14007,7 +14019,6 @@ asl-google-signin-button::part(icon) {
   width: 16px !important;
   height: 16px !important;
   border-radius: 2px !important;
-
 }
 
 .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
@@ -14051,6 +14062,13 @@ asl-google-signin-button::part(icon) {
 .p-button-success-custom {
   background-color: #28a745;
   border: 1px solid #28a745;
+  padding: 0.3rem 0.9rem;
+  border-radius: 6px;
+}
+
+.p-button-danger-custom {
+  background-color: #dc3545;
+  border: 1px solid #dc3545;
   padding: 0.3rem 0.9rem;
   border-radius: 6px;
 }
@@ -14117,7 +14135,7 @@ p-menu > div {
 .p-menu ul {
   padding: 5px 10px;
   height: calc(100vh - 152px);
-  
+
   position: relative;
 }
 
@@ -14155,34 +14173,34 @@ p-menu > div {
   scrollbar-color: #d4bfa059 #ffffff;
 }
 
-.p-menu-list:hover, .p-submenu-list:hover {
+.p-menu-list:hover,
+.p-submenu-list:hover {
   overflow-y: auto;
 }
 
 .p-menu-list:hover::-webkit-scrollbar,
 .p-submenu-list:hover::-webkit-scrollbar {
-  display: block; 
+  display: block;
 }
 
 .p-menu-list::-webkit-scrollbar-thumb:hover,
 .p-submenu-list::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
-.p-menu-list::-webkit-scrollBar-button,
-.p-submenu-list::-webkit-scrollBar-button {
+.p-menu-list::-webkit-scrollbar-button,
+.p-submenu-list::-webkit-scrollbar-button {
   display: none;
 }
 
 .p-menuitem-link.active {
-  background-color: #e9ecef; 
+  background-color: #e9ecef;
   font-weight: 500;
 }
 
 .p-menuitem-link.active:hover {
   background-color: #dee2e6;
 }
-
 
 .p-datatable {
   font-size: 0.8rem;
@@ -14213,7 +14231,7 @@ p-menu > div {
 .p-confirm-popup {
   font-size: 0.8rem;
 }
-.p-confirm-popup button{
+.p-confirm-popup button {
   padding: 0.03rem 0.7rem;
   border-radius: 6px;
 }
@@ -14240,7 +14258,10 @@ p-menu > div {
   font-size: 0.8rem;
 }
 
-.p-multiselect-panel .p-multiselect-header .p-multiselect-filter-container .p-inputtext {
+.p-multiselect-panel
+  .p-multiselect-header
+  .p-multiselect-filter-container
+  .p-inputtext {
   padding: 0.2rem 0.5rem;
 }
 
@@ -14288,7 +14309,11 @@ p-menu > div {
   font-size: 0.8rem;
 }
 
-.small-calendar .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+.small-calendar
+  .p-datepicker
+  .p-datepicker-header
+  .p-datepicker-title
+  .p-datepicker-month {
   padding: 0rem 0.5rem;
 }
 
@@ -14306,8 +14331,39 @@ p-menu > div {
 
 .small-calendar .p-datepicker th {
   padding: 0.2rem;
-} 
+}
 .small-calendar .p-datepicker table td > span {
   width: 2rem;
   height: 2rem;
 }
+
+.step-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 6px;
+  border-width: 2px !important;
+  border-style: solid;
+}
+
+.container-box {
+  border-radius: 10px;
+  padding: 2rem;
+  font-size: 0.8rem;
+}
+
+.p-timeline {
+  font-size: 0.8rem;
+}
+
+.admin-card {
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  margin: 0;
+}
+
+.fw-bolder {
+  font-weight: 700;
+}
+

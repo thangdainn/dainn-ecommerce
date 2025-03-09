@@ -12,13 +12,14 @@
                         <input pInputText type="text" (change)="handleSearch($event)" placeholder="Enter order id..." />
                     </p-iconField>
                 </div>
-                <div class="col-6 row justify-content-end">
-                    <!-- <p-confirmPopup /> -->
-                    <!-- <p-button [disabled]="status == 0 || selectedBrands && selectedBrands.length == 0"
-                        [loading]="isDeleting" icon="pi pi-trash" severity="danger" [rounded]="true" [text]="true"
-                        [raised]="true" (click)="confirmDelete($event)" /> -->
-                    <!-- <p-button (onClick)="openNew()" icon="pi pi-plus" [rounded]="true" [text]="true" [raised]="true"
-                        class="ml-3" /> -->
+                <div class="col-6 row justify-content-end" *ngIf="status == 'PROCESSING'">
+                    <p-confirmPopup />
+                    <p-button [disabled]="selectedOrders && selectedOrders.length == 0"
+                        [loading]="isConfirming" icon="pi pi-check-circle"  [rounded]="true" [text]="true"
+                        [raised]="true" (onClick)="confirmOrder($event)" label="Confirm"/>
+                    <p-button [disabled]="selectedOrders && selectedOrders.length == 0"
+                        (onClick)="cancelOrder($event)" icon="pi pi-times" [rounded]="true" [text]="true" [raised]="true"
+                        class="ml-3" severity="danger" label="Cancel"/>
                 </div>
             </div>
 
@@ -26,7 +27,7 @@
         </ng-template>
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+                <th *ngIf="status == 'PROCESSING'" style="width: 4rem"><p-tableHeaderCheckbox /></th>
                 <th>#</th>
                 <th>ID</th>
                 <th>Name</th>
@@ -96,7 +97,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-order let-index="rowIndex" let-rowData="rowData">
             <tr style="border: none;">
-                <td>
+                <td *ngIf="status == 'PROCESSING'">
                     <p-tableCheckbox [value]="order" />
                 </td>
                 <td>{{ page*size + index + 1}}</td>
@@ -109,7 +110,7 @@
                     <p-tag [value]="order.status" [severity]="getSeverity(order.status)" />
                 </td>
                 <td>
-                    <p-button (onClick)="openEdit(order)" icon="pi pi-pencil" [rounded]="true" [text]="true"
+                    <p-button routerLink="{{order.id}}" icon="pi pi-pencil" [rounded]="true" [text]="true"
                         [raised]="true" />
                 </td>
             </tr>
