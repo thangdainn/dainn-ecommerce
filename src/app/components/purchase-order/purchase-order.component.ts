@@ -42,7 +42,7 @@ export class PurchaseOrderComponent implements OnInit {
   loadOrders() {
     this.toggleLoading();
     this.orderService
-      .getOrdersPaginate(
+      .getOfMePaginate(
         this.page - 1,
         this.size,
         this.sortBy,
@@ -68,7 +68,7 @@ export class PurchaseOrderComponent implements OnInit {
     this.page = 1;
     this.selectedStatus = status;
     this.orderService
-      .getOrdersPaginate(
+      .getOfMePaginate(
         this.page - 1,
         this.size,
         this.sortBy,
@@ -95,7 +95,7 @@ export class PurchaseOrderComponent implements OnInit {
   appendData() {
     this.toggleLoading();
     this.orderService
-      .getOrdersPaginate(
+      .getOfMePaginate(
         this.page - 1,
         this.size,
         this.sortBy,

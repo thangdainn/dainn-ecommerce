@@ -10,6 +10,7 @@ export class Order {
     customerPhone: string = '';
     shippingAddress: string = '';
     paymentMethod: string = '';
+    orderDate: Date = new Date();
     status: string = '';
     details: OrderDetail[] = [];
 }

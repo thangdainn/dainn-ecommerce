@@ -14270,3 +14270,44 @@ p-menu > div {
 .p-dialog-content {
   overflow-y: unset;
 }
+
+.p-button-admin-custom {
+  background-color: #dbcc8f;
+  border: 1px solid #dbcc8f;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.6rem;
+}
+
+.small-calendar .p-datepicker .p-datepicker-buttonbar {
+  font-size: 0.8rem;
+  padding: 0.1rem 0;
+}
+
+.small-calendar .p-datepicker .p-datepicker-header {
+  font-size: 0.8rem;
+}
+
+.small-calendar .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
+  padding: 0rem 0.5rem;
+}
+
+.small-calendar .p-datepicker .p-datepicker-header .p-datepicker-title {
+  line-height: 1rem;
+}
+
+.small-calendar .p-datepicker table {
+  font-size: 0.8rem;
+}
+
+.small-calendar .p-datepicker td {
+  padding: 0rem;
+}
+
+.small-calendar .p-datepicker th {
+  padding: 0.2rem;
+} 
+.small-calendar .p-datepicker table td > span {
+  width: 2rem;
+  height: 2rem;
+}

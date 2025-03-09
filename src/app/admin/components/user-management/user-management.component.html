@@ -77,7 +77,7 @@
                     <!-- Status -->
                     <div class="d-flex align-items-center justify-content-between">
                         Status
-                        <p-columnFilter field="status" type="boolean" display="menu">
+                        <p-columnFilter field="status" type="boolean" display="menu" [showClearButton]="false" [showApplyButton]="false">
                             <ng-template pTemplate="filter" let-value>
                                 <p-dropdown [ngModel]="value" [options]="statuses" [(ngModel)]="status"
                                     (onChange)="filterStatus($event.value)" [autoDisplayFirst]="true"
