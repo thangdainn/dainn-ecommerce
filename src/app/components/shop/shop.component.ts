@@ -101,8 +101,8 @@ export class ShopComponent implements OnInit{
       }
     });
     this.productService
-      .getProductsPaginate(this.page - 1, this.size, this.sortBy, this.sortDir,
-                          this.preKeyword, this.categoryIds, this.brandIds,
+      .getAllPaginate(this.page - 1, this.size, this.sortBy, this.sortDir,
+                          this.preKeyword, this.categoryIds, this.brandIds, 1,
                           this.minValue * 1000, this.maxValue * 1000, this.isSubmitPrice)
       .subscribe(this.processResult());
   }

@@ -13,11 +13,11 @@ export class ProductService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getAllProduct(): Observable<Product[]> {
+  getAll(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(this.baseUrl);
   }
 
-  getProductsPaginate(
+  getAllPaginate(
     page: number,
     size: number,
     sortBy: string,
@@ -25,11 +25,13 @@ export class ProductService {
     keyword: string,
     categoryIds: number[],
     brandIds: number[],
+    status: number,
     minPrice: number,
     maxPrice: number,
-    isSubmitPrice: boolean
+    isSubmitPrice: boolean,
+    isStock: boolean = false
   ): Observable<GetResponseProduct> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}`;
+    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}&status=${status}&isStock=${isStock}`;
     switch (sortBy) {
       case 'Latest':
         sortBy = 'createdDate';
@@ -64,12 +66,12 @@ export class ProductService {
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
 
-  getProductByCode(productCode: string): Observable<Product> {
+  getByCode(productCode: string): Observable<Product> {
     const productUrl = `${this.baseUrl}/${productCode}`;
     return this.httpClient.get<Product>(productUrl);
   }
 
-  getTop10LeastProducts(): Observable<GetResponseProduct> {
+  getTop10Least(): Observable<GetResponseProduct> {
     const searchUrl = `${this.baseUrl}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
     return this.httpClient.get<GetResponseProduct>(searchUrl);
   }
@@ -89,6 +91,23 @@ export class ProductService {
       .pipe(
         map((size) => size.sort((a, b) => a.sizeName.localeCompare(b.sizeName)))
       );
+  }
+
+  create(product: Product): Observable<Product> {
+    return this.httpClient.post<Product>(this.baseUrl, product);
+  }
+
+  update(product: Product): Observable<Product> {
+    return this.httpClient.put<Product>(`${this.baseUrl}/${product.id}`, product);
+  }
+
+  deleteByIds(ids: number[]): Observable<any> {
+    return this.httpClient.delete(this.baseUrl, { body: ids });
+  }
+
+  saveAttributes(attributes: ProductSize[]): Observable<any> {
+    const attrUrl = `${this.baseUrl}/attributes`;
+    return this.httpClient.post(attrUrl, attributes);
   }
 }
 

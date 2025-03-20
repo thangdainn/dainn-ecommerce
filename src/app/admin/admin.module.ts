@@ -37,6 +37,16 @@ import { CardModule } from 'primeng/card';
 import { StepperModule } from 'primeng/stepper';
 import { TimelineModule } from 'primeng/timeline';
 import { DividerModule } from 'primeng/divider';
+import { ProductManagementComponent } from './components/product-management/product-management.component';
+import { ProductDetailAdComponent } from './components/product-detail-ad/product-detail-ad.component';
+import { FieldsetModule } from 'primeng/fieldset';
+import { FileUploadModule } from 'primeng/fileupload';
+import { EditorModule } from 'primeng/editor';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { TabViewModule } from 'primeng/tabview';
+import { ChipModule } from 'primeng/chip';
+import { AccordionModule } from 'primeng/accordion';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 const routes: Routes = [
   {
@@ -52,6 +62,8 @@ const routes: Routes = [
       { path: 'users', component: UserManagementComponent },
       { path: 'orders', component: OrderManagementComponent },
       { path: 'orders/:id', component: OrderDetailComponent },
+      { path: 'products', component: ProductManagementComponent },
+      { path: 'products/:code', component: ProductDetailAdComponent },
     ],
   },
 ];
@@ -68,7 +80,9 @@ const routes: Routes = [
     SizeManagementComponent,
     UserManagementComponent,
     OrderManagementComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    ProductManagementComponent,
+    ProductDetailAdComponent,
   ],
   imports: [
     CommonModule,
@@ -98,7 +112,15 @@ const routes: Routes = [
     CardModule,
     StepperModule,
     TimelineModule,
-    DividerModule
+    DividerModule,
+    FieldsetModule,
+    FileUploadModule,
+    EditorModule,
+    RadioButtonModule,
+    TabViewModule,
+    ChipModule,
+    AccordionModule,
+    InputNumberModule
   ],
 })
 export class AdminModule {}

@@ -14347,7 +14347,7 @@ p-menu > div {
 
 .container-box {
   border-radius: 10px;
-  padding: 2rem;
+  padding: 0.5rem 2rem;
   font-size: 0.8rem;
 }
 
@@ -14367,3 +14367,46 @@ p-menu > div {
   font-weight: 700;
 }
 
+.shadow-4 {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 10px, rgba(0, 0, 0, 0.14) 0px 4px 5px, rgba(0, 0, 0, 0.2) 0px 2px 4px -1px !important;
+}
+
+.box-form {
+  font-size: 0.8rem;
+  padding: 0.5rem 1.25rem 1rem;
+}
+
+.p-button-delete-custom {
+  padding: 0.3rem;
+  width: 1.357rem;
+  height: 1.357rem;
+}
+
+.p-multiselect-custom {
+  width: 80%;
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+  border: 0 none;
+}
+
+.p-accordion .p-accordion-content {
+  border: 0 none;
+}
+
+.p-tabview-nav-container {
+  font-size: 0.8rem;
+}
+
+.p-tabview .p-tabview-panels {
+  font-size: 0.8rem;
+}
+
+.p-accordion{
+  font-size: 0.8rem;
+}
+
+.p-inputtext {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+}

@@ -1,22 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  FormGroup,
   FormBuilder,
-  FormControl,
-  Validators,
 } from '@angular/forms';
 import {
   MessageService,
   ConfirmationService,
   FilterService,
   SelectItem,
-  FilterMatchMode,
 } from 'primeng/api';
-import { Brand } from 'src/app/common/brand';
 import { Order } from 'src/app/common/order';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderStatus } from 'src/app/shared/enums/order-status';
-import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
   selector: 'app-order-management',

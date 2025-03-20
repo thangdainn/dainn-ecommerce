@@ -74,9 +74,9 @@ export class ProductDetailComponent implements OnInit {
         });
 
       this.product = await firstValueFrom(
-        this.productService.getProductByCode(productCode)
+        this.productService.getByCode(productCode)
       );
-      this.images.push(this.product.imgUrl);
+      this.images.push(this.product.image);
       this.product.imageUrls.forEach((image) => {
         this.images.push(image);
       });

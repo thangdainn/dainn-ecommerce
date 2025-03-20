@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit {
   }
 
   getTop10LeastProducts() {
-    this.productService.getTop10LeastProducts().subscribe((data) => {
+    this.productService.getTop10Least().subscribe((data) => {
       this.products = data.data;
     });
   }

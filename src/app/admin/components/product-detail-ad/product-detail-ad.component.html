@@ -1,0 +1,186 @@
+<div class="pb-5 mb-5">
+    <p-toast />
+    <h4 class="mb-4">{{ !isCreateMode() ? 'Edit Product' : 'Add New Product' }}</h4>
+    <div class="col-12" *ngIf="!isCreateMode() && product">
+        <div class="p-field">
+            <label>Created:</label>
+            <span> {{ product.createdDate | date }}</span>
+        </div>
+        <div class="p-field">
+            <label>Modified:</label>
+            <span> {{ product.modifiedDate | date }}</span>
+        </div>
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="d-flex">
+        <div class="col-8">
+
+            <div class="field mt-2">
+                <input type="text" pInputText formControlName="name" required autofocus class="w-100" />
+                <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
+                    <small class="text-danger" *ngIf="name?.errors?.['required']">Name
+                        is required.</small>
+                </div>
+            </div>
+
+            <div class="p-col-12">
+                <p-editor formControlName="description" [style]="{ height: '40rem' }" />
+            </div>
+
+            <div class="box-form card mt-3">
+                <div class="">
+                    <p-tabView (onChange)="onTabChange($event)">
+                        <p-tabPanel header="General">
+                            <div class="field">
+                                <label for="price">Price</label>
+                                <p-inputNumber inputId="currency" mode="currency" locale="en-US" currency="VND" formControlName="price" required class="w-100" />
+                                <div *ngIf="price?.invalid && (price?.touched || price?.dirty)">
+                                    <small class="text-danger" *ngIf="price?.errors?.['required']">Price
+                                        is required.</small>
+                                </div>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel header="Attributes">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <p-multiSelect 
+                                    [options]="attributes" 
+                                    [(ngModel)]="selectedSizes" 
+                                    [loading]="isLoading"
+                                    placeholder="Select sizes" 
+                                    optionLabel="sizeName" 
+                                    display="chip" 
+                                    [showClear]="true"
+                                    styleClass="p-multiselect-custom" 
+                                    [ngModelOptions]="{ standalone: true }" />
+                                <p-button [disabled]="product.id === 0 || selectedSizes.length === 0" (onClick)="saveAttributes()"
+                                    label="Save" class="mr-2" styleClass="p-button-custom" />
+                            </div>
+                            <div class="flex justify-content-center mt-5">
+                                <p-accordion [multiple]="true">
+                                    <p-accordionTab [header]="item.sizeName" *ngFor="let item of selectedSizes">
+                                        <div class="field">
+                                            <label for="integeronly">Stock quantity</label>
+                                            <p-inputNumber styleClass="p-inputtext-custom" inputId="integeronly" [ngModelOptions]="{ standalone: true }" [(ngModel)]="item.quantity" class="w-100" />
+                                        </div>
+                                    </p-accordionTab>
+                                </p-accordion>
+                            </div>
+                        </p-tabPanel>
+                    </p-tabView>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4 mt-2">
+            <div class="box-form card">
+                <label for="category">Category</label>
+                <p-divider />
+                <div *ngFor="let category of categories" class="field-checkbox">
+                    <p-radioButton [value]="category.id" formControlName="categoryId" />
+                    <label [for]="category.name" class="ml-2">
+                        {{ category.name }}
+                    </label>
+                </div>
+            </div>
+            <div class="box-form card mt-3">
+                <label for="category">Brand</label>
+                <p-divider />
+                <div *ngFor="let brand of brands" class="field-checkbox">
+                    <p-radioButton [value]="brand.id" formControlName="brandId" />
+                    <label [for]="brand.name" class="ml-2">
+                        {{ brand.name }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="box-form card mt-3">
+                <div class="p-field">
+                    <label for="image">Image</label>
+                    <p-fileUpload name="file" [url]="uploadUrl" [auto]="true" (onUpload)="onUploadImage($event)"
+                        [multiple]="false" accept="image/*" maxFileSize="100000000">
+                        <ng-template pTemplate="header" let-files let-chooseCallback="chooseCallback"
+                            let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                            <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                                <div class="flex gap-2">
+                                    <p-button (onClick)="choose($event, chooseCallback)" icon="pi pi-images"
+                                        [rounded]="true" [outlined]="true" class="mr-2" />
+                                    <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true"
+                                        [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-file pTemplate="file">
+                            <!-- <div class="flex align-items-center justify-content-center p-3">
+                                <img [src]="file.objectURL" width="100" />
+                            </div> -->
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <div *ngIf="product?.image">
+                                <img [src]="product!.image" alt="Product Image" width="100">
+                            </div>
+                            <div *ngIf="!product?.image" class="p-3 text-center text-500">
+                                Drag and drop images here.
+                            </div>
+                        </ng-template>
+                    </p-fileUpload>
+
+                </div>
+            </div>
+
+            <div class="box-form card mt-3">
+                <div class="p-field">
+                    <label for="image">Gallery</label>
+                    <p-fileUpload name="file" [url]="uploadUrl" [auto]="true" (onUpload)="onUploadImages($event)"
+                        [multiple]="true" accept="image/*" maxFileSize="1000000">
+                        <ng-template pTemplate="header" let-files let-chooseCallback="chooseCallback"
+                            let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                            <div class="flex flex-wrap justify-content-between align-items-center flex-1 gap-2">
+                                <div class="flex gap-2">
+                                    <p-button (onClick)="choose($event, chooseCallback)" icon="pi pi-images"
+                                        [rounded]="true" [outlined]="true" class="mr-2" />
+                                    <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true"
+                                        [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template let-file pTemplate="file">
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <div *ngIf="product?.imageUrls && product.imageUrls.length > 0" class="d-flex gap-3"
+                                style="overflow-x: auto; white-space: nowrap; padding: 0.5rem 0;">
+                                <div *ngFor="let image of product.imageUrls; let i = index" class="position-relative">
+                                    <img [src]="image" alt="Product Image" width="100">
+                                    <p-button icon="pi pi-times" [rounded]="true" severity="danger" [outlined]="true"
+                                        class="remove-button" (click)="removeExistingImage(i)"
+                                        styleClass="p-button-delete-custom" />
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="empty">
+                            <div *ngIf="product?.imageUrls && product.imageUrls.length === 0"
+                                class="p-3 text-center text-500">
+                                Drag and drop images here.
+                            </div>
+                        </ng-template>
+                    </p-fileUpload>
+
+                </div>
+
+            </div>
+            <div class="p-3 admin-card mt-3 row justify-content-between align-items-center">
+                <div *ngIf="!isCreateMode()">
+                    <p-button *ngIf="product?.status !== 0" label="Disable" severity="danger"
+                    (click)="confirmDelete($event)" />
+                <p-button *ngIf="product?.status === 0" label="Enable" severity="success"
+                    (click)="confirmEnable($event)" />
+                <p-confirmPopup />
+                </div>
+                
+                <p-button label="Save" [disabled]="!productForm.valid" (onClick)="onSubmit()" />
+            </div>
+
+
+        </div>
+    </form>
+</div>

@@ -1,0 +1,38 @@
+input{
+  border: 1px solid #cbd5e1;
+  border-radius: 0.25rem;
+  padding: 0.3rem 0.75rem;
+  width: 14rem;
+}
+
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-item {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.image-item img {
+  object-fit: cover;
+  width: 100px;
+  height: 100px;
+}
+
+.remove-button {
+  position: absolute;
+  top: -13px;
+  right: 3px;
+  z-index: 1;
+  background-color: #ffffff;
+}
+
+p-multiselect {
+  width: 80%;
+}
