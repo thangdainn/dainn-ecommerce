@@ -61,6 +61,7 @@ import { LocationService } from './services/location.service';
 import { PaymentService } from './services/payment.service';
 import { CardModule } from 'primeng/card';
 import { UserService } from './services/user.service';
+import { AnalyticService } from './services/analytic.service';
 
 
 const routes: Routes = [
@@ -146,6 +147,7 @@ const routes: Routes = [
     PaymentService,
     MessageService,
     ConfirmationService,
+    AnalyticService
   ],
   bootstrap: [AppComponent],
 })

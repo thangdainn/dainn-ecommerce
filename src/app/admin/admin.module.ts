@@ -47,6 +47,8 @@ import { TabViewModule } from 'primeng/tabview';
 import { ChipModule } from 'primeng/chip';
 import { AccordionModule } from 'primeng/accordion';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ChartModule } from 'primeng/chart';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 const routes: Routes = [
   {
@@ -120,7 +122,9 @@ const routes: Routes = [
     TabViewModule,
     ChipModule,
     AccordionModule,
-    InputNumberModule
+    InputNumberModule,
+    ChartModule,
+    SelectButtonModule
   ],
 })
 export class AdminModule {}

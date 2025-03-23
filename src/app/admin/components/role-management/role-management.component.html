@@ -28,7 +28,6 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
-                <th>#</th>
                 <th pSortableColumn="name">
                     Name <p-sortIcon field="name" />
                 </th>
@@ -37,7 +36,8 @@
                     <!-- Status -->
                     <div class="d-flex align-items-center justify-content-between">
                         Status
-                        <p-columnFilter field="status" type="boolean" display="menu" [showClearButton]="false" [showApplyButton]="false">
+                        <p-columnFilter field="status" type="boolean" display="menu" [showClearButton]="false"
+                            [showApplyButton]="false">
                             <ng-template pTemplate="filter" let-value>
                                 <p-dropdown [ngModel]="value" [options]="statuses" [(ngModel)]="status"
                                     (onChange)="filterStatus($event.value)" [autoDisplayFirst]="true"
@@ -61,7 +61,6 @@
                 <td>
                     <p-tableCheckbox [value]="role" />
                 </td>
-                <td>{{page*size + index + 1}}</td>
                 <td>{{role.name.split('_')[1]}}</td>
                 <td>{{role.description}}</td>
                 <td>
@@ -71,6 +70,11 @@
                     <p-button (onClick)="openEdit(role)" icon="pi pi-pencil" [rounded]="true" [text]="true"
                         [raised]="true" />
                 </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5" class="text-center">No data available</td>
             </tr>
         </ng-template>
     </p-table>

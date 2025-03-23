@@ -14410,3 +14410,11 @@ p-menu > div {
   padding: 0.3rem 0.75rem;
   font-size: 0.8rem;
 }
+
+.p-selectbutton .p-button {
+  background: #f1f5f9;
+  border: 1px solid #f1f5f9 !important;
+  color: #64748b;
+  font-size: 0.8rem;
+  padding: 0.1rem 0.8rem;
+}

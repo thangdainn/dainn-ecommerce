@@ -1,29 +1,172 @@
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
-<p>dashboard</p>
+<div class="analytics-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>Analytics</h1>
+    <div class="d-flex align-items-center">
+      <p-calendar [(ngModel)]="dateRanges" selectionMode="range" [showIcon]="true" inputId="icondisplay"
+        [iconDisplay]="'input'" showButtonBar="true" dateFormat="mm/dd/yy" placeholder="Select Date Range"
+        styleClass="small-calendar" />
+      <p-button type="button" label="Apply" (click)="applyDateRange()" class="ml-2" styleClass="p-button-custom" />
+    </div>
+  </div>
+
+  <!-- Statistic Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Revenue</h3>
+      <p class="value">{{ stats.totalRevenue | currency:'VND' }}</p>
+      <p class="trend up">+12% from last month</p>
+    </div>
+    <div class="stat-card">
+      <h3>Average order value</h3>
+      <p class="value">{{ stats.avgOrderValue | currency:'VND' }}</p>
+      <p class="trend down">-5% from last month</p>
+    </div>
+    <div class="stat-card">
+      <h3>New Orders</h3>
+      <p class="value">{{ stats.newOrders | number }}</p>
+      <p class="trend up">+8% from last month</p>
+    </div>
+    <div class="stat-card">
+      <h3>Product Sold</h3>
+      <p class="value">{{ stats.productSold | number}}</p>
+      <p class="trend down">-2% from last month</p>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Revenue</h3>
+        <div class="date-type">
+          <p-selectButton [options]="dateTypes" [(ngModel)]="selectedDateType" (onChange)="updateRevenueChartData()"
+            optionLabel="name" optionValue="value" />
+        </div>
+      </div>
+      <p-chart type="line" [data]="revenueChartData" [options]="chartOptions" />
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Sales by Category</h3>
+        <div class="date-type">
+
+        </div>
+      </div>
+      <p-chart type="pie" [data]="salesByCategoryChart" [options]="pieChartOptions" />
+    </div>
+  </div>
+
+  <!-- Top Products Table -->
+  <div class="charts-grid">
+    <div class="table-section">
+      <h3>Sales Product</h3>
+      <p-table [value]="topProducts">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Sold</th>
+            <th>Revenue</th>
+            <th>View Orders</th>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>
+              <img src="{{item.image}}" [alt]="item.name" width="50" class="shadow-4" />
+            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.sold | number }}</td>
+            <td>{{ item.revenue | currency:'VND' }}</td>
+            <td>
+              <p-button icon="pi pi-eye" (onClick)="showDialog(item.id)"/>
+            </td>
+
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5" class="text-center">No data available</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div class="table-recent-section">
+      <div class="chart-header">
+        <h3>Recent Sales</h3>
+        <div class="date-type">
+          <p-dropdown [options]="dateRecentType" [(ngModel)]="selectedRecentDateType" (onChange)="loadRecentSales()"
+            optionLabel="name" optionValue="value" />
+        </div>
+      </div>
+
+      <p-table [value]="recentSales">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Price</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item>
+          <tr>
+            <td>
+              <img src="{{item.image}}" [alt]="item.name" width="50" class="shadow-4" />
+            </td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.price | currency:'VND' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="3" class="text-center">No data available</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <p-dialog 
+    [(visible)]="orderListDialog" 
+    [style]="{ width: '650px' }" 
+    header="Order list"
+    [modal]="true" 
+    styleClass="p-fluid">
+
+    <ng-template pTemplate="content">
+      <p-table [value]="orderList">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Total</th>
+            <th>Order Date</th>
+            <th>View detail</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+          <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.customerName }}</td>
+            <td>{{ order.totalAmount | currency: 'VND' }}</td>
+            <td>{{ order.orderDate | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <p-button icon="pi pi-eye" [routerLink]="['/admin/orders/' + order.id]"/>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5" class="text-center">No data available</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+    </ng-template>
+  </p-dialog>
+</div>

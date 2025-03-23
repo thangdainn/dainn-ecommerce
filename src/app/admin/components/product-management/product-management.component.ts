@@ -33,7 +33,7 @@ export class ProductManagementComponent implements OnInit {
 
   keyword: string = '';
   page: number = 0;
-  size: number = 5;
+  size: number = 10;
   totalElements: number = 0;
   sortBy: string = 'createdDate';
   sortDir: string = 'desc';

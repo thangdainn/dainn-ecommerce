@@ -90,6 +90,10 @@ export class OrderService {
       status: status,
     });
   }
+
+  getByProductId(productId: number, startDate: string, endDate: string): Observable<Order[]> {
+    return this.httpClient.get<Order[]>(`${this.baseUrl}/products/${productId}?startDate=${startDate}&endDate=${endDate}`);
+  }
 }
 
 interface GetResponseOrder {
