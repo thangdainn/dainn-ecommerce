@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Product } from '../common/product';
 import { environment } from 'src/environments/environment.development';
 import { ProductSize } from '../common/product-size';
+import { createParams, createParamsNonArray } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,6 @@ export class ProductService {
     isSubmitPrice: boolean,
     isStock: boolean = false
   ): Observable<GetResponseProduct> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}&status=${status}&isStock=${isStock}`;
     switch (sortBy) {
       case 'Latest':
         sortBy = 'createdDate';
@@ -48,22 +48,27 @@ export class ProductService {
         sortBy = 'id';
         break;
     }
-    searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
-    if (keyword.length > 0) {
-      searchUrl += `&keyword=${keyword}`;
-    }
-    if (categoryIds.length > 0) {
-      searchUrl += `&categoryIds=${categoryIds.join(',')}`;
-    }
-    if (brandIds.length > 0) {
-      searchUrl += `&brandIds=${brandIds.join(',')}`;
-    }
-    if (isSubmitPrice) {
-      searchUrl += `&minPrice=${minPrice}&maxPrice=${maxPrice}`;
-    }
-    console.log(searchUrl);
 
-    return this.httpClient.get<GetResponseProduct>(searchUrl);
+    const paramsObj: { [key: string]: any } = {
+      page,
+      size,
+      sortBy,
+      sortDir,
+      status,
+      isStock,
+      keyword,
+      categoryIds,
+      brandIds,
+    };
+
+    if (isSubmitPrice) {
+      paramsObj['minPrice'] = minPrice;
+      paramsObj['maxPrice'] = maxPrice;
+    }
+
+    const params = createParams(paramsObj);
+    
+    return this.httpClient.get<GetResponseProduct>(this.baseUrl, { params });
   }
 
   getByCode(productCode: string): Observable<Product> {
@@ -71,17 +76,25 @@ export class ProductService {
     return this.httpClient.get<Product>(productUrl);
   }
 
-  getTop10Least(): Observable<GetResponseProduct> {
-    const searchUrl = `${this.baseUrl}?page=0&size=10&sortBy=createdDate&sortDir=desc`;
-    return this.httpClient.get<GetResponseProduct>(searchUrl);
+  getTop8Least(): Observable<GetResponseProduct> {
+    const paramsObj: { [key: string]: any } = {
+      page: 0,
+      size: 8,
+      sortBy: 'createdDate',
+      sortDir: 'desc',
+      isStock: false,
+    };
+    const params = createParamsNonArray(paramsObj);
+    return this.httpClient.get<GetResponseProduct>(this.baseUrl, { params });
   }
 
   getStockByProductAndSize(
     productId: number,
     sizeId: number
   ): Observable<ProductSize> {
-    const psUrl = `${this.baseUrl}/stock?productId=${productId}&sizeId=${sizeId}`;
-    return this.httpClient.get<ProductSize>(psUrl);
+    const psUrl = `${this.baseUrl}/stock`;
+    const params = createParamsNonArray({ productId, sizeId });
+    return this.httpClient.get<ProductSize>(psUrl, { params });
   }
 
   getProductSizeByCode(code: string): Observable<ProductSize[]> {

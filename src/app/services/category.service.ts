@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category } from '../common/category';
 import { environment } from 'src/environments/environment.development';
+import { createParamsNonArray } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -24,14 +25,8 @@ export class CategoryService {
     keyword: string,
     status: number
   ): Observable<GetResponseCate> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}&status=${status}`;
-    searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
-    if (keyword.length > 0) {
-      searchUrl += `&keyword=${keyword}`;
-    }
-    console.log(searchUrl);
-
-    return this.httpClient.get<GetResponseCate>(searchUrl);
+    const params = createParamsNonArray({ page, size, sortBy, sortDir, keyword, status });
+    return this.httpClient.get<GetResponseCate>(this.baseUrl, { params });
   }
 
   getById(id: number): Observable<Category> {

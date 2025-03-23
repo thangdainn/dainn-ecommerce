@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
 } from '@angular/forms';
+import { format } from 'date-fns/format';
 import {
   MessageService,
   ConfirmationService,
@@ -62,8 +63,8 @@ export class OrderManagementComponent implements OnInit {
     const fromDate = this.dateRange && this.dateRange[0] || null;
     const toDate = this.dateRange && this.dateRange[1] || null;
 
-    const fromDateStr = fromDate ? this.formatDate(fromDate) : '';
-    const toDateStr = toDate ? this.formatDate(toDate) : '';
+    const fromDateStr = fromDate ? format(fromDate, 'yyyy-MM-dd HH:mm:ss') : '';
+    const toDateStr = toDate ? format(toDate, 'yyyy-MM-dd HH:mm:ss') : '';
 
     // const [fromDate, toDate] = this.dateRange;
 

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { Order } from '../common/order';
 import { OrderStatus } from '../shared/enums/order-status';
+import { createParamsNonArray } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -52,24 +53,18 @@ export class OrderService {
     fromDate: string,
     toDate: string
   ): Observable<GetResponseOrder> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}`;
-    searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
+    const params = createParamsNonArray({
+      page,
+      size,
+      sortBy,
+      sortDir,
+      keyword,
+      status,
+      fromDate,
+      toDate,
+    });
 
-    if (keyword.length != 0) {
-      searchUrl += `&keyword=${keyword}`;
-    }
-    if (status.length != 0) {
-      searchUrl += `&status=${status}`;
-    }
-    if (fromDate.length != 0) {
-      searchUrl += `&fromDate=${fromDate}`;
-    }
-    if (toDate.length != 0) {
-      searchUrl += `&toDate=${toDate}`;
-    }
-    console.log(searchUrl);
-
-    return this.httpClient.get<GetResponseOrder>(searchUrl);
+    return this.httpClient.get<GetResponseOrder>(this.baseUrl, { params });
   }
 
   getById(id: number): Observable<Order> {
@@ -91,8 +86,16 @@ export class OrderService {
     });
   }
 
-  getByProductId(productId: number, startDate: string, endDate: string): Observable<Order[]> {
-    return this.httpClient.get<Order[]>(`${this.baseUrl}/products/${productId}?startDate=${startDate}&endDate=${endDate}`);
+  getByProductId(
+    productId: number,
+    startDate: string,
+    endDate: string
+  ): Observable<Order[]> {
+    const params = createParamsNonArray({ startDate, endDate });
+    return this.httpClient.get<Order[]>(
+      `${this.baseUrl}/products/${productId}`,
+      { params }
+    );
   }
 }
 

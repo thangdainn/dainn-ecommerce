@@ -128,8 +128,8 @@ export class DashboardComponent implements OnInit {
     }
 
     return {
-      startDate: format(startDate, 'MM/dd/yy'),
-      endDate: format(endDate, 'MM/dd/yy')
+      startDate: format(startDate, 'yyyy-MM-dd HH:mm:ss'),
+      endDate: format(endDate, 'yyyy-MM-dd HH:mm:ss')
     };
   }
 
@@ -157,15 +157,6 @@ export class DashboardComponent implements OnInit {
         },
       },
     };
-  }
-
-  private formatDate(date: Date): string {
-    const pad = (num: number) => num.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
-      date.getDate()
-    )} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
-      date.getSeconds()
-    )}`;
   }
 
   applyDateRange() {
@@ -314,8 +305,8 @@ export class DashboardComponent implements OnInit {
     const fromDate = (this.dateRanges && this.dateRanges[0]) || null;
     const toDate = (this.dateRanges && this.dateRanges[1]) || null;
 
-    const startDate = fromDate ? this.formatDate(fromDate) : '';
-    const endDate = toDate ? this.formatDate(toDate) : '';
+    const startDate = fromDate ? format(fromDate, 'yyyy-MM-dd HH:mm:ss') : '';
+    const endDate = toDate ? format(toDate, 'yyyy-MM-dd HH:mm:ss') : '';
     return { startDate, endDate };
   }
 

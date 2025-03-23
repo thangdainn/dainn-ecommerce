@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Order } from '../common/order';
 import { environment } from 'src/environments/environment.development';
+import { createParamsNonArray } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,12 @@ export class PaymentService {
   constructor(private httpClient: HttpClient) { }
 
   initVNPay(order: Order): Observable<any> {
-    return this.httpClient.get<any>(`${this.paymentUrl}/vnp?amount=${order.totalAmount}&orderId=${order.id}`);
+    const params = createParamsNonArray({ amount: order.totalAmount, orderId: order.id });
+    return this.httpClient.get<any>(`${this.paymentUrl}/vnp`, { params });
   }
 
   initMomo(order: Order): Observable<any> {
-    return this.httpClient.get<any>(`${this.paymentUrl}/momo?orderId=${order.id}`);
+    const params = createParamsNonArray({ orderId: order.id });
+    return this.httpClient.get<any>(`${this.paymentUrl}/momo`, { params });
   }
 }

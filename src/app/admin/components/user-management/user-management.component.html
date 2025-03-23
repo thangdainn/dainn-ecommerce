@@ -38,7 +38,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         Provider
                         <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false"
-                            [showOperator]="false" [showAddButton]="false" class="ml-auto">
+                            [showOperator]="false" [showApplyButton]="false" [showClearButton]="false" [showAddButton]="false" class="ml-auto">
                             <ng-template pTemplate="filter" let-value>
                                 <p-multiSelect [options]="providers" placeholder="Select"
                                     [(ngModel)]="selectedProviders" (onChange)="getUsersPaginator()"
@@ -57,7 +57,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         Role
                         <p-columnFilter field="representative" matchMode="in" display="menu" [showMatchModes]="false"
-                            [showOperator]="false" [showAddButton]="false" class="ml-auto">
+                            [showOperator]="false" [showApplyButton]="false" [showClearButton]="false" [showAddButton]="false" class="ml-auto">
                             <ng-template pTemplate="filter" let-value>
                                 <p-multiSelect [options]="roles" placeholder="Select" [(ngModel)]="selectedRoles"
                                     (onChange)="filterByRoles()" optionLabel="name">

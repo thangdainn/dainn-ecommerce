@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Size } from '../common/size';
 import { environment } from 'src/environments/environment.development';
+import { createParamsNonArray } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -24,14 +25,8 @@ export class SizeService {
     keyword: string,
     status: number
   ): Observable<GetResponseSize> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}&status=${status}`;
-    searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
-    if (keyword.length > 0) {
-      searchUrl += `&keyword=${keyword}`;
-    }
-    console.log(searchUrl);
-
-    return this.httpClient.get<GetResponseSize>(searchUrl);
+    const params = createParamsNonArray({ page, size, sortBy, sortDir, keyword, status });
+    return this.httpClient.get<GetResponseSize>(this.baseUrl, { params });
   }
 
   getById(id: number): Observable<Size> {

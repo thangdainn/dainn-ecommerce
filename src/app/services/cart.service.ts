@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, from, Observable } from 'rxjs';
 import { Cart } from '../common/cart';
 import { environment } from 'src/environments/environment.development';
+import { createParamsNonArray } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,6 @@ export class CartService {
   storage: Storage = localStorage;
   carts: Cart[] = [];
   totalQuantity: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  // totalPrice: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   constructor(private httpClient: HttpClient) {
     let data = JSON.parse(this.storage.getItem('cartItems')!);
@@ -50,9 +50,8 @@ export class CartService {
     sortBy: string,
     sortDir: string
   ): Observable<GetResponseCart> {
-    return this.httpClient.get<GetResponseCart>(
-      `${this.baseUrl}?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`
-    );
+    const params = createParamsNonArray({ page, size, sortBy, sortDir });
+    return this.httpClient.get<GetResponseCart>(this.baseUrl, { params });
   }
 
   handleCartLogin(userId: number): Observable<Cart[]> {

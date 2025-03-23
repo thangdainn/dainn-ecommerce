@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../common/user';
+import { createParams } from '../shared/http.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -24,22 +25,19 @@ export class UserService {
     keyword: string,
     status: number,
     roleIds: number[],
-    provider: object[],
+    providers: object[]
   ): Observable<GetResponseUser> {
-    let searchUrl = `${this.baseUrl}?page=${page}&size=${size}&status=${status}`;
-    searchUrl += `&sortBy=${sortBy}&sortDir=${sortDir}`;
-    if (keyword.length > 0) {
-      searchUrl += `&keyword=${keyword}`;
-    }
-    if (roleIds.length > 0) {
-      searchUrl += `&roleIds=${roleIds.join(',')}`;
-    }
-    if (provider.length > 0) {
-      searchUrl += `&providers=${provider.join(',')}`;
-    }
-    console.log(searchUrl);
-
-    return this.httpClient.get<GetResponseUser>(searchUrl);
+    const params = createParams({
+      page,
+      size,
+      sortBy,
+      sortDir,
+      keyword,
+      status,
+      roleIds,
+      providers,
+    });
+    return this.httpClient.get<GetResponseUser>(this.baseUrl, { params });
   }
 
   getById(id: number): Observable<User> {

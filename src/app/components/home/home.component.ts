@@ -65,11 +65,11 @@ export class HomeComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.getTop10LeastProducts();
+    this.getTop8LeastProducts();
   }
 
-  getTop10LeastProducts() {
-    this.productService.getTop10Least().subscribe((data) => {
+  getTop8LeastProducts() {
+    this.productService.getTop8Least().subscribe((data) => {
       this.products = data.data;
     });
   }
