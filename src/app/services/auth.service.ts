@@ -27,7 +27,10 @@ export class AuthService {
   }
 
   forgotPassword(forgotPass: { email: string; password: string }) {
-    return this.httpClient.post<any>(this.authUrl + '/forgot-password', forgotPass);
+    return this.httpClient.post<any>(
+      this.authUrl + '/forgot-password',
+      forgotPass
+    );
   }
 
   login(user: {
@@ -36,32 +39,23 @@ export class AuthService {
     deviceInfo: string;
   }): Observable<GetResponseLogin> {
     user.deviceInfo = this.getDeviceInfo();
-    return this.httpClient
-      .post<GetResponseLogin>(this.authUrl + '/login', user)
-      .pipe(
-        tap((jwt) => {
-          this.setAuthenticationStatus(jwt.access_token);
-        })
-      );
+    return this.httpClient.post<GetResponseLogin>(
+      this.authUrl + '/login',
+      user
+    );
   }
 
   loginWithGoogle(response: any): Observable<GetResponseLogin> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${response.credential}`,
     });
-    return this.httpClient
-      .post<GetResponseLogin>(
-        this.authUrl + '/login/oauth2/google',
-        { deviceInfo: this.getDeviceInfo() },
-        {
-          headers,
-        }
-      )
-      .pipe(
-        tap((jwt) => {
-          this.setAuthenticationStatus(jwt.access_token);
-        })
-      );
+    return this.httpClient.post<GetResponseLogin>(
+      this.authUrl + '/login/oauth2/google',
+      { deviceInfo: this.getDeviceInfo() },
+      {
+        headers,
+      }
+    );
   }
 
   getMyInfo(): Observable<GetResponseInfo> {
@@ -87,17 +81,23 @@ export class AuthService {
 
   setAuthenticationStatus(access_token: any) {
     this.setToken(access_token);
-    this.getMyInfo().subscribe({
-      next: (response) => {
-        this.loggedUserSubject.next(response.name);
-        this.userIdSubject.next(response.id);
-        this.isAuthenticatedSubject.next(true);
-        this.roleSubject.next(response.roleName);
-      },
-      error: () => {
-        this.isAuthenticatedSubject.next(false);
-      },
-    });
+    const decode = this.decodeJwt(access_token);
+    this.userIdSubject.next(decode.userId);
+    this.loggedUserSubject.next(decode.name);
+    this.isAuthenticatedSubject.next(true);
+    this.roleSubject.next(decode.role);
+
+    // this.getMyInfo().subscribe({
+    //   next: (response) => {
+    //     this.loggedUserSubject.next(response.name);
+    //     this.userIdSubject.next(response.id);
+    //     this.isAuthenticatedSubject.next(true);
+    //     this.roleSubject.next(response.roleName);
+    //   },
+    //   error: () => {
+    //     this.isAuthenticatedSubject.next(false);
+    //   },
+    // });
   }
 
   setToken(jwt: string) {

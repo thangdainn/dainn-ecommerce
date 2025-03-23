@@ -107,6 +107,7 @@ export class SidebarComponent implements OnInit {
     this.authService.loggedUserSubject.next('');
     this.authService.isAuthenticatedSubject.next(false);
     this.authService.userIdSubject.next(0);
+    this.authService.roleSubject.next('');
     this.route.navigate(['/login']);
   }
 }

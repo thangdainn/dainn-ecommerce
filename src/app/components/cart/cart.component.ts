@@ -39,9 +39,11 @@ export class CartComponent implements OnInit {
   ngOnInit(): void {}
 
   listCartDetails() {
-    this.authService.isAuthenticatedSubject.subscribe((data) => {
+    // this.authService.isAuthenticatedSubject.subscribe((data) => {
       this.isLoading = true;
-      if (data) {
+      if (this.authService.isAuthenticatedSubject.value) {
+        console.log('Authenticated');
+        
         this.cartService
           .getCarts(this.page - 1, this.size, this.sortBy, this.sortDir)
           .subscribe({
@@ -64,7 +66,7 @@ export class CartComponent implements OnInit {
         this.checkSelectedItem();
         this.isLoading = false;
       }
-    });
+    // });
   }
 
   private checkSelectedItem() {
@@ -130,6 +132,7 @@ export class CartComponent implements OnInit {
         this.carts.splice(index, 1);
       }
       this.removeFromSelectedItems(cartItem);
+      this.cartService.totalQuantity.next(this.cartService.totalQuantity.value - 1);
     } else {
       this.cartService.removeItemsInCache([cartItem]);
       this.removeFromSelectedItems(cartItem);
