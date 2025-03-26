@@ -70,7 +70,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -14195,12 +14195,12 @@ p-menu > div {
 
 .p-menuitem-link.active {
   background-color: #e9ecef;
-  font-weight: 500;
+  
 }
 
-.p-menuitem-link.active:hover {
-  background-color: #dee2e6;
-}
+/* .p-menuitem-link.active:hover {
+  background-color: #e9ecef;
+} */
 
 .p-datatable {
   font-size: 0.8rem;
@@ -14417,4 +14417,39 @@ p-menu > div {
   color: #64748b;
   font-size: 0.8rem;
   padding: 0.1rem 0.8rem;
+}
+
+
+.sidebar .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled).p-focus > .p-menuitem-content {
+  background-color: #ffffff;
+}
+
+.sidebar .p-menuitem-link {
+  border-radius: 4px;
+}
+
+.sidebar .p-menu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover {
+  background: none;
+}
+
+.sidebar .p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link {
+  padding: 0.45rem 0rem 0.45rem 1rem;
+  border-radius: 4px;
+  color: #000000;
+  margin-bottom: 0.1rem;
+}
+
+.sidebar p-menu,
+p-menu > div {
+  width: 100%;
+  box-shadow: none;
+  border: none;
+}
+
+.sidebar .p-menu .p-submenu-header {
+  padding: 0.75rem 0 1rem;
+}
+
+.sidebar .p-menu ul {
+  padding-left: 0;
 }

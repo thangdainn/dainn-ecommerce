@@ -36,7 +36,7 @@
                             let-index="index">
                             <div class="d-flex h-12rem justify-content-center">
                                 <div class="d-flex flex-column gap-2 align-items-center">
-                                    <p-inputOtp [(ngModel)]="otp" [length]="6"/>
+                                    <p-inputOtp [(ngModel)]="otp" [length]="6" />
                                     <div *ngIf="verifyOtp" class="mt-2">
                                         <small class="text-danger">OTP is invalid</small>
                                     </div>
@@ -64,6 +64,17 @@
                                                 <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
                                                     <small class="text-danger" *ngIf="name?.errors?.['required']">Name
                                                         is required.</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex flex-column gap-2 mb-3">
+                                                <label for="phone">Phone</label>
+                                                <input pInputText id="phone" formControlName="phone" class="w-100" />
+                                                <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
+                                                    <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
+                                                        number is required.</small>
+                                                    <small class="text-danger" *ngIf="phone?.errors?.['pattern']">Phone
+                                                        number must start with 0 and be 10 digits long.</small>
                                                 </div>
                                             </div>
 

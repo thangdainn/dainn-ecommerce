@@ -53,30 +53,7 @@ export class LoginComponent implements OnInit {
       callback: (response: any) => {
         this.authService.loginWithGoogle(response).subscribe({
           next: async (response) => {
-            const access_token = response.access_token;
-            this.authService.setToken(access_token);
-            const decode = this.authService.decodeJwt(access_token);
-            this.authService.userIdSubject.next(decode.userId);
-            this.authService.loggedUserSubject.next(decode.name);
-            this.authService.isAuthenticatedSubject.next(true);
-
-            if (decode.role !== 'ROLE_USER') {
-              this.isLoading = false;
-              this.authService.roleSubject.next(decode.role);
-              this.router.navigateByUrl('/admin');
-              return;
-            }
-
-            await firstValueFrom(
-              this.cartService.handleCartLogin(
-                this.getUserId(response.access_token)
-              )
-            );
-            this.authService.roleSubject.next(decode.role);
-            this.router.navigateByUrl(
-              (this.activeRoute.snapshot.queryParams['returnUrl'] as string) ||
-                '/'
-            );
+            this.handleAfterLogin(response);
           },
           error: (err) => {
             console.log('Login failed: ' + err.message);
@@ -91,6 +68,28 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  private async handleAfterLogin(response: any) {
+    const access_token = response.access_token;
+    this.authService.setAuthenticationStatus(access_token, true);
+    const decode = this.authService.decodeJwt(access_token);
+    const roleName = decode.role;
+
+    if (roleName !== 'ROLE_USER') {
+      this.isLoading = false;
+      this.authService.roleSubject.next(roleName);
+      this.router.navigateByUrl('/admin');
+      return;
+    }
+
+    await firstValueFrom(
+      this.cartService.handleCartLogin(this.getUserId(response.access_token))
+    );
+    this.authService.roleSubject.next(roleName);
+    this.router.navigateByUrl(
+      (this.activeRoute.snapshot.queryParams['returnUrl'] as string) || '/'
+    );
+  }
+
   onSubmit() {
     if (this.loginFormGroup.invalid) {
       this.loginFormGroup.markAllAsTouched();
@@ -101,36 +100,10 @@ export class LoginComponent implements OnInit {
       .login({
         email: this.email?.value,
         password: this.password?.value,
-        deviceInfo: '',
       })
       .subscribe({
         next: async (response) => {
-          const access_token = response.access_token;
-          this.authService.setToken(access_token);
-          const decode = this.authService.decodeJwt(access_token);
-          this.authService.userIdSubject.next(decode.userId);
-          this.authService.loggedUserSubject.next(decode.name);
-          this.authService.isAuthenticatedSubject.next(true);
-
-          if (decode.role !== 'ROLE_USER') {
-            this.isLoading = false;
-            this.authService.roleSubject.next(decode.role);
-            this.router.navigateByUrl('/admin');
-            return;
-          }
-          this.authService.roleSubject.next(decode.role);
-
-          await firstValueFrom(
-            this.cartService.handleCartLogin(
-              this.getUserId(response.access_token)
-            )
-          );
-          this.authService.roleSubject.next(decode.role);
-          this.isLoading = false;
-          this.router.navigateByUrl(
-            (this.activeRoute.snapshot.queryParams['returnUrl'] as string) ||
-              '/'
-          );
+          this.handleAfterLogin(response);
         },
         error: (err) => {
           this.loginError = err.error.detail;

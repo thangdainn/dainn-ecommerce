@@ -34,7 +34,6 @@ import { authGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { guestGuard } from './guards/guest.guard';
 import { AuthInterceptor } from './auth.interceptor';
-import { PurchaseOrderComponent } from './components/purchase-order/purchase-order.component';
 import { OrderService } from './services/order.service';
 import { TableModule } from 'primeng/table';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -62,25 +61,33 @@ import { PaymentService } from './services/payment.service';
 import { CardModule } from 'primeng/card';
 import { UserService } from './services/user.service';
 import { AnalyticService } from './services/analytic.service';
+import { FileUploadModule } from 'primeng/fileupload';
+import { restrictAdminGuard } from './guards/restrict-admin.guard';
 
 
 const routes: Routes = [
-  { path: 'shop', component: ShopComponent },
-  { path: 'search', component: ShopComponent },
-  { path: 'product/:code', component: ProductDetailComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'cart', component: CartComponent },
+  { path: 'shop', component: ShopComponent, canActivate: [restrictAdminGuard] },
+  { path: 'search', component: ShopComponent, canActivate: [restrictAdminGuard] },
+  { path: 'product/:code', component: ProductDetailComponent, canActivate: [restrictAdminGuard] },
+  { path: 'contact', component: ContactComponent, canActivate: [restrictAdminGuard] },
+  { path: 'about', component: AboutComponent, canActivate: [restrictAdminGuard] },
+  { path: 'cart', component: CartComponent, canActivate: [restrictAdminGuard] },
   { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
-  { path: 'order-status', component: PaymentStatusComponent },
-  { path: 'purchase', component: PurchaseOrderComponent, canActivate: [authGuard] },
+  { path: 'order-status', component: PaymentStatusComponent, canActivate: [restrictAdminGuard] },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },
-  { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule), canActivate: [adminGuard] },
-  { path: '', component: HomeComponent },
-  { path: 'access-denied', component: AccessDeniedComponent },
-  { path: '**', component: NotFoundComponent },
+  {
+    path: 'user',
+    loadChildren: () => import('./user/user.module').then(m => m.UserModule), canActivate: [authGuard]
+  },
+  { 
+    path: 'admin', 
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule), canActivate: [adminGuard] 
+  },
+  { path: '', component: HomeComponent, canActivate: [restrictAdminGuard] },
+  { path: 'access-denied', component: AccessDeniedComponent, canActivate: [restrictAdminGuard] },
+  { path: '**', component: NotFoundComponent, canActivate: [restrictAdminGuard] },
 ];
 
 @NgModule({
@@ -100,7 +107,6 @@ const routes: Routes = [
     PaymentStatusComponent,
     LoginComponent,
     LoginStatusComponent,
-    PurchaseOrderComponent,
     RegisterComponent,
     ForgotPasswordComponent,
     NotFoundComponent,
@@ -130,7 +136,8 @@ const routes: Routes = [
     ToastModule,
     DropdownModule,
     InputTextModule,
-    CardModule
+    CardModule,
+    FileUploadModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

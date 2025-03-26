@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { DeviceDetectorService } from 'ngx-device-detector';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 
 @Injectable({
@@ -9,20 +8,24 @@ import { environment } from '../../environments/environment.development';
 })
 export class AuthService {
   private authUrl = environment.apiUrl + '/api/auth';
-  private logOutUrl = environment.apiUrl + '/logout';
+  private logOutUrl = environment.apiUrl + '/api/logout';
 
   readonly token = 'token';
   isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  loggedUserSubject = new BehaviorSubject<string>('');
+  avatarSubject = new BehaviorSubject<string>('');
+  emailSubject = new BehaviorSubject<string>('');
   userIdSubject = new BehaviorSubject<number>(0);
   roleSubject = new BehaviorSubject<string>('');
+  providerSubject = new BehaviorSubject<string>('');
 
-  constructor(
-    private httpClient: HttpClient,
-    private deviceService: DeviceDetectorService
-  ) {}
+  constructor(private httpClient: HttpClient) {}
 
-  register(user: { name: string; email: string; password: string }) {
+  register(user: {
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+  }) {
     return this.httpClient.post<any>(this.authUrl + '/register', user);
   }
 
@@ -33,12 +36,17 @@ export class AuthService {
     );
   }
 
+  checkPassword(email: string, password: string): Observable<boolean> {
+    return this.httpClient.post<boolean>(this.authUrl + '/check-password', {
+      email,
+      password,
+    });
+  }
+
   login(user: {
     email: string;
     password: string;
-    deviceInfo: string;
   }): Observable<GetResponseLogin> {
-    user.deviceInfo = this.getDeviceInfo();
     return this.httpClient.post<GetResponseLogin>(
       this.authUrl + '/login',
       user
@@ -51,15 +59,11 @@ export class AuthService {
     });
     return this.httpClient.post<GetResponseLogin>(
       this.authUrl + '/login/oauth2/google',
-      { deviceInfo: this.getDeviceInfo() },
+      {},
       {
         headers,
       }
     );
-  }
-
-  getMyInfo(): Observable<GetResponseInfo> {
-    return this.httpClient.get<GetResponseInfo>(this.authUrl + '/me');
   }
 
   checkEmail(email: string): Observable<boolean> {
@@ -79,25 +83,18 @@ export class AuthService {
     });
   }
 
-  setAuthenticationStatus(access_token: any) {
+  setAuthenticationStatus(access_token: any, isHandleCart = false) {
     this.setToken(access_token);
     const decode = this.decodeJwt(access_token);
     this.userIdSubject.next(decode.userId);
-    this.loggedUserSubject.next(decode.name);
+    this.emailSubject.next(decode.email);
+    this.avatarSubject.next(decode.avatar);
     this.isAuthenticatedSubject.next(true);
+    this.providerSubject.next(decode.provider);
+    if (isHandleCart) {
+      return;
+    }
     this.roleSubject.next(decode.role);
-
-    // this.getMyInfo().subscribe({
-    //   next: (response) => {
-    //     this.loggedUserSubject.next(response.name);
-    //     this.userIdSubject.next(response.id);
-    //     this.isAuthenticatedSubject.next(true);
-    //     this.roleSubject.next(response.roleName);
-    //   },
-    //   error: () => {
-    //     this.isAuthenticatedSubject.next(false);
-    //   },
-    // });
   }
 
   setToken(jwt: string) {
@@ -143,19 +140,12 @@ export class AuthService {
     );
   }
 
-  private getDeviceInfo() {
-    const deviceInfo = this.deviceService.getDeviceInfo();
-    return `${deviceInfo.deviceType}-${deviceInfo.os}-${deviceInfo.browser}`;
+  getProfile(): Observable<any> {
+    return this.httpClient.get(this.authUrl + '/profile');
   }
 }
 
 interface GetResponseLogin {
   token_type: string;
   access_token: any;
-}
-interface GetResponseInfo {
-  id: number;
-  name: string;
-  email: string;
-  roleName: string;
 }

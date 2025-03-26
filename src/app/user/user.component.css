@@ -1,0 +1,13 @@
+.account-layout {
+  display: flex;
+  min-height: 100vh;
+  /* background-color: #f5f5f5; */
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #fff;
+}
+
+

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
+import { User } from 'src/app/common/user';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -10,21 +11,16 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
-  name: string = '';
-  role: string = '';
+  user: User = new User();
 
   storage: Storage = localStorage;
 
   constructor(private authService: AuthService, private route: Router) {}
 
   ngOnInit() {
-    this.authService.loggedUserSubject.subscribe((data) => {
-      this.name = data;
-    });
+    this.getInfo();
 
-    this.authService.roleSubject.subscribe((data) => {
-      this.role = data;
-    });
+
 
     this.items = [
       {
@@ -101,13 +97,27 @@ export class SidebarComponent implements OnInit {
     ];
   }
 
+  getInfo() {
+    this.authService.emailSubject.subscribe((data) => {
+      this.user.email = data;
+    });
+    this.authService.roleSubject.subscribe((data) => {
+      this.user.roleName = data;
+    });
+    this.authService.avatarSubject.subscribe((data) => {
+      this.user.avatar = data;
+    });
+  }
+
   logout(): void {
     this.authService.logout();
     this.storage.removeItem(this.authService.token);
-    this.authService.loggedUserSubject.next('');
+    this.authService.emailSubject.next('');
     this.authService.isAuthenticatedSubject.next(false);
     this.authService.userIdSubject.next(0);
     this.authService.roleSubject.next('');
+    this.authService.avatarSubject.next('');
+    this.authService.providerSubject.next('');
     this.route.navigate(['/login']);
   }
 }

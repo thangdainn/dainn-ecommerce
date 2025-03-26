@@ -6,7 +6,15 @@ import {
   HttpInterceptor,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { catchError, Observable, switchMap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  filter,
+  Observable,
+  switchMap,
+  take,
+  throwError,
+} from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
 import { Router } from '@angular/router';
@@ -14,6 +22,8 @@ import { Router } from '@angular/router';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   private isRefreshing = false;
+  private refreshTokenSubject: BehaviorSubject<string | null> =
+    new BehaviorSubject<string | null>(null);
 
   constructor(
     private authService: AuthService,
@@ -41,7 +51,7 @@ export class AuthInterceptor implements HttpInterceptor {
           case 403:
             this.router.navigate(['/access-denied']);
             return throwError(() => error);
-            // break;
+          // break;
           default:
             return throwError(() => error);
         }
@@ -52,30 +62,33 @@ export class AuthInterceptor implements HttpInterceptor {
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
+      this.refreshTokenSubject.next(null);
 
       return this.authService.refreshToken().pipe(
         switchMap((jwt: any) => {
+          const newToken = jwt.access_token;
           this.isRefreshing = false;
 
-          const newToken = jwt.access_token;
+          this.refreshTokenSubject.next(newToken);
           this.authService.setAuthenticationStatus(newToken);
 
           return next.handle(this.addToken(request, newToken));
         }),
         catchError((err) => {
           this.isRefreshing = false;
-          this.cartService.clearCart();
-          this.authService.logout();
-          this.cartService.storage.removeItem(this.authService.token);
-          this.authService.loggedUserSubject.next('');
-          this.authService.isAuthenticatedSubject.next(false);
-          this.authService.userIdSubject.next(0);
-          this.router.navigate(['/login']);
+          this.handleLogout();
           return throwError(() => err);
         })
       );
+    } else {
+      return this.refreshTokenSubject.pipe(
+        filter((token) => token !== null),
+        take(1),
+        switchMap((token) => {
+          return next.handle(this.addToken(request, token!));
+        })
+      );
     }
-    return next.handle(request);
   }
 
   private addToken(request: HttpRequest<any>, token: string) {
@@ -84,5 +97,18 @@ export class AuthInterceptor implements HttpInterceptor {
         Authorization: `Bearer ${token}`,
       },
     });
+  }
+
+  private handleLogout() {
+    this.cartService.clearCart();
+    this.authService.logout();
+    this.cartService.storage.removeItem(this.authService.token);
+    this.authService.emailSubject.next('');
+    this.authService.isAuthenticatedSubject.next(false);
+    this.authService.userIdSubject.next(0);
+    this.authService.roleSubject.next('');
+    this.authService.avatarSubject.next('');
+    this.authService.providerSubject.next('');
+    this.router.navigate(['/login']);
   }
 }

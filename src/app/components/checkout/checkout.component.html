@@ -32,7 +32,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="phone">Phone</label>
-                                            <input pInputText formControlName="phone" id="phone" class="w-100"/>
+                                            <input pInputText formControlName="phone" id="phone" class="w-100" (keypress)="onlyNumber($event)"/>
                                             <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
                                                 <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
                                                     number is required.</small>

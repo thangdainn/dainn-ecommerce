@@ -44,6 +44,14 @@ export class UserService {
     return this.httpClient.get<User>(`${this.baseUrl}/${id}`);
   }
 
+  getMyInfo(): Observable<User> {
+    return this.httpClient.get<User>(this.baseUrl + '/me');
+  }
+
+  updateProfile(user: User): Observable<User> {
+    return this.httpClient.put<User>(this.baseUrl + '/profile', user);
+  }
+
   deleteByIds(ids: number[]): Observable<any> {
     return this.httpClient.delete(this.baseUrl, { body: ids });
   }

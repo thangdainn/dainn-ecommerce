@@ -8,5 +8,7 @@ export class User {
         public provider: string = '',
         public roleName: string = '',
         public createdDate: string = '',
+        public avatar: string = '',
+        public phone: string = '',
     ) {}
 }

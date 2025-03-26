@@ -23,11 +23,11 @@
         <ng-template pTemplate="end">
             <div pRipple
                 class="relative overflow-hidden w-full d-flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
-                <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" class="mr-2"
+                <p-avatar [image]="user.avatar" class="mr-2"
                     shape="circle" />
                 <span class="d-inline-flex flex-column info">
-                    <span class="font-bold">{{ name }}</span>
-                    <span class="text-sm">{{ role.split('_')[1] }}</span>
+                    <span class="font-bold">{{ user.email }}</span>
+                    <span class="text-sm">{{ user.roleName.split('_')[1] }}</span>
                 </span>
             </div>
         </ng-template>

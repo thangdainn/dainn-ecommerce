@@ -1,0 +1,33 @@
+<div class="sidebar">
+    <p-menu [model]="menuItems" styleClass="w-full md:w-15rem">
+        <!-- User Info -->
+        <ng-template pTemplate="start">
+            <div class="user-info">
+                <img [src]="user.avatar" alt="Avatar" class="avatar" />
+                <div class="user-details">
+                    <p class="username">{{ user.email }}</p>
+                </div>
+            </div>
+        </ng-template>
+
+        <!-- Item cha (submenu header) -->
+        <ng-template pTemplate="submenuheader" let-item>
+            <a class="font-bold flex align-items-center p-menuitem-link" [routerLink]="item.routerLink"
+                routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
+                >
+                <span [class]="item.icon"></span>
+                <span class="ml-2">{{ item.label }}</span>
+            </a>
+        </ng-template>
+
+        <!-- Item con -->
+        <ng-template pTemplate="item" let-item>
+            <a pRipple class="flex align-items-center p-menuitem-link submenu-item" [routerLink]="item.routerLink"
+                routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                >
+                <span [class]="item.icon"></span>
+                <span class="ml-2">{{ item.label }}</span>
+            </a>
+        </ng-template>
+    </p-menu>
+</div>

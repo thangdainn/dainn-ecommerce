@@ -44,6 +44,10 @@ export class RegisterComponent implements OnInit {
           Validators.required,
           Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/),
         ]),
+        phone: new FormControl('', [
+          Validators.required,
+          Validators.pattern(/^0\d{9}$/),
+        ]),
         password: new FormControl('', [
           Validators.required,
           Validators.minLength(6),
@@ -120,6 +124,7 @@ export class RegisterComponent implements OnInit {
       .register({
         name: this.name!.value,
         email: this.email!.value,
+        phone: this.phone!.value,
         password: this.password!.value,
       })
       .subscribe({
@@ -146,6 +151,10 @@ export class RegisterComponent implements OnInit {
 
   get email() {
     return this.registerFormGroup.get('email');
+  }
+
+  get phone() {
+    return this.registerFormGroup.get('phone');
   }
 
   get password() {

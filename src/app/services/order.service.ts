@@ -38,7 +38,6 @@ export class OrderService {
     } else if (status.length != 0) {
       searchUrl += `&status=${status}`;
     }
-    console.log(searchUrl);
 
     return this.httpClient.get<GetResponseOrder>(searchUrl);
   }

@@ -8,16 +8,16 @@
     <div class="account" style="min-width: 162px">
         <a href="" class="prevent-default d-flex justify-content-center align-items-center">
             <div class="avatar d-flex justify-content-center align-items-center">
-                <img src="assets/images/person_4.jpg" alt="">
+                <img [src]="avatar" alt="">
             </div>
-            <div class="full-name">{{ userName }}</div>
+            <div class="full-name">{{ email }}</div>
 
         </a>
         <ul class="account_selection">
-            <li><a href=""><i class=" fa fa-user" aria-hidden="true"></i>
+            <li><a routerLink="user/account/profile"><i class=" fa fa-user" aria-hidden="true"></i>
                     Information</a>
             </li>
-            <li><a routerLink="/purchase"><i class=" fa fa-user" aria-hidden="true"></i>
+            <li><a routerLink="user/purchase"><i class=" fa fa-user" aria-hidden="true"></i>
                     Purchase order</a>
             </li>
 

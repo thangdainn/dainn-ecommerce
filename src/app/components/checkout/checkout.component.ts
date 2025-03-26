@@ -157,6 +157,13 @@ export class CheckoutComponent implements OnInit {
     this.wardsData = wardEvent.value.name;
   }
 
+  onlyNumber(event: KeyboardEvent) {
+    const charCode = event.charCode;
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+
   get name() {
     return this.checkoutFormGroup.get('customer.name');
   }

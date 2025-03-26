@@ -139,7 +139,9 @@
             <form [formGroup]="editFormGroup">
                 <div class="field">
                     <label for="email">Email</label>
-                    <input type="text" pInputText id="email" formControlName="email" required autofocus class="w-100" />
+
+                    <p type="text" *ngIf="user.id !== 0" class="w-100 text-primary">{{ user.email }}</p>
+                    <input type="text" *ngIf="user.id === 0"  pInputText id="email" formControlName="email" required autofocus class="w-100" />
                     <div *ngIf="email?.invalid && (email?.touched || email?.dirty)">
                         <small class="text-danger" *ngIf="email?.errors?.['required']">Email
                             is required.</small>

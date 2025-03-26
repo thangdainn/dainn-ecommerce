@@ -1,0 +1,74 @@
+<div class="profile-container">
+  <p-toast></p-toast>
+  <h1>My Profile</h1>
+  <p>Manage and protect your account</p>
+  <p-divider />
+
+  <div class="profile-content">
+    <form [formGroup]="profileFormGroup">
+      <div class="profile-info">
+        <div class="field">
+          <label>Email</label>
+          <div class="value">
+            <p>{{ user.email }}</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Name</label>
+          <div class="value">
+            <input pInputText formControlName="name" />
+            <div *ngIf="name?.invalid && (name?.touched || name?.dirty)">
+              <small class="text-danger" *ngIf="name?.errors?.['required'] || name?.errors?.['notOnlyWhitespace']">
+                Name is required.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Phone</label>
+          <div class="value">
+            <input pInputText formControlName="phone" type="tel" (keypress)="onlyNumber($event)" />
+            <div *ngIf="phone?.invalid && (phone?.touched || phone?.dirty)">
+              <small class="text-danger" *ngIf="phone?.errors?.['required']">Phone
+                number is required.</small>
+              <small class="text-danger" *ngIf="phone?.errors?.['pattern']">Phone
+                number must start with 0 and be 10 digits long.</small>
+            </div>
+            <!-- <input pInputText [(ngModel)]="user.phone" /> -->
+          </div>
+        </div>
+<!-- 
+        <div class="field">
+          <label>Gender</label>
+          <div class="value gender-options">
+            <p-radioButton name="gender" value="Male" [(ngModel)]="gender" inputId="male"></p-radioButton>
+            <label for="male" class="ml-2">Male</label>
+            <p-radioButton name="gender" value="Female" [(ngModel)]="gender" inputId="female"
+              class="ml-4"></p-radioButton>
+            <label for="female" class="ml-2">Female</label>
+            <p-radioButton name="gender" value="Other" [(ngModel)]="gender" inputId="other"
+              class="ml-4"></p-radioButton>
+            <label for="other" class="ml-2">Other</label>
+          </div>
+        </div> -->
+
+        <div class="field">
+          <label></label>
+          <div class="value">
+            <button [loading]="isLoading" [disabled]="!profileFormGroup.valid" pButton type="button" label="Save" class="p-button-danger"
+              (click)="onSave()"></button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <p-divider layout="vertical" />
+    <div class="profile-avatar d-flex flex-column align-items-center justify-content-center">
+      <img [src]="user.avatar" alt="Avatar" class="avatar-image" />
+      <p-fileUpload mode="basic" name="file" chooseLabel="Select Image" [url]="uploadUrl" [auto]="true"
+        styleClass="p-button-custom" (onUpload)="onUpload($event)" accept="image/*" maxFileSize="10000000">
+      </p-fileUpload>
+    </div>
+  </div>
+</div>

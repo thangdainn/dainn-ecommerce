@@ -5,7 +5,7 @@ import { OrderService } from 'src/app/services/order.service';
 @Component({
   selector: 'app-purchase-order',
   templateUrl: './purchase-order.component.html',
-  styleUrls: ['./purchase-order.component.css'],
+  styleUrl: './purchase-order.component.css'
 })
 export class PurchaseOrderComponent implements OnInit {
   selectedStatus: string = '';

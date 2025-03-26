@@ -10,7 +10,8 @@ import { CartService } from 'src/app/services/cart.service';
 })
 export class LoginStatusComponent implements OnInit {
   isAuthenticated: boolean = false;
-  userName: string = '';
+  email: string = '';
+  avatar: string = 'assets/images/person_4.jpg';
 
   constructor(
     private authService: AuthService,
@@ -22,17 +23,22 @@ export class LoginStatusComponent implements OnInit {
     this.authService.isAuthenticatedSubject.subscribe((data) => {
       this.isAuthenticated = data;
     });
-    this.authService.loggedUserSubject.subscribe((data) => {
-      this.userName = data;
+    this.authService.emailSubject.subscribe((data) => {
+      this.email = data;
+    });
+    this.authService.avatarSubject.subscribe((data) => {
+      this.avatar = data;
     });
   }
 
   logout() {
     this.authService.logout();
     this.cartService.storage.removeItem(this.authService.token);
-    this.authService.loggedUserSubject.next('');
     this.authService.isAuthenticatedSubject.next(false);
+    this.authService.emailSubject.next('');
     this.authService.userIdSubject.next(0);
+    this.authService.avatarSubject.next('');
+    this.authService.roleSubject.next('');
     this.cartService.clearCart();
     this.route.navigate(['/login']);
   }
