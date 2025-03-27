@@ -82,8 +82,6 @@ export class PaymentStatusComponent implements OnInit {
   }
 
   setStatusMessage(transactionCode: string): string {
-      console.log(transactionCode);
-  
       if (transactionCode == '27') {
         return 'Order successfully';
       } else if (transactionCode == '00') {
@@ -93,11 +91,4 @@ export class PaymentStatusComponent implements OnInit {
         return 'Payment failed';
       }
     }
-
-  // restoreAuthState() {
-  //   const token = this.authService.getToken();
-  //   if (token) {
-  //     this.authService.setAuthenticationStatus(token);
-  //   }
-  // }
 }
