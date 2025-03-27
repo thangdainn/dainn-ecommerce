@@ -136,6 +136,7 @@ export class ShopComponent implements OnInit{
       // tạo 1 mảng mới không chứa id vừa bỏ check
       this.categoryIds = this.categoryIds.filter((id) => id !== e.target.value);
     }
+    this.page = 1;
     this.handleProductsPaginate();
   }
   onCbBrandChange(e: any, brandId: number){
@@ -146,6 +147,7 @@ export class ShopComponent implements OnInit{
       // tạo 1 mảng mới không chứa id vừa bỏ check
       this.brandIds = this.brandIds.filter((id) => id !== e.target.value);
     }
+    this.page = 1;
     this.handleProductsPaginate();
   }
 
@@ -154,6 +156,7 @@ export class ShopComponent implements OnInit{
 
   submitPriceRange() {
     this.isSubmitPrice = true;
+    this.page = 1;
     this.handleProductsPaginate();
   }
 

@@ -86,7 +86,7 @@ export class AuthService {
   setAuthenticationStatus(access_token: any, isHandleCart = false) {
     this.setToken(access_token);
     const decode = this.decodeJwt(access_token);
-    this.userIdSubject.next(decode.userId);
+    this.userIdSubject.next(decode.id);
     this.emailSubject.next(decode.email);
     this.avatarSubject.next(decode.avatar);
     this.isAuthenticatedSubject.next(true);

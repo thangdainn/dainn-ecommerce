@@ -70,7 +70,7 @@ export class ProductDetailAdComponent implements OnInit {
       ]),
       description: new FormControl('', [Validators.required]),
       image: new FormControl('', [Validators.required]),
-      images: new FormControl('', [Validators.required]),
+      imageUrls: new FormControl('', [Validators.required]),
       price: new FormControl('', [Validators.required, Validators.min(1000)]),
       categoryId: new FormControl('', [Validators.required]),
       brandId: new FormControl('', [Validators.required]),
@@ -158,7 +158,7 @@ export class ProductDetailAdComponent implements OnInit {
   onUploadImages(event: any) {
     const url = event.originalEvent.body.url;
     this.product.imageUrls.push(url);
-    this.productForm.patchValue({ images: this.product.imageUrls });
+    this.productForm.patchValue({ imageUrls: this.product.imageUrls });
   }
 
   updateForm() {
@@ -166,7 +166,7 @@ export class ProductDetailAdComponent implements OnInit {
       name: this.product.name,
       description: this.product.description,
       image: this.product.image,
-      images: this.product.imageUrls,
+      imageUrls: this.product.imageUrls,
       price: this.product.price,
       categoryId: this.product.categoryId,
       brandId: this.product.brandId,

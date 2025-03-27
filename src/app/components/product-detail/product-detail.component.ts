@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api';
 export class ProductDetailComponent implements OnInit {
   product: Product = new Product();
   images: string[] = [];
+  userId: number = 0;
 
   productSizes: ProductSize[] = [];
 
@@ -55,6 +56,9 @@ export class ProductDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.authService.userIdSubject.subscribe((userId) => {
+      this.userId = userId;
+    });
     this.handleProductDetails().then((r) => r);
   }
 
@@ -117,6 +121,8 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart() {
+    console.log(this.userId);
+    
     if (this.selectedSize > 0) {
       try {
         const cartItem = new Cart(
@@ -124,13 +130,13 @@ export class ProductDetailComponent implements OnInit {
           this.product.id,
           this.selectedSize,
           this.quantity,
-          this.authService.userIdSubject.value,
+          this.userId,
           this.totalQuantity,
           this.product,
           new Size(this.selectedSize, this.sizeName)
         );
         this.cartService.addToCart(cartItem);
-        this.showSuccess("Added to cart");
+        this.showSuccess('Added to cart');
       } catch (error) {
         this.showError('Error adding to cart');
       }
@@ -153,9 +159,9 @@ export class ProductDetailComponent implements OnInit {
           new Size(this.selectedSize, this.sizeName)
         );
         await this.cartService.addToCart(cartItem);
-  
+
         this.route.navigate(['/cart'], {
-          state: { selectedItem: cartItem }
+          state: { selectedItem: cartItem },
         });
       } catch (error) {
         this.showError('Error adding to cart');
