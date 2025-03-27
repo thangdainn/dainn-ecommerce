@@ -68,10 +68,10 @@ export class AuthInterceptor implements HttpInterceptor {
         switchMap((jwt: any) => {
           const newToken = jwt.access_token;
           this.isRefreshing = false;
-
+  
           this.refreshTokenSubject.next(newToken);
           this.authService.setAuthenticationStatus(newToken);
-
+  
           return next.handle(this.addToken(request, newToken));
         }),
         catchError((err) => {

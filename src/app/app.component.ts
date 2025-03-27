@@ -16,13 +16,6 @@ export class AppComponent implements OnInit {
     if (jwtToken) {
       this.authService.setAuthenticationStatus(jwtToken);
     }
-    this.authService.roleSubject.subscribe((data) => {
-      if (data === 'ROLE_USER') {
-        this.router.navigate(['/']);
-      } else {
-        this.router.navigate(['/admin']);
-      }
-    });
   }
 
   isAdminRoute(): boolean {

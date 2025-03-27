@@ -55,30 +55,5 @@ export class HeaderComponent implements OnInit {
         });
       }
     });
-    
-    // this.authService.isAuthenticatedSubject.subscribe((isAuthenticated) => {
-    //   if (!isAuthenticated) {
-    //     this.cartService.totalQuantity.subscribe((totalQuantity) => {
-    //       this.totalQuantity = totalQuantity;
-    //     });
-    //   }
-    // });
-
-    // this.authService.isAuthenticatedSubject.subscribe((isAuthenticated) => {
-    //   console.log('isAuthenticated: ' + isAuthenticated);
-
-    //   if (isAuthenticated && this.authService.roleSubject.value === 'ROLE_USER') {
-    //     console.log('Role: ' + this.authService.roleSubject.value);
-
-    //     this.cartService.getCountCartItems().subscribe((totalQuantity) => {
-    //       this.totalQuantity = totalQuantity;
-    //       this.cartService.totalQuantity.next(totalQuantity);
-    //     });
-    //   } else {
-    //     this.cartService.totalQuantity.subscribe((totalQuantity) => {
-    //       this.totalQuantity = totalQuantity;
-    //     });
-    //   }
-    // });
   }
 }

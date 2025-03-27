@@ -125,12 +125,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
+    return this.isAuthenticatedSubject.value;
   }
 
   isAdmin(): boolean {
-    return this.roleSubject.value.includes('ROLE_ADMIN');
+    return this.roleSubject.value === 'ROLE_ADMIN';
   }
 
   refreshToken(): Observable<GetResponseLogin> {
