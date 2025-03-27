@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Order } from 'src/app/common/order';
 import { OrderService } from 'src/app/services/order.service';
+import { PaymentService } from 'src/app/services/payment.service';
 
 @Component({
   selector: 'app-purchase-order',
   templateUrl: './purchase-order.component.html',
-  styleUrl: './purchase-order.component.css'
+  styleUrl: './purchase-order.component.css',
 })
 export class PurchaseOrderComponent implements OnInit {
   selectedStatus: string = '';
@@ -28,7 +29,10 @@ export class PurchaseOrderComponent implements OnInit {
 
   isLoading = false;
 
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private orderService: OrderService,
+    private paymentService: PaymentService
+  ) {}
 
   ngOnInit(): void {
     this.keyword = '';
@@ -120,5 +124,16 @@ export class PurchaseOrderComponent implements OnInit {
       this.page++;
       this.appendData();
     }
+  }
+
+  rePayment(order: Order) {
+    this.paymentService.initMomo(order).subscribe({
+      next: (response) => {
+        window.location.href = response.payUrl;
+      },
+      error: (err) => {
+        alert(`There was an error: ${err.message}`);
+      },
+    });
   }
 }

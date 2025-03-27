@@ -47,17 +47,18 @@ export class PaymentStatusComponent implements OnInit {
 
   ngOnInit(): void {
     const type = this.route.snapshot.paramMap.get('type');
-    if (type == 'mono') {
+    if (type == 'momo') {
       this.initPaymentCallback();
     } else {
       this.route.queryParams.subscribe((params) => {
         console.log(params);
       });
+      this.message = this.setStatusMessage(this.callbackResponse.transactionCode);
     }
-    this.message = this.setStatusMessage(this.callbackResponse.transactionCode);
+    
   }
 
-  async initPaymentCallback() {
+  initPaymentCallback() {
     this.route.queryParams.subscribe((params) => {
       this.transactionStatus = {
         orderType: params['orderType'],
@@ -75,9 +76,16 @@ export class PaymentStatusComponent implements OnInit {
       };
     });
 
-    this.callbackResponse = await firstValueFrom(
-      this.paymentService.callbackMono(this.transactionStatus)
-    );
+    this.paymentService.callbackMono(this.transactionStatus).subscribe({
+      next: (response) => {
+        this.callbackResponse = response;
+        this.message = this.setStatusMessage(this.callbackResponse.transactionCode);
+      },
+      error: (err) => {
+        this.callbackResponse.transactionCode = '99';
+        this.message = this.setStatusMessage(this.callbackResponse.transactionCode);
+      },
+    })
     
   }
 

@@ -171,7 +171,11 @@
                                 <div><button class="stardust-button stardust-button--primary QY7kZh">Rate</button>
                                 </div>
                             </div>
-                            <div *ngIf="order.status != 'PROCESSING'" class="hbQXWm">
+                            <div *ngIf="order.status == 'TO_PAY'" class="aAXjeK">
+                                <div><button (click)="rePayment(order)" class="stardust-button stardust-button--primary QY7kZh">Payment</button>
+                                </div>
+                            </div>
+                            <div *ngIf="order.status != 'PROCESSING' && order.status != 'TO_PAY'" class="hbQXWm">
                                 <div><button class="stardust-button stardust-button--secondary QY7kZh">Buy
                                         Again</button></div>
                             </div>
