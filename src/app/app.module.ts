@@ -73,7 +73,7 @@ const routes: Routes = [
   { path: 'about', component: AboutComponent, canActivate: [restrictAdminGuard] },
   { path: 'cart', component: CartComponent, canActivate: [restrictAdminGuard] },
   { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
-  { path: 'order-status', component: PaymentStatusComponent, canActivate: [restrictAdminGuard] },
+  { path: 'order-status/:type', component: PaymentStatusComponent, canActivate: [restrictAdminGuard] },
   { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent, canActivate: [guestGuard] },

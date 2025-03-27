@@ -23,4 +23,8 @@ export class PaymentService {
     const params = createParamsNonArray({ orderId: order.id });
     return this.httpClient.get<any>(`${this.paymentUrl}/momo`, { params });
   }
+
+  callbackMono(params: any): Observable<any> {
+    return this.httpClient.post<any>(`${this.paymentUrl}/momo-callback`, params);
+  }
 }

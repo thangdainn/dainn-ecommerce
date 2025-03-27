@@ -11,8 +11,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
-                <div class="message-box _success" [ngClass]="{'_failed' : transactionCode !== undefined && transactionCode !== '00'}">
-                    <i   [ngClass]="transactionCode !== undefined && transactionCode !== '00' ? 'fa fa-times-circle' : 'fa fa-check-circle'" aria-hidden="true"></i>
+                <div class="message-box _success" [ngClass]="{'_failed' : this.callbackResponse.transactionCode !== '27' && this.callbackResponse.transactionCode !== '00'}">
+                    <i   [ngClass]="this.callbackResponse.transactionCode !== '27' && this.callbackResponse.transactionCode !== '00' ? 'fa fa-times-circle' : 'fa fa-check-circle'" aria-hidden="true"></i>
                     <h2> {{ message }} </h2>
                     <p> {{ subMessage }} </p>
 
@@ -23,7 +23,7 @@
                             </button>
                         </div>
                         <div class="col-md-6 mb-4">
-                            <button routerLink="/orders>">
+                            <button routerLink="//user/purchase>">
                                 <a >View Order</a>
                             </button>
                         </div>

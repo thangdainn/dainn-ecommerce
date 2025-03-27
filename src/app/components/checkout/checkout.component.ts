@@ -14,6 +14,7 @@ import { CartService } from 'src/app/services/cart.service';
 import { LocationService } from 'src/app/services/location.service';
 import { OrderService } from 'src/app/services/order.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { UserService } from 'src/app/services/user.service';
 import { ShopValidators } from 'src/app/validators/shop-validators';
 
 @Component({
@@ -30,7 +31,7 @@ export class CheckoutComponent implements OnInit {
   districts: any[] = [];
   wards: any[] = [];
 
-  paymentMethods = ['Cash', 'VNPay', 'Momo'];
+  paymentMethods = ['Cash', 'Momo'];
 
   provincesData: string = '';
   districtsData: string = '';
@@ -53,6 +54,7 @@ export class CheckoutComponent implements OnInit {
     private orderService: OrderService,
     private cartService: CartService,
     private authService: AuthService,
+    private userService: UserService,
     private paymentService: PaymentService,
     private router: Router
   ) {
@@ -71,8 +73,20 @@ export class CheckoutComponent implements OnInit {
       this.userId = data;
     });
     this.initFormGroups();
-
+    this.initMyInfo();
     this.loadProvinces();
+  }
+
+  initMyInfo() {
+    this.userService.getMyInfo().subscribe((data) => {
+      this.checkoutFormGroup.patchValue({
+        customer: {
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+        },
+      });
+    });
   }
 
   initFormGroups() {
@@ -103,7 +117,6 @@ export class CheckoutComponent implements OnInit {
   }
 
   computeFee() {
-    console.log(this.items);
     for (let item of this.items) {
       this.totalQuantity += item.quantity;
       this.totalPrice += item.quantity * item.product.price;
@@ -247,18 +260,19 @@ export class CheckoutComponent implements OnInit {
       next: (response) => {
         order = response;
 
-        if (this.paymentMethod?.value === 'VNPay') {
-          this.resetCart();
-          this.paymentService.initVNPay(order).subscribe({
-            next: (response) => {
-              window.location.href = response.paymentUrl;
-            },
-            error: (err) => {
-              alert(`There was an error: ${err.message}`);
-            },
-          });
+        // if (this.paymentMethod?.value === 'VNPay') {
+        //   this.resetCart();
+        //   this.paymentService.initVNPay(order).subscribe({
+        //     next: (response) => {
+        //       window.location.href = response.paymentUrl;
+        //     },
+        //     error: (err) => {
+        //       alert(`There was an error: ${err.message}`);
+        //     },
+        //   });
 
-        } else if (this.paymentMethod?.value === 'Momo') {
+        // } else
+         if (this.paymentMethod?.value === 'Momo') {
           this.resetCart();
           this.paymentService.initMomo(order).subscribe({
             next: (response) => {
@@ -271,7 +285,7 @@ export class CheckoutComponent implements OnInit {
 
         } else {
           this.resetCart();
-          this.router.navigate(['order-status'], {
+          this.router.navigate(['order-status/cash'], {
             queryParams: { orderId: order.id },
           });
         }
